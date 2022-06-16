@@ -1,6 +1,6 @@
-﻿namespace Warehouse.Common;
+﻿namespace Warehouse.Data.Models;
 
-public class Box : Storage
+public class Box : Scalable
 {
     private const int ExpirationPeriod = 100;
     static private int nextId;

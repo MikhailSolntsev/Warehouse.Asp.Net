@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Warehouse.Common;
+namespace Warehouse.Data.Models;
 
-public class Pallet : Storage
+public class Pallet : Scalable
 {
     private const int OwnWeigth = 30;
     private static int nextId;
