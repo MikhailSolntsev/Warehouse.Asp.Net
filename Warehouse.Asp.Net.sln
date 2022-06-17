@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Data.Tests", "War
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.EntityContext.Sqlite", "Warehouse.EntityContext.Sqlite\Warehouse.EntityContext.Sqlite.csproj", "{085958F5-E26E-486D-9D19-A7548637283C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.EntityContext.Tests", "Warehouse.EntityContext.Sqlite.Tests\Warehouse.EntityContext.Tests.csproj", "{18517632-A816-4B56-846A-A3E4DA4253E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.EntityContext.Tests", "Warehouse.EntityContext.Tests\Warehouse.EntityContext.Tests.csproj", "{18517632-A816-4B56-846A-A3E4DA4253E5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Data", "Warehouse.Data\Warehouse.Data.csproj", "{D0C8CE7E-A581-4FC0-98AC-48845F7618EB}"
 EndProject

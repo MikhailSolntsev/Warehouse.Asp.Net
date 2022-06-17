@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Warehouse.DataContext.Sqlite\Warehouse.EntityContext.Sqlite.csproj" />
+    <ProjectReference Include="..\Warehouse.EntityContext.Sqlite\Warehouse.EntityContext.Sqlite.csproj" />
   </ItemGroup>
 
 </Project>

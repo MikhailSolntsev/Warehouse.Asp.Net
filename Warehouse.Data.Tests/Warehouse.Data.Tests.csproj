@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Warehouse.Common\Warehouse.Data.Models.csproj" />
+		<ProjectReference Include="..\Warehouse.Data.Models\Warehouse.Data.Models.csproj" />
 		<ProjectReference Include="..\Warehouse.Data\Warehouse.Data.csproj" />
 	</ItemGroup>
 

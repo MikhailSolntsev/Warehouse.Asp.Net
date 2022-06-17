@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Warehouse.Common\Warehouse.Data.Models.csproj" />
-    <ProjectReference Include="..\Warehouse.DataContext.Sqlite\Warehouse.EntityContext.Sqlite.csproj" />
+    <ProjectReference Include="..\Warehouse.Data.Models\Warehouse.Data.Models.csproj" />
+    <ProjectReference Include="..\Warehouse.EntityContext.Sqlite\Warehouse.EntityContext.Sqlite.csproj" />
   </ItemGroup>
 
 </Project>
