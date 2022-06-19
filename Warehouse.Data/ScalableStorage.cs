@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Warehouse.Data;
 
-public class ScalableStorage
+public class ScalableStorage : IScalableStorage
 {
     private WarehouseContext db;
 
@@ -41,9 +41,10 @@ public class ScalableStorage
         }
         else
         {
+            //pallets.Update(pallet.ToPalletModel());
             // TODO: use automapper
             storedPallet.Length = pallet.Length;
-            storedPallet.Width= pallet.Width;
+            storedPallet.Width = pallet.Width;
             storedPallet.Height = pallet.Height;
         }
 
@@ -136,7 +137,7 @@ public class ScalableStorage
         boxModel.PalletModelId = 0;
 
         await db.SaveChangesAsync();
-            
+
     }
 
     public async void AddBoxAsync(Box box)
@@ -151,7 +152,7 @@ public class ScalableStorage
         await db.SaveChangesAsync();
     }
 
-    
+
     public async void DeleteBoxAsync(Box box)
     {
         db.Boxes?.Remove(box.ToBoxModel());
@@ -167,5 +168,5 @@ public class ScalableStorage
         db.Boxes?.Remove(boxModel);
         await db.SaveChangesAsync();
     }
- 
+
 }

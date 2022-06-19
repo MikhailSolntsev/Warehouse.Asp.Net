@@ -48,7 +48,7 @@ public partial class WarehouseSqliteContext : WarehouseContext
     private void DiscribeBox(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<BoxModel>()
-            .ToTable("Box")
+            .ToTable("Boxes")
             .HasIndex("Id");
 
         modelBuilder.Entity<BoxModel>()
@@ -92,7 +92,7 @@ public partial class WarehouseSqliteContext : WarehouseContext
     private void DiscribePallet(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<PalletModel>()
-            .ToTable("Pallet")
+            .ToTable("Pallets")
             .HasIndex("Id");
 
         modelBuilder.Entity<PalletModel>()
