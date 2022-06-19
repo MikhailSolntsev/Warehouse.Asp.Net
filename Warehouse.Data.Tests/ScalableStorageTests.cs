@@ -1,10 +1,9 @@
-﻿using Warehouse.Data;
-using Warehouse.Data.Models;
+﻿using Warehouse.Data.Models;
 using Warehouse.EntityContext;
 using Warehouse.EntityContext.Sqlite;
 using FluentAssertions;
 
-namespace Warehouse.Data.Tests
+namespace Warehouse.Data
 {
     public class ScalableStorageTests
     {

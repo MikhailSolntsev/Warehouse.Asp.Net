@@ -1,0 +1,27 @@
+###
+https://localhost:6002/api/Warehouse/Pallet/3
+
+###
+https://localhost:6002/api/Warehouse/Pallet/4
+
+###
+GET https://localhost:6002/api/Warehouse/Pallet/d
+
+###
+curl -X POST https://localhost:6002/api/Warehouse/Pallet
+-H 'accept: text/plain'
+-H 'Content-Type: application/json'
+-d '{
+    "Id": 5,
+"Length": 7,
+"Width": 13,
+"Height": 17,
+"Boxes": [
+    {
+        "Id": 6,
+        "Length": 7,
+        "Width": 13,
+        "Height": 17,
+        "Weight": 11,
+        "ExpirationDate": "2022-05-15T00:00:00"
+    }]}'

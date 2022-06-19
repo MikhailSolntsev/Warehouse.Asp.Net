@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Warehouse.Data\Warehouse.Data.csproj" />
+    <ProjectReference Include="..\Warehouse.EntityContext.Sqlite\Warehouse.EntityContext.Sqlite.csproj" />
+    <ProjectReference Include="..\Warehouse.EntityContext\Warehouse.EntityContext.csproj" />
+    <ProjectReference Include="..\Warehouse.Web.Models\Warehouse.Web.Models.csproj" />
+  </ItemGroup>
+
+</Project>

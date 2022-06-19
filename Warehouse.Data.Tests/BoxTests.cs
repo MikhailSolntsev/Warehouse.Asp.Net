@@ -1,7 +1,6 @@
-using Warehouse.Data.Models;
 using FluentAssertions; 
 
-namespace Warehouse.Data.Tests;
+namespace Warehouse.Data.Models;
 
 public class BoxTests
 {
