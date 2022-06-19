@@ -3,24 +3,32 @@ using Warehouse.EntityContext.Models;
 
 namespace Warehouse.EntityContext.Sqlite;
 
-public partial class WarehouseContext : DbContext
+public partial class WarehouseSqliteContext : WarehouseContext
 {
+    private const string DefaultFileName = "../Warehouse.db";
     private string fileName;
 
-    public WarehouseContext(string fileName)
+    public WarehouseSqliteContext()
+        : base()
+    {
+        fileName = DefaultFileName;
+    }
+    public WarehouseSqliteContext(string fileName)
         : base()
     {
         this.fileName = fileName;
     }
-
-    public WarehouseContext(string fileName, DbContextOptions<WarehouseContext> options)
-        : base(options)
+    public WarehouseSqliteContext(DbContextOptions<WarehouseContext> options) : base(options)
+    {
+        fileName = DefaultFileName;
+    }
+    public WarehouseSqliteContext(string fileName, DbContextOptions<WarehouseContext> options) : base(options)
     {
         this.fileName = fileName;
     }
 
-    public virtual DbSet<BoxModel>? Boxes { get; set; }
-    public virtual DbSet<PalletModel>? Pallets { get; set; }
+    public override DbSet<BoxModel>? Boxes { get; set; }
+    public override DbSet<PalletModel>? Pallets { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

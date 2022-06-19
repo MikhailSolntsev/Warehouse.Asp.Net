@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Warehouse.EntityContext.Sqlite.Tests
+namespace Warehouse.EntityContext.Tests
 {
     internal static class DatabaseHelper
     {

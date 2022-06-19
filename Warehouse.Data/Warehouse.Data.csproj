@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Warehouse.Data.Models\Warehouse.Data.Models.csproj" />
     <ProjectReference Include="..\Warehouse.EntityContext.Sqlite\Warehouse.EntityContext.Sqlite.csproj" />
   </ItemGroup>

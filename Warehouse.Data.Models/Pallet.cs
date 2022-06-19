@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Warehouse.Data.Models;
 
 public class Pallet : Scalable
@@ -27,6 +22,7 @@ public class Pallet : Scalable
         Id = id;
         id = Math.Max(nextId, id) + 1;
     }
+
     public void AddBox(Box box)
     {
         if (box.Length > Length || box.Height > Height || box.Width > Width)

@@ -4,15 +4,10 @@ using Warehouse.EntityContext;
 using Warehouse.EntityContext.Sqlite;
 using FluentAssertions;
 
-namespace Warehouse.Data.Tests
+namespace Warehouse.IntegrationTests
 {
-    public class ScalableStorageTests
+    public class ScalableStorageEntityContextTests
     {
-        public ScalableStorageTests()
-        {
-
-        }
-
         [Fact(DisplayName = "Storage can add pallet")]
         public void CanAddPallet()
         {
@@ -26,7 +21,8 @@ namespace Warehouse.Data.Tests
             // Act
             storage.AddPalletAsync(pallet);
 
-            storage.GetAllPalletsAsync().Result.Count.Should().Be(1);
+            //Assert
+            context.Pallets.Should().HaveCount(1);
         }
 
         [Fact(DisplayName = "Storage can modify pallet")]
@@ -45,9 +41,7 @@ namespace Warehouse.Data.Tests
             storage.UpdatePalletAsync(pallet);
 
             //Assert
-            var storedPallet = storage.GetPalletAsync(pallet.Id).Result;
-            storedPallet.Should().NotBeNull();
-            storedPallet.Length.Should().Be(13);
+            context.Pallets?.Find(pallet.Id)?.Length.Should().Be(13);
         }
 
         [Fact(DisplayName = "Storage can delete pallet")]
@@ -65,7 +59,7 @@ namespace Warehouse.Data.Tests
             storage.DeletePalletAsync(pallet);
 
             //Assert
-            storage.GetPalletAsync(pallet.Id).Result.Should().BeNull();
+            context.Pallets?.Find(pallet.Id).Should().BeNull();
         }
 
         [Fact(DisplayName = "Can add box to pallet")]
@@ -85,7 +79,7 @@ namespace Warehouse.Data.Tests
             storage.AddBoxToPalletAsync(box, pallet);
 
             //Assert
-            storage.GetPalletAsync(pallet.Id).Result.Boxes.Should().HaveCount(1);
+            context.Boxes?.Find(pallet.Id).Should().BeNull();
         }
     }
 }

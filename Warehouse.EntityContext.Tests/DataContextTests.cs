@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Warehouse.EntityContext.Models;
+using Warehouse.EntityContext.Sqlite;
 using FluentAssertions;
 
-namespace Warehouse.EntityContext.Sqlite.Tests
+namespace Warehouse.EntityContext.Tests
 {
     public class DataContextTests
     {
@@ -12,7 +13,7 @@ namespace Warehouse.EntityContext.Sqlite.Tests
             // Assign
             string fileName = Path.GetRandomFileName();
 
-            using (WarehouseContext db = new(fileName))
+            using (WarehouseSqliteContext db = new(fileName))
             {
                 // Act
                 bool created = db.Database.EnsureCreated();
@@ -27,7 +28,7 @@ namespace Warehouse.EntityContext.Sqlite.Tests
         public void CanAddBox()
         {
             string fileName = Path.GetRandomFileName();
-            using (WarehouseContext db = new(fileName))
+            using (WarehouseSqliteContext db = new(fileName))
             {
                 db.Database.EnsureCreated();
                 BoxModel model = new()
@@ -39,13 +40,13 @@ namespace Warehouse.EntityContext.Sqlite.Tests
                     Weight = 11,
                     ExpirationDate = DateTime.Today
                 };
-                db.Boxes.Add(model);
+                db.Boxes?.Add(model);
 
                 // Act
                 db.SaveChanges();
 
                 // Assert
-                db.Boxes.ToArray().Length.Should().Be(1, "After adding new 1 item, count should be 1");
+                db.Boxes?.ToArray().Length.Should().Be(1, "After adding new 1 item, count should be 1");
             }
 
             // Clear
@@ -57,7 +58,7 @@ namespace Warehouse.EntityContext.Sqlite.Tests
         {
             // Assign
             string fileName = Path.GetRandomFileName();
-            using (WarehouseContext db = new(fileName))
+            using (WarehouseSqliteContext db = new(fileName))
             {
                 db.Database.EnsureCreated();
                 BoxModel model = new()
@@ -68,7 +69,7 @@ namespace Warehouse.EntityContext.Sqlite.Tests
                     Height = 7,
                     ExpirationDate = DateTime.Today
                 };
-                db.Boxes.Add(model);
+                db.Boxes?.Add(model);
 
                 // Act
                 Action action = () => db.SaveChanges();
@@ -85,7 +86,7 @@ namespace Warehouse.EntityContext.Sqlite.Tests
         {
             // Assign
             string fileName = Path.GetRandomFileName();
-            using (WarehouseContext db = new(fileName))
+            using (WarehouseSqliteContext db = new(fileName))
             {
                 db.Database.EnsureCreated();
 
@@ -96,7 +97,7 @@ namespace Warehouse.EntityContext.Sqlite.Tests
                     Width = 5,
                     Height = 7
                 };
-                db.Pallets.Add(pallet);
+                db.Pallets?.Add(pallet);
 
                 BoxModel box = new()
                 {
@@ -108,7 +109,7 @@ namespace Warehouse.EntityContext.Sqlite.Tests
                     ExpirationDate = DateTime.Today
                     ,PalletModelId = 13
                 };
-                db.Boxes.Add(box);
+                db.Boxes?.Add(box);
 
                 // Act
                 db.SaveChanges();
@@ -117,9 +118,9 @@ namespace Warehouse.EntityContext.Sqlite.Tests
                 db.Pallets.Should().NotBeNullOrEmpty("Pallets set should not be empty");
                 db.Boxes.Should().NotBeNullOrEmpty("Boxes set should not be empty");
 
-                db.Pallets
-                    .Include(pallet => pallet.Boxes)
-                    .FirstOrDefault()
+                db.Pallets?
+                    .Include(pallet => pallet.Boxes)?
+                    .FirstOrDefault()?
                     .Boxes
                     .Should()
                     .NotBeNullOrEmpty("Boxes set in pallet should not be empty");
