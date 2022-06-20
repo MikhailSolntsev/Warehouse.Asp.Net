@@ -44,7 +44,7 @@ namespace Warehouse.Data
             storage.UpdatePalletAsync(pallet);
 
             //Assert
-            var storedPallet = storage.GetPalletAsync(pallet.Id).Result;
+            var storedPallet = storage.GetPalletAsync(pallet.Id??0).Result;
             storedPallet.Should().NotBeNull();
             storedPallet.Length.Should().Be(13);
         }
@@ -64,7 +64,7 @@ namespace Warehouse.Data
             storage.DeletePalletAsync(pallet);
 
             //Assert
-            storage.GetPalletAsync(pallet.Id).Result.Should().BeNull();
+            storage.GetPalletAsync(pallet.Id ?? 0).Result.Should().BeNull();
         }
 
         [Fact(DisplayName = "Can add box to pallet")]
@@ -84,7 +84,17 @@ namespace Warehouse.Data
             storage.AddBoxToPalletAsync(box, pallet);
 
             //Assert
-            storage.GetPalletAsync(pallet.Id).Result.Boxes.Should().HaveCount(1);
+            storage.GetPalletAsync(pallet.Id ?? 0).Result.Boxes.Should().HaveCount(1);
+        }
+        [Fact(DisplayName = "Pallet without Id stores with Id")]
+        public void PalletWithoutIdStoresWithId()
+        {
+            string fileName = Path.GetRandomFileName();
+            WarehouseContext context = new WarehouseSqliteContext(fileName);
+            ScalableStorage storage = new ScalableStorage(context);
+            Pallet pallet = new(3, 5, 7);
+            var addedPallet = storage.AddPalletAsync(pallet).Result;
+            addedPallet.Id.Should().NotBe(0);
         }
     }
 }

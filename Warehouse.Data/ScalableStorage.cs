@@ -50,13 +50,14 @@ public class ScalableStorage : IScalableStorage
             return null;
         }
 
-        await db.Pallets.AddAsync(pallet.ToPalletModel());
+        PalletModel model = pallet.ToPalletModel();
+        var result = await db.Pallets.AddAsync(model);
 
         int affected = await db.SaveChangesAsync();
 
         if (affected == 1)
         {
-            return pallet;
+            return model.ToPallet();
         }
 
         return null;
@@ -72,7 +73,8 @@ public class ScalableStorage : IScalableStorage
         var storedPallet = await pallets.FindAsync(pallet.Id);
         if (storedPallet is null)
         {
-            await pallets.AddAsync(pallet.ToPalletModel());
+            storedPallet = pallet.ToPalletModel();
+            await pallets.AddAsync(storedPallet);
         }
         else
         {
@@ -80,9 +82,10 @@ public class ScalableStorage : IScalableStorage
         }
 
         int affected = await db.SaveChangesAsync();
+
         if (affected == 1)
         {
-            return pallet;
+            return storedPallet.ToPallet();
         }
         return null;
     }
@@ -118,9 +121,14 @@ public class ScalableStorage : IScalableStorage
             return false;
         }
         var pallet = await pallets.FindAsync(id);
+        if (pallet is null)
+        {
+            return false;
+        }
+
         var storedPallet = await pallets
             .Include(p => p.Boxes)
-            .Where(p => p.Id == pallet.Id)
+            .Where(b => b.Id == pallet.Id)
             .FirstOrDefaultAsync();
 
         if (storedPallet is null)
@@ -171,12 +179,13 @@ public class ScalableStorage : IScalableStorage
             return null;
         }
 
-        await db.Boxes.AddAsync(box.ToBoxModel());
+        BoxModel model = box.ToBoxModel();
+        await db.Boxes.AddAsync(model);
 
         int affected = await db.SaveChangesAsync();
         if (affected == 1)
         {
-            return box;
+            return model.ToBox();
         }
         return null;
     }
@@ -191,7 +200,8 @@ public class ScalableStorage : IScalableStorage
         var storedBox = await boxes.FindAsync(box.Id);
         if (storedBox is null)
         {
-            await boxes.AddAsync(box.ToBoxModel());
+            storedBox = box.ToBoxModel();
+            await boxes.AddAsync(storedBox);
         }
         else
         {
@@ -201,7 +211,7 @@ public class ScalableStorage : IScalableStorage
         int affected = await db.SaveChangesAsync();
         if (affected == 1)
         {
-            return box;
+            return storedBox.ToBox();
         }
         return null;
     }
@@ -247,6 +257,7 @@ public class ScalableStorage : IScalableStorage
         boxModel.PalletModelId = pallet.Id;
 
         int affected = await db.SaveChangesAsync();
+
         return affected == 1;
     }
     public async Task<bool> RemoveBoxFromPallet(Box box)

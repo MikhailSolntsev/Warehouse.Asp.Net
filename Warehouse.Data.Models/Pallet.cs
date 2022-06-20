@@ -4,7 +4,6 @@ namespace Warehouse.Data.Models;
 public class Pallet : Scalable
 {
     private const int OwnWeigth = 30;
-    private static int nextId;
     private List<Box> boxes = new();
 
     public IReadOnlyList<Box> Boxes { get => boxes; }
@@ -13,14 +12,13 @@ public class Pallet : Scalable
     public override int Volume { get => base.Volume + boxes.Sum(box => box.Volume); }
     public override DateTime ExpirationDate { get => boxes.Count switch { 0 => DateTime.MinValue, _ => boxes.Min(box => box.ExpirationDate) }; }
 
-    public Pallet(int length, int height, int width) : base(length, height, width, 0)
+    public Pallet(int length, int height, int width) : base(length, height, width)
     {
-        Id = Interlocked.Increment(ref nextId);
+        
     }
-    public Pallet(int length, int height, int width, int id) : base(length, height, width, 0)
+    public Pallet(int length, int height, int width, int id) : base(length, height, width)
     {
         Id = id;
-        id = Math.Max(nextId, id) + 1;
     }
 
     public void AddBox(Box box)
