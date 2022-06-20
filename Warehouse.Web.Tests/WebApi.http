@@ -8,7 +8,7 @@ https://localhost:6002/api/Pallet/5
 GET https://localhost:6002/api/Pallet/d
 
 ###
-curl -X POST https://localhost:6002/api/Warehouse/Pallet
+curl -X POST https://localhost:6002/api/Pallet
 -H 'accept: text/plain'
 -H 'Content-Type: application/json'
 -d '{
@@ -18,7 +18,7 @@ curl -X POST https://localhost:6002/api/Warehouse/Pallet
     "Height": 17,
     "Boxes": [
         {
-            "Id": 6,
+            "Id": 5,
             "Length": 7,
             "Width": 13,
             "Height": 17,

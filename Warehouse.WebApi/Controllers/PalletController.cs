@@ -1,9 +1,10 @@
 ﻿using Warehouse.Data;
+using Warehouse.Data.Models;
 using Warehouse.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-namespace Warehouse.WebApi.Controllers
+namespace Warehouse.Web.Api.Controllers
 {
     [Route("api")]
     [ApiController]
@@ -47,7 +48,7 @@ namespace Warehouse.WebApi.Controllers
         }
 
         [HttpPost("Pallet")]
-        [ProducesResponseType(201, Type = typeof(PalletDto))]
+        [ProducesResponseType(200, Type = typeof(PalletDto))]
         [ProducesResponseType(404)]
         public async Task<IActionResult> CreatePallet([FromBody] PalletDto palletDto)
         {
@@ -57,8 +58,13 @@ namespace Warehouse.WebApi.Controllers
                 return BadRequest(response);
             }
 
-            var pallet = await storage.GetPalletAsync(palletDto.Id);
+            Pallet? pallet = null;
 
+            if (palletDto.Id is not null)
+            {
+                pallet = await storage.GetPalletAsync(palletDto.Id ?? 0);
+            }
+            
             if (pallet is null)
             {
                 pallet = await storage.AddPalletAsync(palletDto.ToPallet());
@@ -73,11 +79,11 @@ namespace Warehouse.WebApi.Controllers
                 ResponseMessage response = new() { Message = "Error during creating/updating pallet" };
                 return BadRequest(response);
             }
-            return NoContent();
+            return Ok(pallet.ToPalletDto());
         }
 
         [HttpPut("Pallet")]
-        [ProducesResponseType(201, Type = typeof(PalletDto))]
+        [ProducesResponseType(204, Type = typeof(PalletDto))]
         [ProducesResponseType(404)]
         public async Task<IActionResult> UpdatePallet([FromBody] PalletDto palletDto)
         {
@@ -93,7 +99,8 @@ namespace Warehouse.WebApi.Controllers
         }
 
         [HttpDelete("Pallet/{id}")]
-        [ProducesResponseType(201)]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeletePallet(int id)
         {
@@ -108,7 +115,7 @@ namespace Warehouse.WebApi.Controllers
             
             if (deleted)
             {
-                return NoContent();
+                return Ok();
             }
 
             ResponseMessage response = new() { Message = "Error during deleting pallet" };

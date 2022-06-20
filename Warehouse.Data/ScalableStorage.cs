@@ -51,11 +51,11 @@ public class ScalableStorage : IScalableStorage
         }
 
         PalletModel model = pallet.ToPalletModel();
-        var result = await db.Pallets.AddAsync(model);
+        await db.Pallets.AddAsync(model);
 
         int affected = await db.SaveChangesAsync();
 
-        if (affected == 1)
+        if (affected > 0)
         {
             return model.ToPallet();
         }
@@ -83,7 +83,7 @@ public class ScalableStorage : IScalableStorage
 
         int affected = await db.SaveChangesAsync();
 
-        if (affected == 1)
+        if (affected > 0)
         {
             return storedPallet.ToPallet();
         }
@@ -183,7 +183,7 @@ public class ScalableStorage : IScalableStorage
         await db.Boxes.AddAsync(model);
 
         int affected = await db.SaveChangesAsync();
-        if (affected == 1)
+        if (affected > 0)
         {
             return model.ToBox();
         }
@@ -209,7 +209,7 @@ public class ScalableStorage : IScalableStorage
         }
 
         int affected = await db.SaveChangesAsync();
-        if (affected == 1)
+        if (affected > 0)
         {
             return storedBox.ToBox();
         }
@@ -219,7 +219,7 @@ public class ScalableStorage : IScalableStorage
     {
         db.Boxes?.Remove(box.ToBoxModel());
         int affected = await db.SaveChangesAsync();
-        return affected == 1;
+        return affected > 0;
     }
     public async Task<bool> DeleteBoxAsync(int id)
     {
@@ -237,7 +237,7 @@ public class ScalableStorage : IScalableStorage
         boxes.Remove(boxModel);
 
         int affected = await db.SaveChangesAsync();
-        return (affected == 1);
+        return (affected > 0);
     }
 
     public async Task<bool> AddBoxToPalletAsync(Box box, Pallet pallet)
@@ -258,7 +258,7 @@ public class ScalableStorage : IScalableStorage
 
         int affected = await db.SaveChangesAsync();
 
-        return affected == 1;
+        return affected > 0;
     }
     public async Task<bool> RemoveBoxFromPallet(Box box)
     {
@@ -275,7 +275,7 @@ public class ScalableStorage : IScalableStorage
         boxModel.PalletModelId = 0;
 
         int affected = await db.SaveChangesAsync();
-        return affected == 1;
+        return affected > 0;
     }
     
 }

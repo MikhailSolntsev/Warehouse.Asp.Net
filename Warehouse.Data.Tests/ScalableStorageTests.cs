@@ -7,9 +7,12 @@ namespace Warehouse.Data
 {
     public class ScalableStorageTests
     {
+        private ScalableStorage storage;
         public ScalableStorageTests()
         {
-
+            string fileName = Path.GetRandomFileName();
+            WarehouseContext context = new WarehouseSqliteContext(fileName);
+            storage = new ScalableStorage(context);
         }
 
         [Fact(DisplayName = "Storage can add pallet")]
@@ -26,6 +29,20 @@ namespace Warehouse.Data
             storage.AddPalletAsync(pallet);
 
             storage.GetAllPalletsAsync().Result.Count.Should().Be(1);
+        }
+
+        [Fact(DisplayName = "Adding pallet should return new Pallet, not null")]
+        public async Task AddingPalletShouldReturnNewPallet()
+        {
+            // Assign
+            Pallet pallet = new(3, 5, 7);
+            Box box = new Box(3, 3, 3, 3, DateTime.Now);
+            pallet.AddBox(box);
+
+            // Act
+            var newPallet = await storage.AddPalletAsync(pallet);
+
+            newPallet.Should().NotBeNull();
         }
 
         [Fact(DisplayName = "Storage can modify pallet")]

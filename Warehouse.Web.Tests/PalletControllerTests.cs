@@ -1,0 +1,108 @@
+﻿using Warehouse.Data;
+using Warehouse.Data.Models;
+using Warehouse.EntityContext;
+using Warehouse.EntityContext.Sqlite;
+using Warehouse.Web.Models;
+using Warehouse.Web.Api.Controllers;
+using System.Net.Http;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Warehouse.Web.Api
+{
+    public class PalletControllerTests
+    {
+        private PalletController controller;
+
+        public PalletControllerTests()
+        {
+            string fileName = Path.GetRandomFileName();
+            WarehouseContext context = new WarehouseSqliteContext(fileName);
+            ScalableStorage storage = new(context);
+            controller = new(storage);
+        }
+
+        [Fact(DisplayName = "Can create Pallet without Boxes")]
+        public async Task CanCreatePalletWithoutBoxes()
+        {
+            PalletDto model = new()
+            {
+                Length = 3,
+                Width = 3,
+                Height = 3
+            };
+            var response = await controller.CreatePallet(model);
+
+            response.Should().BeAssignableTo<OkObjectResult>();
+
+            var result = response as OkObjectResult;
+
+            result?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
+        }
+
+        [Fact(DisplayName = "Can create Pallet(without Id) with Boxes(without Id)")]
+        public async Task CanCreatePalletWithBoxesWithoutId()
+        {
+            // Assign
+            PalletDto model = new()
+            {
+                Length = 13,
+                Width = 13,
+                Height = 13,
+                Boxes = new List<BoxDto>()
+                {
+                    new BoxDto()
+                    {
+                        Length = 3,
+                        Width = 3,
+                        Height = 3,
+                        Weight = 3,
+                        ExpirationDate = DateTime.Today
+                    }
+                }
+            };
+
+            // Act
+            var response = await controller.CreatePallet(model);
+
+            // Assert
+            response.Should().BeAssignableTo<OkObjectResult>();
+
+            (response as OkObjectResult)?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
+        }
+
+        [Fact(DisplayName = "Can create Pallet(with Id) with Boxes(wit Id)")]
+        public async Task CanCreatePalletWithBoxesWithId()
+        {
+            // Assign
+            PalletDto model = new()
+            {
+                Id = 17,
+                Length = 13,
+                Width = 13,
+                Height = 13,
+                Boxes = new List<BoxDto>()
+                {
+                    new BoxDto()
+                    {
+                        Id = 17,
+                        Length = 3,
+                        Width = 3,
+                        Height = 3,
+                        Weight = 3,
+                        ExpirationDate = DateTime.Today
+                    }
+                }
+            };
+
+            // Act
+            var response = await controller.CreatePallet(model);
+
+            // Assert
+            response.Should().BeAssignableTo<OkObjectResult>();
+
+            (response as OkObjectResult)?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
+        }
+
+    }
+}
