@@ -4,15 +4,22 @@ namespace Warehouse.Data
 {
     public interface IScalableStorage
     {
-        void AddBoxAsync(Box box);
-        void AddBoxToPalletAsync(Box box, Pallet pallet);
-        void AddPalletAsync(Pallet pallet);
-        void DeleteBoxAsync(Box box);
-        void DeleteBoxAsync(int id);
-        Task<bool> DeletePalletAsync(Pallet pallet);
         Task<List<Pallet>> GetAllPalletsAsync();
         Task<Pallet?> GetPalletAsync(int id);
-        void RemoveBoxFromPallet(Box box);
-        void UpdatePalletAsync(Pallet pallet);
+        Task<Pallet?> AddPalletAsync(Pallet pallet);
+        Task<Pallet?> UpdatePalletAsync(Pallet pallet);
+        Task<bool> DeletePalletAsync(Pallet pallet);
+        Task<bool> DeletePalletAsync(int id);
+
+        Task<List<Box>> GetAllBoxesAsync();
+        Task<Box?> GetBoxAsync(int id);
+        Task<Box?> AddBoxAsync(Box box);
+        Task<Box?> UpdateBoxAsync(Box box);
+        Task<bool> DeleteBoxAsync(Box box);
+        Task<bool> DeleteBoxAsync(int id);
+
+        Task<bool> AddBoxToPalletAsync(Box box, Pallet pallet);
+        Task<bool> RemoveBoxFromPallet(Box box);
+        
     }
 }

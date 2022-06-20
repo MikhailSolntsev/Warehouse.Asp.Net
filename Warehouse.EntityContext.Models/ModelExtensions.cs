@@ -7,7 +7,7 @@ namespace Warehouse.EntityContext.Models
     {
         private static IMapper? mapper;
 
-        private static IMapper InitMapper()
+        public static IMapper GetMapperInstance()
         {
             if (mapper is null)
             {
@@ -38,15 +38,15 @@ namespace Warehouse.EntityContext.Models
         }
 
         public static BoxModel ToBoxModel(this Box box) =>
-            InitMapper().Map<BoxModel>(box);
+            GetMapperInstance().Map<BoxModel>(box);
 
         public static Box ToBox(this BoxModel boxModel) =>
-            InitMapper().Map<Box>(boxModel);
+            GetMapperInstance().Map<Box>(boxModel);
 
         public static PalletModel ToPalletModel(this Pallet pallet) =>
-            InitMapper().Map<PalletModel>(pallet);
+            GetMapperInstance().Map<PalletModel>(pallet);
 
         public static Pallet ToPallet(this PalletModel palletModel) =>
-            InitMapper().Map<Pallet>(palletModel);
+            GetMapperInstance().Map<Pallet>(palletModel);
     }
 }

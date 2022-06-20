@@ -2,6 +2,7 @@
 using Warehouse.EntityContext;
 using Warehouse.EntityContext.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Warehouse.Data;
 
@@ -15,25 +16,59 @@ public class ScalableStorage : IScalableStorage
         db.Database.EnsureCreated();
     }
 
-    public async void AddPalletAsync(Pallet pallet)
-    {
-        if (db.Pallets is null)
-        {
-            return;
-        }
-
-        await db.Pallets.AddAsync(pallet.ToPalletModel());
-
-        await db.SaveChangesAsync();
-    }
-
-    public async void UpdatePalletAsync(Pallet pallet)
+    public async Task<List<Pallet>> GetAllPalletsAsync()
     {
         var pallets = db.Pallets;
         if (pallets is null)
         {
-            return;
+            return new List<Pallet>();
         }
+        return await Task.FromResult(pallets
+            .Include(p => p.Boxes)
+            .Select(palletModel => palletModel.ToPallet())
+            .ToList());
+    }
+    public async Task<Pallet?> GetPalletAsync(int id)
+    {
+        var pallets = db.Pallets;
+        if (pallets is null)
+        {
+            return null;
+        }
+
+        var storedPallet = await pallets.Include(p => p.Boxes).FirstOrDefaultAsync(p => p.Id == id);
+        if (storedPallet is null)
+        {
+            return null;
+        }
+        return storedPallet.ToPallet();
+    }
+    public async Task<Pallet?> AddPalletAsync(Pallet pallet)
+    {
+        if (db.Pallets is null)
+        {
+            return null;
+        }
+
+        await db.Pallets.AddAsync(pallet.ToPalletModel());
+
+        int affected = await db.SaveChangesAsync();
+
+        if (affected == 1)
+        {
+            return pallet;
+        }
+
+        return null;
+    }
+    public async Task<Pallet?> UpdatePalletAsync(Pallet pallet)
+    {
+        var pallets = db.Pallets;
+        if (pallets is null)
+        {
+            return null;
+        }
+
         var storedPallet = await pallets.FindAsync(pallet.Id);
         if (storedPallet is null)
         {
@@ -41,16 +76,16 @@ public class ScalableStorage : IScalableStorage
         }
         else
         {
-            //pallets.Update(pallet.ToPalletModel());
-            // TODO: use automapper
-            storedPallet.Length = pallet.Length;
-            storedPallet.Width = pallet.Width;
-            storedPallet.Height = pallet.Height;
+            EntityContext.Models.ModelExtensions.GetMapperInstance().Map<Pallet, PalletModel>(pallet, storedPallet);
         }
 
-        await db.SaveChangesAsync();
+        int affected = await db.SaveChangesAsync();
+        if (affected == 1)
+        {
+            return pallet;
+        }
+        return null;
     }
-
     public async Task<bool> DeletePalletAsync(Pallet pallet)
     {
         var pallets = db.Pallets;
@@ -72,42 +107,134 @@ public class ScalableStorage : IScalableStorage
 
         pallets.Remove(storedPallet);
 
+        int affetcted = await db.SaveChangesAsync();
+        return affetcted == 1;
+    }
+    public async Task<bool> DeletePalletAsync(int id)
+    {
+        var pallets = db.Pallets;
+        if (pallets is null)
+        {
+            return false;
+        }
+        var pallet = await pallets.FindAsync(id);
+        var storedPallet = await pallets
+            .Include(p => p.Boxes)
+            .Where(p => p.Id == pallet.Id)
+            .FirstOrDefaultAsync();
+
+        if (storedPallet is null)
+        {
+            return false;
+        }
+
+        storedPallet.Boxes?.Select(box => { box.PalletModelId = 0; return true; });
+
+        pallets.Remove(storedPallet);
+
         await db.SaveChangesAsync();
 
         return true;
     }
 
-    public async Task<List<Pallet>> GetAllPalletsAsync()
+    public async Task<List<Box>> GetAllBoxesAsync()
     {
-        var pallets = db.Pallets;
-        if (pallets is null)
+        var boxes = db.Boxes;
+        if (boxes is null)
         {
-            return new List<Pallet>();
+            return new List<Box>();
         }
-        return await Task.FromResult(pallets.Include(p => p.Boxes).Select(palletModel => palletModel.ToPallet()).ToList());
+        return await Task.FromResult(boxes
+            .Select(boxModel => boxModel.ToBox())
+            .ToList());
     }
-
-    public async Task<Pallet?> GetPalletAsync(int id)
+    public async Task<Box?> GetBoxAsync(int id)
     {
-        var pallets = db.Pallets;
-        if (pallets is null)
+        var boxes = db.Boxes;
+        if (boxes is null)
         {
             return null;
         }
 
-        var storedPallet = await pallets.Include(p => p.Boxes).FirstOrDefaultAsync(p => p.Id == id);
-        if (storedPallet is null)
+        var storedBox = await boxes.FindAsync(id);
+
+        if (storedBox is null)
         {
             return null;
         }
-        return storedPallet.ToPallet();
+        return storedBox.ToBox();
     }
-
-    public async void AddBoxToPalletAsync(Box box, Pallet pallet)
+    public async Task<Box?> AddBoxAsync(Box box)
     {
         if (db.Boxes is null)
         {
-            return;
+            return null;
+        }
+
+        await db.Boxes.AddAsync(box.ToBoxModel());
+
+        int affected = await db.SaveChangesAsync();
+        if (affected == 1)
+        {
+            return box;
+        }
+        return null;
+    }
+    public async Task<Box?> UpdateBoxAsync(Box box)
+    {
+        var boxes = db.Boxes;
+        if (boxes is null)
+        {
+            return null;
+        }
+
+        var storedBox = await boxes.FindAsync(box.Id);
+        if (storedBox is null)
+        {
+            await boxes.AddAsync(box.ToBoxModel());
+        }
+        else
+        {
+            EntityContext.Models.ModelExtensions.GetMapperInstance().Map<Box, BoxModel>(box, storedBox);
+        }
+
+        int affected = await db.SaveChangesAsync();
+        if (affected == 1)
+        {
+            return box;
+        }
+        return null;
+    }
+    public async Task<bool> DeleteBoxAsync(Box box)
+    {
+        db.Boxes?.Remove(box.ToBoxModel());
+        int affected = await db.SaveChangesAsync();
+        return affected == 1;
+    }
+    public async Task<bool> DeleteBoxAsync(int id)
+    {
+        var boxes = db.Boxes;
+        if (boxes is null)
+        {
+            return true;
+        }
+        BoxModel boxModel = await boxes.FindAsync(id);
+
+        if (boxModel is null)
+        {
+            return true;
+        }
+        boxes.Remove(boxModel);
+
+        int affected = await db.SaveChangesAsync();
+        return (affected == 1);
+    }
+
+    public async Task<bool> AddBoxToPalletAsync(Box box, Pallet pallet)
+    {
+        if (db.Boxes is null)
+        {
+            return false;
         }
 
         BoxModel? boxModel = await db.Boxes.FindAsync(box.Id);
@@ -119,54 +246,25 @@ public class ScalableStorage : IScalableStorage
 
         boxModel.PalletModelId = pallet.Id;
 
-        await db.SaveChangesAsync();
+        int affected = await db.SaveChangesAsync();
+        return affected == 1;
     }
-
-    public async void RemoveBoxFromPallet(Box box)
+    public async Task<bool> RemoveBoxFromPallet(Box box)
     {
         if (db.Boxes is null)
         {
-            return;
+            return false;
         }
         BoxModel? boxModel = await db.Boxes.FindAsync(box.Id);
 
         if (boxModel == null)
         {
-            return;
+            return true;
         }
         boxModel.PalletModelId = 0;
 
-        await db.SaveChangesAsync();
-
+        int affected = await db.SaveChangesAsync();
+        return affected == 1;
     }
-
-    public async void AddBoxAsync(Box box)
-    {
-        if (db.Boxes is null)
-        {
-            return;
-        }
-
-        await db.Boxes.AddAsync(box.ToBoxModel());
-
-        await db.SaveChangesAsync();
-    }
-
-
-    public async void DeleteBoxAsync(Box box)
-    {
-        db.Boxes?.Remove(box.ToBoxModel());
-        await db.SaveChangesAsync();
-    }
-    public async void DeleteBoxAsync(int id)
-    {
-        var boxModel = db.Boxes?.Find(id);
-        if (boxModel is null)
-        {
-            return;
-        }
-        db.Boxes?.Remove(boxModel);
-        await db.SaveChangesAsync();
-    }
-
+    
 }
