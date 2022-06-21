@@ -29,6 +29,50 @@ namespace Warehouse.Data
             pallets.Should().HaveCount(1);
         }
 
+        [Fact(DisplayName = "Storage can retrieve pallets with SKIP pagination")]
+        public async Task CanRetrieveWithSkipPagination()
+        {
+            // Assign
+            Pallet pallet = new(3, 5, 7, 11);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 13);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 17);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 19);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 23);
+            await storage.AddPalletAsync(pallet);
+
+            // Act
+            var pallets = await storage.GetAllPalletsAsync(skip: 2);
+
+            // Assert
+            pallets.Should().HaveCount(3);
+        }
+
+        [Fact(DisplayName = "Storage can retrieve pallets with TAKE pagination")]
+        public async Task CanRetrieveWithTakePagination()
+        {
+            // Assign
+            Pallet pallet = new(3, 5, 7, 11);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 13);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 17);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 19);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 23);
+            await storage.AddPalletAsync(pallet);
+
+            // Act
+            var pallets = await storage.GetAllPalletsAsync(count: 2);
+
+            // Assert
+            pallets.Should().HaveCount(2);
+        }
+
         [Fact(DisplayName = "Adding pallet should return new Pallet, not null")]
         public async Task AddingPalletShouldReturnNewPallet()
         {

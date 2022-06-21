@@ -4,7 +4,7 @@ namespace Warehouse.Data
 {
     public interface IScalableStorage
     {
-        Task<List<Pallet>> GetAllPalletsAsync();
+        Task<List<Pallet>> GetAllPalletsAsync(int skip = 0, int cout = 0);
         Task<Pallet?> GetPalletAsync(int id);
         Task<Pallet?> AddPalletAsync(Pallet pallet);
         Task<Pallet?> UpdatePalletAsync(Pallet pallet);

@@ -117,7 +117,7 @@ namespace Warehouse.Web.Api
             await controller.CreatePallet(model);
             await controller.CreatePallet(model);
 
-            var response = await controller.GetPallets();
+            var response = await controller.GetPallets(0, 0);
             response.Should().NotBeNull().And.BeAssignableTo<IEnumerable<PalletDto>>().And.HaveCount(2);
         }
 

@@ -17,11 +17,20 @@ namespace Warehouse.Web.Api.Controllers
             storage = injectedStorage;
         }
 
+        //[HttpGet("Pallets")]
+        //[ProducesResponseType(200, Type = typeof(IEnumerable<PalletDto>))]
+        //public async Task<IEnumerable<PalletDto>> GetPallets()
+        //{
+        //    var pallets = await storage.GetAllPalletsAsync();
+
+        //    return pallets.Select(pallet => pallet.ToPalletDto()).AsEnumerable();
+        //}
+
         [HttpGet("Pallets")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<PalletDto>))]
-        public async Task<IEnumerable<PalletDto>> GetPallets()
+        public async Task<IEnumerable<PalletDto>> GetPallets(int? skip, int? count)
         {
-            var pallets = await storage.GetAllPalletsAsync();
+            var pallets = await storage.GetAllPalletsAsync(skip ?? 0, count ?? 0);
 
             return pallets.Select(pallet => pallet.ToPalletDto()).AsEnumerable();
         }

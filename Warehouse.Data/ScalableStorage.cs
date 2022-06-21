@@ -16,15 +16,26 @@ public class ScalableStorage : IScalableStorage
         db.Database.EnsureCreated();
     }
 
-    public async Task<List<Pallet>> GetAllPalletsAsync()
+    public async Task<List<Pallet>> GetAllPalletsAsync(int skip = 0, int count = 0)
     {
         var pallets = db.Pallets;
         if (pallets is null)
         {
             return new List<Pallet>();
         }
-        return await Task.FromResult(pallets
-            .Include(p => p.Boxes)
+
+        var query = (IQueryable<PalletModel>) pallets.Include(p => p.Boxes);
+        if (skip > 0)
+        {
+            query = query.Skip(skip);
+        }
+        if (count > 0)
+        {
+            query = query.Take(count);
+        }
+
+        return await Task.FromResult(
+            query
             .Select(palletModel => palletModel.ToPallet())
             .ToList());
     }
