@@ -16,19 +16,17 @@ namespace Warehouse.Data
         }
 
         [Fact(DisplayName = "Storage can add pallet")]
-        public void CanAddPallet()
+        public async Task CanAddPallet()
         {
             // Assign
-            string fileName = Path.GetRandomFileName();
-            // TODO: make injection
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new ScalableStorage(context);
             Pallet pallet = new(3, 5, 7, 11);
 
             // Act
-            storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet);
 
-            storage.GetAllPalletsAsync().Result.Count.Should().Be(1);
+            // Assert
+            var pallets = await storage.GetAllPalletsAsync();
+            pallets.Should().HaveCount(1);
         }
 
         [Fact(DisplayName = "Adding pallet should return new Pallet, not null")]
@@ -42,75 +40,69 @@ namespace Warehouse.Data
             // Act
             var newPallet = await storage.AddPalletAsync(pallet);
 
+            // Assert
             newPallet.Should().NotBeNull();
         }
 
         [Fact(DisplayName = "Storage can modify pallet")]
-        public void CanModifyPallet()
+        public async Task CanModifyPallet()
         {
             // Assign
-            string fileName = Path.GetRandomFileName();
-            // TODO: make injection
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new ScalableStorage(context);
             Pallet pallet = new(3, 5, 7, 11);
-            storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet);
 
             // Act
             pallet = new(13, 5, 7, 11);
-            storage.UpdatePalletAsync(pallet);
+            await storage.UpdatePalletAsync(pallet);
 
             //Assert
-            var storedPallet = storage.GetPalletAsync(pallet.Id??0).Result;
+            var storedPallet = await storage.GetPalletAsync(pallet.Id??0);
             storedPallet.Should().NotBeNull();
             storedPallet.Length.Should().Be(13);
         }
 
         [Fact(DisplayName = "Storage can delete pallet")]
-        public void CanDeletePallet()
+        public async Task CanDeletePallet()
         {
             // Assign
-            string fileName = Path.GetRandomFileName();
-            // TODO: make injection
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new ScalableStorage(context);
             Pallet pallet = new(3, 5, 7, 11);
-            storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet);
 
             // Act
-            storage.DeletePalletAsync(pallet);
+            await storage.DeletePalletAsync(pallet);
 
             //Assert
-            storage.GetPalletAsync(pallet.Id ?? 0).Result.Should().BeNull();
+            var storedPallet = await storage.GetPalletAsync(pallet.Id ?? 0);
+            storedPallet.Should().BeNull();
         }
 
         [Fact(DisplayName = "Can add box to pallet")]
-        public void CanAddBoxToPallet()
+        public async Task CanAddBoxToPallet()
         {
             // Assign
-            string fileName = Path.GetRandomFileName();
-            // TODO: make injection
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new ScalableStorage(context);
             Pallet pallet = new(3, 5, 7, 11);
-            storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet);
 
             Box box = new Box(3, 5, 7, 11, DateTime.Today);
 
             // Act
-            storage.AddBoxToPalletAsync(box, pallet);
+            await storage.AddBoxToPalletAsync(box, pallet);
 
             //Assert
-            storage.GetPalletAsync(pallet.Id ?? 0).Result.Boxes.Should().HaveCount(1);
+            var storedPallet = await storage.GetPalletAsync(pallet.Id ?? 0);
+            storedPallet.Boxes.Should().HaveCount(1);
         }
+
         [Fact(DisplayName = "Pallet without Id stores with Id")]
         public void PalletWithoutIdStoresWithId()
         {
-            string fileName = Path.GetRandomFileName();
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new ScalableStorage(context);
+            // Assign
             Pallet pallet = new(3, 5, 7);
+
+            // Act
             var addedPallet = storage.AddPalletAsync(pallet).Result;
+
+            // Assert
             addedPallet.Id.Should().NotBe(0);
         }
     }

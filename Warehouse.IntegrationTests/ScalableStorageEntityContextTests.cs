@@ -8,75 +8,69 @@ namespace Warehouse.IntegrationTests
 {
     public class ScalableStorageEntityContextTests
     {
+        private ScalableStorage storage;
+        private WarehouseContext context;
+
+        public ScalableStorageEntityContextTests()
+        {
+            string fileName = Path.GetRandomFileName();
+            context = new WarehouseSqliteContext(fileName);
+            storage = new ScalableStorage(context);
+        }
+
         [Fact(DisplayName = "Storage can add pallet")]
-        public void CanAddPallet()
+        public async Task CanAddPallet()
         {
             // Assign
-            string fileName = Path.GetRandomFileName();
-            // TODO: make injection
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new ScalableStorage(context);
             Pallet pallet = new(3, 5, 7, 11);
 
             // Act
-            storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet);
 
             //Assert
             context.Pallets.Should().HaveCount(1);
         }
 
         [Fact(DisplayName = "Storage can modify pallet")]
-        public void CanModifyPallet()
+        public async Task CanModifyPallet()
         {
             // Assign
-            string fileName = Path.GetRandomFileName();
-            // TODO: make injection
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new ScalableStorage(context);
             Pallet pallet = new(3, 5, 7, 11);
-            storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet);
 
             // Act
             pallet = new(13, 5, 7, 11);
-            storage.UpdatePalletAsync(pallet);
+            await storage.UpdatePalletAsync(pallet);
 
             //Assert
             context.Pallets?.Find(pallet.Id)?.Length.Should().Be(13);
         }
 
         [Fact(DisplayName = "Storage can delete pallet")]
-        public void CanDeletePallet()
+        public async Task CanDeletePallet()
         {
             // Assign
-            string fileName = Path.GetRandomFileName();
-            // TODO: make injection
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new ScalableStorage(context);
             Pallet pallet = new(3, 5, 7, 11);
-            storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet);
 
             // Act
-            storage.DeletePalletAsync(pallet);
+            await storage.DeletePalletAsync(pallet);
 
             //Assert
             context.Pallets?.Find(pallet.Id).Should().BeNull();
         }
 
         [Fact(DisplayName = "Can add box to pallet")]
-        public void CanAddBoxToPallet()
+        public async Task CanAddBoxToPallet()
         {
             // Assign
-            string fileName = Path.GetRandomFileName();
-            // TODO: make injection
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new ScalableStorage(context);
             Pallet pallet = new(3, 5, 7, 11);
-            storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet);
 
             Box box = new Box(3, 5, 7, 11, DateTime.Today);
 
             // Act
-            storage.AddBoxToPalletAsync(box, pallet);
+            await storage.AddBoxToPalletAsync(box, pallet);
 
             //Assert
             context.Boxes?.Find(pallet.Id).Should().BeNull();
