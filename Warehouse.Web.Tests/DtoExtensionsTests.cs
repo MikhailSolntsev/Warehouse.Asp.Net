@@ -42,5 +42,19 @@ namespace Warehouse.Web.Models
 
             pallet.Boxes.Should().HaveCount(1);
         }
+
+        [Fact(DisplayName = "PalletModel with null Id converts to Pallet with null Id")]
+        public void PalletModelsWithIdConvertsCorrect()
+        {
+            // Assign
+            PalletDto palletModel = new PalletDto();
+            BoxDto boxModel = new BoxDto();
+
+            // Act
+            Pallet pallet = palletModel.ToPallet();
+
+            // Assert
+            pallet.Id.Should().BeNull("PalletModel with null Id converts to Pallet with null Id");
+        }
     }
 }

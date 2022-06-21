@@ -16,7 +16,7 @@ public class Pallet : Scalable
     {
         
     }
-    public Pallet(int length, int height, int width, int id) : base(length, height, width)
+    public Pallet(int length, int height, int width, int? id) : base(length, height, width)
     {
         Id = id;
     }

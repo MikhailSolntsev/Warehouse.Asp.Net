@@ -67,11 +67,13 @@ namespace Warehouse.Web.Api.Controllers
             
             if (pallet is null)
             {
-                pallet = await storage.AddPalletAsync(palletDto.ToPallet());
+                pallet = palletDto.ToPallet();
+                pallet = await storage.AddPalletAsync(pallet);
             }
             else
             {
-                pallet = await storage.UpdatePalletAsync(palletDto.ToPallet());
+                pallet = palletDto.ToPallet();
+                pallet = await storage.UpdatePalletAsync(pallet);
             }
 
             if (pallet is null)
@@ -93,9 +95,9 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
-            await storage.UpdatePalletAsync(palletDto.ToPallet());
+            var pallet = await storage.UpdatePalletAsync(palletDto.ToPallet());
 
-            return NoContent();
+            return Ok(pallet.ToPalletDto());
         }
 
         [HttpDelete("Pallet/{id}")]

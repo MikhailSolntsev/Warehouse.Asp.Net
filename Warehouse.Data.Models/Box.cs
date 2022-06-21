@@ -4,7 +4,7 @@ public class Box : Scalable
 {
     private const int ExpirationPeriod = 100;
 
-    public Box(int length, int height, int width, int weight, DateTime expirationDate, int id) : base(length, height, width, weight)
+    public Box(int length, int height, int width, int weight, DateTime expirationDate, int? id) : base(length, height, width, weight)
     {
         ExpirationDate = expirationDate;
         Id = id;

@@ -14,11 +14,13 @@ namespace Warehouse.Web.Models
                 var configuration = new MapperConfiguration(cfg =>
                 {
                     cfg.CreateMap<Box, BoxDto>();
-                    cfg.CreateMap<BoxDto, Box>();
+                    cfg.CreateMap<BoxDto, Box>()
+                        .ForMember(b => b.Id, opt => opt.Condition(b => b.Id is not null));
 
                     cfg.CreateMap<Pallet, PalletDto>()
                         .ForMember(p => p.Boxes, opt => opt.Condition(p => p.Boxes.Count > 0));
                     cfg.CreateMap<PalletDto, Pallet>()
+                        .ForMember(p => p.Id, opt => opt.Condition(p => p.Id is not null))
                         .AfterMap((src, dst) => src.Boxes?.ToList().ForEach(model => dst.AddBox(model.ToBox())));
                 });
                 mapper = configuration.CreateMapper();

@@ -104,5 +104,57 @@ namespace Warehouse.Web.Api
             (response as OkObjectResult)?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
         }
 
+        [Fact(DisplayName = "Can retrieve all Pallets")]
+        public async Task CanRetrieveAllPallets()
+        {
+            PalletDto model = new()
+            {
+                Length = 3,
+                Width = 3,
+                Height = 3
+            };
+
+            await controller.CreatePallet(model);
+            await controller.CreatePallet(model);
+
+            var response = await controller.GetPallets();
+            response.Should().NotBeNull().And.BeAssignableTo<IEnumerable<PalletDto>>().And.HaveCount(2);
+        }
+
+        [Fact(DisplayName = "Can retrieve Pallet by Id")]
+        public async Task CanRetrievePalletById()
+        {
+            // Assign
+            PalletDto model = new()
+            {
+                Length = 3,
+                Width = 3,
+                Height = 3
+            };
+            await controller.CreatePallet(model);
+            model = new()
+            {
+                Length = 5,
+                Width = 5,
+                Height = 5
+            };
+            await controller.CreatePallet(model);
+            model = new()
+            {
+                Length = 5,
+                Width = 5,
+                Height = 5
+            };
+            await controller.CreatePallet(model);
+
+            // Act
+            var response = await controller.GetPallet(2);
+
+            // Assert
+            var pallet = (response as OkObjectResult)?.Value;
+
+            (pallet as PalletDto).Length.Should().Be(5);
+        }
+
     }
 }
