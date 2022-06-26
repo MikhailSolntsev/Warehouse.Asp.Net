@@ -10,5 +10,5 @@ public class PalletDto
     public int Width { get; set; }
     public int Height { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<BoxDto>? Boxes { get; set; }
+    public IList<BoxDto>? Boxes { get; set; }
 }

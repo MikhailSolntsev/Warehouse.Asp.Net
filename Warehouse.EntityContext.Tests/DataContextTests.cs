@@ -56,7 +56,7 @@ namespace Warehouse.EntityContext.Tests
         [Fact(DisplayName = "Can't add box without Required property")]
         public void CantAddBoxWithoutProperty()
         {
-            // Assign
+            // Arrange
             string fileName = Path.GetRandomFileName();
             using (WarehouseSqliteContext db = new(fileName))
             {

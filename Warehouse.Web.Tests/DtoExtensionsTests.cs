@@ -1,10 +1,23 @@
 using Warehouse.Data.Models;
 using FluentAssertions;
+using AutoMapper;
 
 namespace Warehouse.Web.Models
 {
     public class DtoExtensionsTests
     {
+        IMapper mapper;
+
+        public DtoExtensionsTests()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(typeof(DtoMappingProfile));
+            });
+
+            mapper = config.CreateMapper();
+        }
+
         [Fact(DisplayName = "Pallet with Boxes convert to PalletModel with BoxModels")]
         public void PalletsConvertWithBoxes()
         {
@@ -13,7 +26,7 @@ namespace Warehouse.Web.Models
 
             pallet.AddBox(box);
 
-            PalletDto model = pallet.ToPalletDto();
+            PalletDto model = mapper.Map<PalletDto>(pallet);
 
             model.Boxes.Should().HaveCount(1);
         }
@@ -23,7 +36,7 @@ namespace Warehouse.Web.Models
         {
             Pallet pallet = new Pallet(3, 5, 7);
 
-            var palletDto = pallet.ToPalletDto();
+            var palletDto = mapper.Map<PalletDto>(pallet);
 
             palletDto.Boxes.Should().BeNull();
         }
@@ -38,7 +51,7 @@ namespace Warehouse.Web.Models
 
             palletModel.Boxes = new List<BoxDto>() { boxModel };
 
-            Pallet pallet = palletModel.ToPallet();
+            Pallet pallet = mapper.Map<Pallet>(palletModel);
 
             pallet.Boxes.Should().HaveCount(1);
         }
@@ -51,7 +64,7 @@ namespace Warehouse.Web.Models
             BoxDto boxModel = new BoxDto();
 
             // Act
-            Pallet pallet = palletModel.ToPallet();
+            Pallet pallet = mapper.Map<Pallet>(palletModel);
 
             // Assert
             pallet.Id.Should().BeNull("PalletModel with null Id converts to Pallet with null Id");

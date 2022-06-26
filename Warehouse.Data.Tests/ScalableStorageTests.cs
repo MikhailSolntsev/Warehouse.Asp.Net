@@ -1,7 +1,9 @@
 ﻿using Warehouse.Data.Models;
 using Warehouse.EntityContext;
+using Warehouse.EntityContext.Models;
 using Warehouse.EntityContext.Sqlite;
 using FluentAssertions;
+using AutoMapper;
 
 namespace Warehouse.Data
 {
@@ -12,7 +14,15 @@ namespace Warehouse.Data
         {
             string fileName = Path.GetRandomFileName();
             WarehouseContext context = new WarehouseSqliteContext(fileName);
-            storage = new ScalableStorage(context);
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(typeof(ModelMappingProfile));
+            });
+
+            IMapper mapper = config.CreateMapper();
+
+            storage = new ScalableStorage(context, mapper);
         }
 
         [Fact(DisplayName = "Storage can add pallet")]

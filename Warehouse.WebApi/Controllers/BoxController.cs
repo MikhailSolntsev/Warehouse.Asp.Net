@@ -3,6 +3,7 @@ using Warehouse.Data.Models;
 using Warehouse.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using AutoMapper;
 
 namespace Warehouse.Web.Api.Controllers
 {
@@ -11,10 +12,11 @@ namespace Warehouse.Web.Api.Controllers
     public class BoxController : ControllerBase
     {
         private IScalableStorage storage;
-
-        public BoxController(IScalableStorage injectedStorage)
+        private IMapper mapper;
+        public BoxController(IScalableStorage injectedStorage, IMapper injectedMapper)
         {
             storage = injectedStorage;
+            mapper = injectedMapper;
         }
 
         [HttpGet("Boxes")]
@@ -23,7 +25,7 @@ namespace Warehouse.Web.Api.Controllers
         {
             var boxes = await storage.GetAllBoxesAsync();
 
-            return boxes.Select(box => box.ToBoxDto()).AsEnumerable();
+            return boxes.Select(box => mapper.Map<BoxDto>(box)).AsEnumerable();
         }
 
         [HttpGet("Box/{id}", Name = nameof(GetBox))]
@@ -44,7 +46,7 @@ namespace Warehouse.Web.Api.Controllers
                 ResponseMessage response = new() { Message = $"Can't find box wit id = {id}" };
                 return NotFound(response);
             }
-            return Ok(box.ToBoxDto());
+            return Ok(mapper.Map<BoxDto>(box));
         }
 
         [HttpPost("Box")]
@@ -67,11 +69,11 @@ namespace Warehouse.Web.Api.Controllers
 
             if (box is null)
             {
-                box = await storage.AddBoxAsync(boxDto.ToBox());
+                box = await storage.AddBoxAsync(mapper.Map<Box>(boxDto));
             }
             else
             {
-                box = await storage.UpdateBoxAsync(boxDto.ToBox());
+                box = await storage.UpdateBoxAsync(mapper.Map<Box>(boxDto));
             }
 
             if (box is null)
@@ -79,7 +81,7 @@ namespace Warehouse.Web.Api.Controllers
                 ResponseMessage response = new() { Message = "Error during creating/updating box" };
                 return BadRequest(response);
             }
-            return Ok(box.ToBoxDto());
+            return Ok(mapper.Map<BoxDto>(box));
         }
 
         [HttpPut("Box")]
@@ -93,9 +95,9 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
-            var box = await storage.UpdateBoxAsync(boxDto.ToBox());
+            var box = await storage.UpdateBoxAsync(mapper.Map<Box>(boxDto));
 
-            return Ok(box?.ToBoxDto());
+            return Ok(mapper.Map<BoxDto>(box));
         }
 
         [HttpDelete("Box/{id}")]

@@ -1,11 +1,24 @@
 ﻿using Warehouse.Data.Models;
 using Warehouse.EntityContext.Models;
 using FluentAssertions;
+using AutoMapper;
 
 namespace Warehouse.EntityContext.Tests
 {
     public class ModelExtensionsTest
     {
+        private IMapper mapper;
+
+        public ModelExtensionsTest()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(typeof(ModelMappingProfile));
+            });
+
+            mapper = config.CreateMapper();
+        }
+
         [Fact(DisplayName = "Pallets with Boxes convert to PalletModel with BoxModels")]
         public void PalletsConvertWithBoxes()
         {
@@ -14,7 +27,7 @@ namespace Warehouse.EntityContext.Tests
 
             pallet.AddBox(box);
 
-            PalletModel model = pallet.ToPalletModel();
+            PalletModel model = mapper.Map<PalletModel>(pallet);
 
             model.Boxes.Should().HaveCount(1);
         }
@@ -28,7 +41,7 @@ namespace Warehouse.EntityContext.Tests
 
             palletModel.Boxes = new List<BoxModel>() { boxModel};
 
-            Pallet pallet = palletModel.ToPallet();
+            Pallet pallet = mapper.Map<Pallet>(palletModel);
 
             pallet.Boxes.Should().HaveCount(1);
         }

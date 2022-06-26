@@ -1,6 +1,8 @@
 using Warehouse.Data;
 using Warehouse.EntityContext;
+using Warehouse.EntityContext.Models;
 using Warehouse.EntityContext.Sqlite;
+using Warehouse.Web.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ builder.WebHost.UseUrls("https://localhost:6002");
 
 builder.Services.AddScoped<IScalableStorage, ScalableStorage>();
 builder.Services.AddScoped<WarehouseContext, WarehouseSqliteContext>();
+
+builder.Services.AddAutoMapper(typeof(DtoMappingProfile), typeof(ModelMappingProfile));
 
 builder.Services.AddControllers();
 

@@ -1,12 +1,12 @@
 ﻿using Warehouse.Data;
-using Warehouse.Data.Models;
 using Warehouse.EntityContext;
+using Warehouse.EntityContext.Models;
 using Warehouse.EntityContext.Sqlite;
 using Warehouse.Web.Models;
 using Warehouse.Web.Api.Controllers;
-using System.Net.Http;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace Warehouse.Web.Api
 {
@@ -18,8 +18,17 @@ namespace Warehouse.Web.Api
         {
             string fileName = Path.GetRandomFileName();
             WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new(context);
-            controller = new(storage);
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(typeof(ModelMappingProfile));
+                cfg.AddProfile(typeof(DtoMappingProfile));
+            });
+
+            IMapper mapper = config.CreateMapper();
+
+            ScalableStorage storage = new(context, mapper);
+            controller = new(storage, mapper);
         }
 
         [Fact(DisplayName = "Can create Pallet without Boxes")]
@@ -151,9 +160,7 @@ namespace Warehouse.Web.Api
             var response = await controller.GetPallet(2);
 
             // Assert
-            var pallet = (response as OkObjectResult)?.Value;
-
-            (pallet as PalletDto).Length.Should().Be(5);
+            response.Value.Length.Should().Be(5);
         }
 
     }
