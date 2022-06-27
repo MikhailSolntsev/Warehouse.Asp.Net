@@ -11,7 +11,7 @@ namespace Warehouse.Data
         Task<bool> DeletePalletAsync(Pallet pallet);
         Task<bool> DeletePalletAsync(int id);
 
-        Task<List<Box>> GetAllBoxesAsync();
+        Task<List<Box>> GetAllBoxesAsync(int skip = 0, int count = 0);
         Task<Box?> GetBoxAsync(int id);
         Task<Box?> AddBoxAsync(Box box);
         Task<Box?> UpdateBoxAsync(Box box);

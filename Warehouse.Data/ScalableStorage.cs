@@ -15,7 +15,7 @@ public class ScalableStorage : IScalableStorage
     /// <summary>
     /// .ctor
     /// </summary>
-    /// <param name="injectedContext">Business logic context</param>
+    /// <param name="injectedContext">Database context</param>
     /// <param name="injectedMapper">Automapper</param>
     public ScalableStorage(WarehouseContext injectedContext, IMapper injectedMapper)
     {
@@ -189,14 +189,26 @@ public class ScalableStorage : IScalableStorage
         return true;
     }
 
-    public async Task<List<Box>> GetAllBoxesAsync()
+    public async Task<List<Box>> GetAllBoxesAsync(int skip = 0, int count = 0)
     {
         var boxes = db.Boxes;
         if (boxes is null)
         {
             return new List<Box>();
         }
-        return await Task.FromResult(boxes
+
+        var query = (IQueryable<BoxModel>)boxes;
+        if (skip > 0)
+        {
+            query = query.Skip(skip);
+        }
+        if (count > 0)
+        {
+            query = query.Take(count);
+        }
+
+        return await Task.FromResult(
+            query
             .Select(boxModel => mapper.Map<Box>(boxModel))
             .ToList());
     }

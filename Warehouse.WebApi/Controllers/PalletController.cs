@@ -19,15 +19,12 @@ namespace Warehouse.Web.Api.Controllers
             mapper = injectedMapper;
         }
 
-        //[HttpGet("Pallets")]
-        //[ProducesResponseType(200, Type = typeof(IEnumerable<PalletDto>))]
-        //public async Task<IEnumerable<PalletDto>> GetPallets()
-        //{
-        //    var pallets = await storage.GetAllPalletsAsync();
-
-        //    return pallets.Select(pallet => pallet.ToPalletDto()).AsEnumerable();
-        //}
-
+        /// <summary>
+        /// Gets $count/all pallets with pagination, can skip pallets
+        /// </summary>
+        /// <param name="skip">Pallets to skip</param>
+        /// <param name="count">Pallets to get. All if 0</param>
+        /// <returns></returns>
         [HttpGet("Pallets")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<PalletDto>))]
         public async Task<IEnumerable<PalletDto>> GetPallets(int skip = 0, int count = 0)
@@ -37,6 +34,11 @@ namespace Warehouse.Web.Api.Controllers
             return pallets.Select(pallet => mapper.Map<PalletDto>(pallet)).AsEnumerable();
         }
 
+        /// <summary>
+        /// Gets specific pallet with Id
+        /// </summary>
+        /// <param name="id">Id to find Pallet</param>
+        /// <returns></returns>
         [HttpGet("Pallet/{id}", Name = nameof(GetPallet))]
         [ProducesResponseType(200, Type = typeof(PalletDto))]
         [ProducesResponseType(404)]
@@ -58,10 +60,15 @@ namespace Warehouse.Web.Api.Controllers
             return mapper.Map<PalletDto>(pallet);
         }
 
+        /// <summary>
+        /// Creates or updates pallet from model
+        /// </summary>
+        /// <param name="palletDto">model to create pallet</param>
+        /// <returns></returns>
         [HttpPost("Pallet")]
         [ProducesResponseType(200, Type = typeof(PalletDto))]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> CreatePallet([FromBody] PalletDto palletDto)
+        public async Task<ActionResult<PalletDto>> CreatePallet([FromBody] PalletDto palletDto)
         {
             if (palletDto is null)
             {
@@ -69,36 +76,26 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
-            Pallet? pallet = null;
-
-            if (palletDto.Id is not null)
-            {
-                pallet = await storage.GetPalletAsync(palletDto.Id ?? 0);
-            }
-            
-            if (pallet is null)
-            {
-                pallet = mapper.Map<Pallet>(palletDto);
-                pallet = await storage.AddPalletAsync(pallet);
-            }
-            else
-            {
-                pallet = mapper.Map<Pallet>(palletDto);
-                pallet = await storage.UpdatePalletAsync(pallet);
-            }
+            Pallet? pallet = mapper.Map<Pallet>(palletDto);
+            pallet = await storage.AddPalletAsync(pallet);
 
             if (pallet is null)
             {
                 ResponseMessage response = new() { Message = "Error during creating/updating pallet" };
                 return BadRequest(response);
             }
-            return Ok(mapper.Map<PalletDto>(pallet));
+            return mapper.Map<PalletDto>(pallet);
         }
 
+        /// <summary>
+        /// Updates pallet
+        /// </summary>
+        /// <param name="palletDto">model to update pallet</param>
+        /// <returns></returns>
         [HttpPut("Pallet")]
         [ProducesResponseType(204, Type = typeof(PalletDto))]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdatePallet([FromBody] PalletDto palletDto)
+        public async Task<ActionResult<PalletDto>> UpdatePallet([FromBody] PalletDto palletDto)
         {
             if (palletDto is null)
             {
@@ -108,9 +105,14 @@ namespace Warehouse.Web.Api.Controllers
 
             var pallet = await storage.UpdatePalletAsync(mapper.Map<Pallet>(palletDto));
 
-            return Ok(mapper.Map<PalletDto>(pallet));
+            return mapper.Map<PalletDto>(pallet);
         }
 
+        /// <summary>
+        /// Deletes pallet wit Id
+        /// </summary>
+        /// <param name="id">Id to find pallet</param>
+        /// <returns></returns>
         [HttpDelete("Pallet/{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(204)]
