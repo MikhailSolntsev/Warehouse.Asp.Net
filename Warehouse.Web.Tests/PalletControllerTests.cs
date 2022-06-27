@@ -42,11 +42,7 @@ namespace Warehouse.Web.Api
             };
             var response = await controller.CreatePallet(model);
 
-            response.Should().BeAssignableTo<OkObjectResult>();
-
-            var result = response as OkObjectResult;
-
-            result?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
+            response?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
         }
 
         [Fact(DisplayName = "Can create Pallet(without Id) with Boxes(without Id)")]
@@ -75,9 +71,7 @@ namespace Warehouse.Web.Api
             var response = await controller.CreatePallet(model);
 
             // Assert
-            response.Should().BeAssignableTo<OkObjectResult>();
-
-            (response as OkObjectResult)?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
+            response?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
         }
 
         [Fact(DisplayName = "Can create Pallet(with Id) with Boxes(wit Id)")]
@@ -108,9 +102,7 @@ namespace Warehouse.Web.Api
             var response = await controller.CreatePallet(model);
 
             // Assert
-            response.Should().BeAssignableTo<OkObjectResult>();
-
-            (response as OkObjectResult)?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
+            response?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
         }
 
         [Fact(DisplayName = "Can retrieve all Pallets")]

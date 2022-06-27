@@ -3,6 +3,8 @@ using Warehouse.Data.Models;
 using Warehouse.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace Warehouse.Web.Api.Controllers
 {
@@ -12,11 +14,13 @@ namespace Warehouse.Web.Api.Controllers
     {
         private IScalableStorage storage;
         private IMapper mapper;
+        private IValidator<PalletDto> validator;
 
-        public PalletController(IScalableStorage injectedStorage, IMapper injectedMapper)
+        public PalletController(IScalableStorage injectedStorage, IMapper injectedMapper, IValidator<PalletDto> injectedValidator)
         {
             storage = injectedStorage;
             mapper = injectedMapper;
+            validator = injectedValidator;
         }
 
         /// <summary>
@@ -76,6 +80,12 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
+            ValidationResult result = await validator.ValidateAsync(palletDto);
+            if (!result.IsValid)
+            {
+                return BadRequest(result.ToDictionary());
+            } 
+
             Pallet? pallet = mapper.Map<Pallet>(palletDto);
             pallet = await storage.AddPalletAsync(pallet);
 
@@ -101,6 +111,12 @@ namespace Warehouse.Web.Api.Controllers
             {
                 ResponseMessage response = new() { Message = "Bad model for pallet" };
                 return BadRequest(response);
+            }
+
+            ValidationResult result = await validator.ValidateAsync(palletDto);
+            if (!result.IsValid)
+            {
+                return BadRequest(result.ToDictionary());
             }
 
             var pallet = await storage.UpdatePalletAsync(mapper.Map<Pallet>(palletDto));

@@ -3,17 +3,23 @@ using Warehouse.EntityContext;
 using Warehouse.EntityContext.Models;
 using Warehouse.EntityContext.Sqlite;
 using Warehouse.Web.Models;
+using Warehouse.Web.Api.Infrastructure;
+using FluentValidation;
+using FluentValidation.Results;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.WebHost.UseUrls("https://localhost:6002");
 
+builder.Services.AddValidatorsFromAssemblyContaining<PalletValidator>();
 
 builder.Services.AddScoped<IScalableStorage, ScalableStorage>();
 builder.Services.AddScoped<WarehouseContext, WarehouseSqliteContext>();
 
 builder.Services.AddAutoMapper(typeof(DtoMappingProfile), typeof(ModelMappingProfile));
+
+//builder.Services.AddValidatorsFromAssemblyContaining(typeof(BoxValidator));
 
 builder.Services.AddControllers();
 

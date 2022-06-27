@@ -10,6 +10,7 @@ namespace Warehouse.Data
     public class ScalableStorageTests
     {
         private ScalableStorage storage;
+
         public ScalableStorageTests()
         {
             string fileName = Path.GetRandomFileName();
@@ -159,5 +160,6 @@ namespace Warehouse.Data
             // Assert
             addedPallet.Id.Should().NotBe(0);
         }
+        
     }
 }

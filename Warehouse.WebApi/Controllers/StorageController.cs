@@ -1,6 +1,6 @@
 ﻿using Warehouse.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace Warehouse.Web.Api.Controllers
 {
@@ -9,10 +9,12 @@ namespace Warehouse.Web.Api.Controllers
     public class StorageController : ControllerBase
     {
         private IScalableStorage storage;
+        private IMapper mapper;
 
-        public StorageController(IScalableStorage injectedStorage)
+        public StorageController(IScalableStorage injectedStorage, IMapper injectedMapper)
         {
             storage = injectedStorage;
+            mapper = injectedMapper;
         }
 
     }
