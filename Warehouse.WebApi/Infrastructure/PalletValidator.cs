@@ -7,7 +7,6 @@ namespace Warehouse.Web.Api.Infrastructure
     {
         public PalletValidator()
         {
-            RuleFor(p => p.Id).Null();
             RuleFor(p => p.Length).NotNull().GreaterThan(0);
             RuleFor(p => p.Width).NotNull().GreaterThan(0);
             RuleFor(p => p.Height).NotNull().GreaterThan(0);

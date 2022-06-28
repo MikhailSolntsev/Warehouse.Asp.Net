@@ -4,6 +4,8 @@ using Warehouse.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace Warehouse.Web.Api.Controllers
 {
@@ -11,18 +13,20 @@ namespace Warehouse.Web.Api.Controllers
     [ApiController]
     public class BoxController : ControllerBase
     {
-        private IScalableStorage storage;
-        private IMapper mapper;
+        private readonly IScalableStorage storage;
+        private readonly IMapper mapper;
+        private readonly IValidator<BoxDto> validator;
 
         /// <summary>
         /// .ctor
         /// </summary>
         /// <param name="injectedStorage"></param>
         /// <param name="injectedMapper"></param>
-        public BoxController(IScalableStorage injectedStorage, IMapper injectedMapper)
+        public BoxController(IScalableStorage injectedStorage, IMapper injectedMapper, IValidator<BoxDto> injectedValidator)
         {
             storage = injectedStorage;
             mapper = injectedMapper;
+            validator = injectedValidator;
         }
 
         /// <summary>
@@ -82,6 +86,12 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
+            ValidationResult result = await validator.ValidateAsync(boxDto);
+            if (!result.IsValid)
+            {
+                return BadRequest(result.ToDictionary());
+            }
+
             Box? box = await storage.AddBoxAsync(mapper.Map<Box>(boxDto));
 
             if (box is null)
@@ -106,6 +116,12 @@ namespace Warehouse.Web.Api.Controllers
             {
                 ResponseMessage response = new() { Message = "Bad model for box" };
                 return BadRequest(response);
+            }
+
+            ValidationResult result = await validator.ValidateAsync(boxDto);
+            if (!result.IsValid)
+            {
+                return BadRequest(result.ToDictionary());
             }
 
             var box = await storage.UpdateBoxAsync(mapper.Map<Box>(boxDto));

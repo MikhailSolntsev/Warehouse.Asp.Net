@@ -5,8 +5,8 @@ using Warehouse.EntityContext.Sqlite;
 using Warehouse.Web.Models;
 using Warehouse.Web.Api.Controllers;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Warehouse.Web.Api.Infrastructure;
 
 namespace Warehouse.Web.Api
 {
@@ -28,7 +28,7 @@ namespace Warehouse.Web.Api
             IMapper mapper = config.CreateMapper();
 
             ScalableStorage storage = new(context, mapper);
-            controller = new(storage, mapper);
+            controller = new(storage, mapper, new PalletValidator());
         }
 
         [Fact(DisplayName = "Can create Pallet without Boxes")]

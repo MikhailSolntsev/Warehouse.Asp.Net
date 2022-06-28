@@ -12,9 +12,9 @@ namespace Warehouse.Web.Api.Controllers
     [ApiController]
     public class PalletController : ControllerBase
     {
-        private IScalableStorage storage;
-        private IMapper mapper;
-        private IValidator<PalletDto> validator;
+        private readonly IScalableStorage storage;
+        private readonly IMapper mapper;
+        private readonly IValidator<PalletDto> validator;
 
         public PalletController(IScalableStorage injectedStorage, IMapper injectedMapper, IValidator<PalletDto> injectedValidator)
         {
