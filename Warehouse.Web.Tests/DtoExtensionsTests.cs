@@ -45,7 +45,7 @@ namespace Warehouse.Web.Models
         [Fact(DisplayName = "PalletModel with BoxModels convert to Pallet with Boxes")]
         public void PalletModelsConvertWithBoxModels()
         {
-            // Assign
+            // Arrange
             PalletDto palletModel = new PalletDto();
             BoxDto boxModel = new BoxDto();
 
@@ -59,7 +59,7 @@ namespace Warehouse.Web.Models
         [Fact(DisplayName = "PalletModel with null Id converts to Pallet with null Id")]
         public void PalletModelsWithIdConvertsCorrect()
         {
-            // Assign
+            // Arrange
             PalletDto palletModel = new PalletDto();
             BoxDto boxModel = new BoxDto();
 

@@ -29,7 +29,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Storage can add box")]
         public async Task CanAddPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
 
             // Act
@@ -43,7 +43,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Storage can retrieve boxes with SKIP pagination")]
         public async Task CanRetrievePalletWithSkipPagination()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
             pallet = new(3, 5, 7, 13);
@@ -65,7 +65,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Storage can retrieve boxes with TAKE pagination")]
         public async Task CanRetrievePalletWithTakePagination()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
             pallet = new(3, 5, 7, 13);
@@ -87,7 +87,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Adding box should return new Pallet, not null")]
         public async Task AddingPalletShouldReturnNewPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7);
             Box box = new Box(3, 3, 3, 3, DateTime.Now);
             pallet.AddBox(box);
@@ -102,7 +102,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Storage can modify box")]
         public async Task CanModifyPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
@@ -119,7 +119,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Storage can delete box")]
         public async Task CanDeletePallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
@@ -134,7 +134,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Can add box to box")]
         public async Task CanAddBoxToPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
@@ -151,7 +151,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Pallet without Id stores with Id")]
         public void PalletWithoutIdStoresWithId()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7);
 
             // Act
@@ -164,7 +164,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Storage can retrieve boxes with SKIP pagination")]
         public async Task CanRetrieveBoxWithSkipPagination()
         {
-            // Assign
+            // Arrange
             Box box = new(3, 5, 7, 11, DateTime.Today);
             await storage.AddBoxAsync(box);
             box = new(3, 5, 7, 13, DateTime.Today);
@@ -186,7 +186,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Storage can retrieve boxes with TAKE pagination")]
         public async Task CanRetrieveBpxWithTakePagination()
         {
-            // Assign
+            // Arrange
             Box box = new(3, 5, 7, 11, DateTime.Today);
             await storage.AddBoxAsync(box);
             box = new(3, 5, 7, 13, DateTime.Today);

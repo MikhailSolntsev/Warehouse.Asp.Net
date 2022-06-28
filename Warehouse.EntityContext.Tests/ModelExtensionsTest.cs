@@ -35,7 +35,7 @@ namespace Warehouse.EntityContext.Tests
         [Fact(DisplayName = "PalletModels with BoxModels convert to Pallets with Boxes")]
         public void PalletModelsConvertWithBoxModels()
         {
-            // Assign
+            // Arrange
             PalletModel palletModel = new PalletModel();
             BoxModel boxModel = new BoxModel();
 

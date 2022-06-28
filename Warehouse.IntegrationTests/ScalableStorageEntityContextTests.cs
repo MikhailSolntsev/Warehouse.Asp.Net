@@ -31,7 +31,7 @@ namespace Warehouse.IntegrationTests
         [Fact(DisplayName = "Storage can add pallet")]
         public async Task CanAddPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
 
             // Act
@@ -44,7 +44,7 @@ namespace Warehouse.IntegrationTests
         [Fact(DisplayName = "Storage can modify pallet")]
         public async Task CanModifyPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
@@ -59,7 +59,7 @@ namespace Warehouse.IntegrationTests
         [Fact(DisplayName = "Storage can delete pallet")]
         public async Task CanDeletePallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
@@ -73,7 +73,7 @@ namespace Warehouse.IntegrationTests
         [Fact(DisplayName = "Can add box to pallet")]
         public async Task CanAddBoxToPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 

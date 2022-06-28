@@ -10,7 +10,7 @@ namespace Warehouse.EntityContext.Tests
         [Fact(DisplayName = "Database must create itself")]
         public void DatabaseCanBeInitialized()
         {
-            // Assign
+            // Arrange
             string fileName = Path.GetRandomFileName();
 
             using (WarehouseSqliteContext db = new(fileName))
@@ -84,7 +84,7 @@ namespace Warehouse.EntityContext.Tests
         [Fact(DisplayName = "Can read boxes with pallets")]
         public void CanReadBoxesWithPallets()
         {
-            // Assign
+            // Arrange
             string fileName = Path.GetRandomFileName();
             using (WarehouseSqliteContext db = new(fileName))
             {

@@ -48,7 +48,7 @@ namespace Warehouse.Web.Api
         [Fact(DisplayName = "Can create Pallet(without Id) with Boxes(without Id)")]
         public async Task CanCreatePalletWithBoxesWithoutId()
         {
-            // Assign
+            // Arrange
             PalletDto model = new()
             {
                 Length = 13,
@@ -77,7 +77,7 @@ namespace Warehouse.Web.Api
         [Fact(DisplayName = "Can create Pallet(with Id) with Boxes(wit Id)")]
         public async Task CanCreatePalletWithBoxesWithId()
         {
-            // Assign
+            // Arrange
             PalletDto model = new()
             {
                 Id = 17,
@@ -125,7 +125,7 @@ namespace Warehouse.Web.Api
         [Fact(DisplayName = "Can retrieve Pallet by Id")]
         public async Task CanRetrievePalletById()
         {
-            // Assign
+            // Arrange
             PalletDto model = new()
             {
                 Length = 3,
