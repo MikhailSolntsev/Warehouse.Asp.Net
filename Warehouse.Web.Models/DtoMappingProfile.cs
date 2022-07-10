@@ -14,9 +14,7 @@ namespace Warehouse.Web.Models
             CreateMap<Pallet, PalletDto>()
                 .ForMember(p => p.Boxes, opt => opt.Condition(p => p.Boxes.Count > 0));
             CreateMap<PalletDto, Pallet>()
-                .ForMember(p => p.Id, opt => opt.Condition(p => p.Id is not null))
-                //.AfterMap((src, dst) => src.Boxes?.ToList().ForEach(model => dst.AddBox(model.ToBox())))
-                ;
+                .ForMember(p => p.Id, opt => opt.Condition(p => p.Id is not null));
         }
     }
 }
