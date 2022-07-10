@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Warehouse.Web.Api.Controllers
 {
@@ -24,16 +25,16 @@ namespace Warehouse.Web.Api.Controllers
         }
 
         /// <summary>
-        /// Gets $count/all pallets with pagination, can skip pallets
+        /// Gets $take pallets with pagination, can skip pallets
         /// </summary>
         /// <param name="skip">Pallets to skip</param>
-        /// <param name="count">Pallets to get. All if 0</param>
+        /// <param name="take">Pallets to get. All if 0</param>
         /// <returns></returns>
         [HttpGet("Pallets")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<PalletDto>))]
-        public async Task<IEnumerable<PalletDto>> GetPallets(int skip = 0, int count = 0)
+        public async Task<IEnumerable<PalletDto>> GetPallets([BindRequired] int take, int? skip)
         {
-            var pallets = await storage.GetAllPalletsAsync(skip, count);
+            var pallets = await storage.GetAllPalletsAsync(take, skip);
 
             return pallets.Select(pallet => mapper.Map<PalletDto>(pallet)).AsEnumerable();
         }

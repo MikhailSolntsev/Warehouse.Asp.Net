@@ -30,9 +30,9 @@ public class ScalableStorage : IScalableStorage
     /// Get all pallets with pagination
     /// </summary>
     /// <param name="skip">Skip N elements</param>
-    /// <param name="count">Get N elements</param>
+    /// <param name="take">Get N elements</param>
     /// <returns>List of pallets</returns>
-    public async Task<List<Pallet>> GetAllPalletsAsync(int skip = 0, int count = 0)
+    public async Task<List<Pallet>> GetAllPalletsAsync(int take, int? skip)
     {
         var pallets = db.Pallets;
         if (pallets is null)
@@ -41,13 +41,13 @@ public class ScalableStorage : IScalableStorage
         }
 
         var query = (IQueryable<PalletModel>) pallets.Include(p => p.Boxes);
-        if (skip > 0)
+        if (skip is not null)
         {
-            query = query.Skip(skip);
+            query = query.Skip(skip ?? 0);
         }
-        if (count > 0)
+        if (take > 0)
         {
-            query = query.Take(count);
+            query = query.Take(take);
         }
         
         return await
@@ -191,7 +191,7 @@ public class ScalableStorage : IScalableStorage
         return true;
     }
 
-    public async Task<List<Box>> GetAllBoxesAsync(int skip = 0, int count = 0)
+    public async Task<List<Box>> GetAllBoxesAsync(int take, int? skip)
     {
         var boxes = db.Boxes;
         if (boxes is null)
@@ -200,13 +200,13 @@ public class ScalableStorage : IScalableStorage
         }
 
         var query = (IQueryable<BoxModel>)boxes;
-        if (skip > 0)
+        if (skip is not null)
         {
-            query = query.Skip(skip);
+            query = query.Skip(skip ?? 0);
         }
-        if (count > 0)
+        if (take > 0)
         {
-            query = query.Take(count);
+            query = query.Take(take);
         }
 
         return await 

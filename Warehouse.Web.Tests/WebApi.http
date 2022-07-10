@@ -38,3 +38,9 @@ curl -X POST https://localhost:6002/api/Pallet
 
 ###
 curl -X DELETE https://localhost:6002/api/Pallet/5
+
+###
+https://localhost:6002/api/Boxes?skip=1&take=2
+
+###
+https://localhost:6002/api/Boxes?skip=1&take=2

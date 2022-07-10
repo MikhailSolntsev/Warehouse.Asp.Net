@@ -36,7 +36,7 @@ namespace Warehouse.Data
             await storage.AddPalletAsync(pallet);
 
             // Assert
-            var pallets = await storage.GetAllPalletsAsync();
+            var pallets = await storage.GetAllPalletsAsync(100);
             pallets.Should().HaveCount(1);
         }
 
@@ -47,7 +47,7 @@ namespace Warehouse.Data
             await FillStorageWithPalletAndBoxesAsync();
 
             // Act
-            var pallets = await storage.GetAllPalletsAsync(skip: 2);
+            var pallets = await storage.GetAllPalletsAsync(take: 100, skip: 2);
 
             // Assert
             pallets.Should().HaveCount(3);
@@ -60,7 +60,7 @@ namespace Warehouse.Data
             await FillStorageWithPalletAndBoxesAsync();
 
             // Act
-            var pallets = await storage.GetAllPalletsAsync(count: 2);
+            var pallets = await storage.GetAllPalletsAsync(take: 2);
 
             // Assert
             pallets.Should().HaveCount(2);
@@ -150,7 +150,7 @@ namespace Warehouse.Data
             await FillStorageWithBoxesAsync();
 
             // Act
-            var boxes = await storage.GetAllBoxesAsync(skip: 2);
+            var boxes = await storage.GetAllBoxesAsync(take: 100, skip: 2);
 
             // Assert
             boxes.Should().HaveCount(3);
@@ -163,7 +163,7 @@ namespace Warehouse.Data
             await FillStorageWithBoxesAsync();
 
             // Act
-            var boxes = await storage.GetAllBoxesAsync(count: 2);
+            var boxes = await storage.GetAllBoxesAsync(take: 2);
 
             // Assert
             boxes.Should().HaveCount(2);
