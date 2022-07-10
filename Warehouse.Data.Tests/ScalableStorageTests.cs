@@ -44,16 +44,7 @@ namespace Warehouse.Data
         public async Task CanRetrievePalletWithSkipPagination()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 13);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 17);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 19);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 23);
-            await storage.AddPalletAsync(pallet);
+            await FillStorageWithPalletAndBoxesAsync();
 
             // Act
             var pallets = await storage.GetAllPalletsAsync(skip: 2);
@@ -66,16 +57,7 @@ namespace Warehouse.Data
         public async Task CanRetrievePalletWithTakePagination()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 13);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 17);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 19);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 23);
-            await storage.AddPalletAsync(pallet);
+            await FillStorageWithPalletAndBoxesAsync();
 
             // Act
             var pallets = await storage.GetAllPalletsAsync(count: 2);
@@ -165,16 +147,7 @@ namespace Warehouse.Data
         public async Task CanRetrieveBoxWithSkipPagination()
         {
             // Arrange
-            Box box = new(3, 5, 7, 11, DateTime.Today);
-            await storage.AddBoxAsync(box);
-            box = new(3, 5, 7, 13, DateTime.Today);
-            await storage.AddBoxAsync(box);
-            box = new(3, 5, 7, 17, DateTime.Today);
-            await storage.AddBoxAsync(box);
-            box = new(3, 5, 7, 19, DateTime.Today);
-            await storage.AddBoxAsync(box);
-            box = new(3, 5, 7, 23, DateTime.Today);
-            await storage.AddBoxAsync(box);
+            await FillStorageWithBoxesAsync();
 
             // Act
             var boxes = await storage.GetAllBoxesAsync(skip: 2);
@@ -187,6 +160,31 @@ namespace Warehouse.Data
         public async Task CanRetrieveBpxWithTakePagination()
         {
             // Arrange
+            await FillStorageWithBoxesAsync();
+
+            // Act
+            var boxes = await storage.GetAllBoxesAsync(count: 2);
+
+            // Assert
+            boxes.Should().HaveCount(2);
+        }
+
+        private async Task FillStorageWithPalletAndBoxesAsync()
+        {
+            Pallet pallet = new(3, 5, 7, 11);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 13);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 17);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 19);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 23);
+            await storage.AddPalletAsync(pallet);
+        }
+
+        private async Task FillStorageWithBoxesAsync()
+        {
             Box box = new(3, 5, 7, 11, DateTime.Today);
             await storage.AddBoxAsync(box);
             box = new(3, 5, 7, 13, DateTime.Today);
@@ -197,13 +195,6 @@ namespace Warehouse.Data
             await storage.AddBoxAsync(box);
             box = new(3, 5, 7, 23, DateTime.Today);
             await storage.AddBoxAsync(box);
-
-            // Act
-            var boxes = await storage.GetAllBoxesAsync(count: 2);
-
-            // Assert
-            boxes.Should().HaveCount(2);
         }
-
     }
 }
