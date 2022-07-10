@@ -49,10 +49,10 @@ public class ScalableStorage : IScalableStorage
             query = query.Take(count);
         }
         
-        return await Task.FromResult(
+        return await
             query
             .Select(palletModel => mapper.Map<Pallet>(palletModel))
-            .ToList());
+            .ToListAsync();
     }
 
     /// <summary>
@@ -207,10 +207,10 @@ public class ScalableStorage : IScalableStorage
             query = query.Take(count);
         }
 
-        return await Task.FromResult(
+        return await 
             query
             .Select(boxModel => mapper.Map<Box>(boxModel))
-            .ToList());
+            .ToListAsync();
     }
     public async Task<Box?> GetBoxAsync(int id)
     {
