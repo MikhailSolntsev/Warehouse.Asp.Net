@@ -16,11 +16,11 @@ namespace Warehouse.Web.Api.Controllers
         private readonly IMapper mapper;
         private readonly IValidator<PalletDto> validator;
 
-        public PalletController(IScalableStorage injectedStorage, IMapper injectedMapper, IValidator<PalletDto> injectedValidator)
+        public PalletController(IScalableStorage storage, IMapper mapper, IValidator<PalletDto> validator)
         {
-            storage = injectedStorage;
-            mapper = injectedMapper;
-            validator = injectedValidator;
+            this.storage = storage;
+            this.mapper = mapper;
+            this.validator = validator;
         }
 
         /// <summary>

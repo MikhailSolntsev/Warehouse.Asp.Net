@@ -15,14 +15,14 @@ public class ScalableStorage : IScalableStorage
     /// <summary>
     /// .ctor
     /// </summary>
-    /// <param name="injectedContext">Database context</param>
-    /// <param name="injectedMapper">Automapper</param>
-    public ScalableStorage(WarehouseContext injectedContext, IMapper injectedMapper)
+    /// <param name="context">Database context</param>
+    /// <param name="mapper">Automapper</param>
+    public ScalableStorage(WarehouseContext context, IMapper mapper)
     {
-        db = injectedContext;
+        db = context;
         db.Database.EnsureCreated();
 
-        mapper = injectedMapper;
+        this.mapper = mapper;
     }
 
     /// <summary>

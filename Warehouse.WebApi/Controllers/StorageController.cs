@@ -11,10 +11,10 @@ namespace Warehouse.Web.Api.Controllers
         private IScalableStorage storage;
         private IMapper mapper;
 
-        public StorageController(IScalableStorage injectedStorage, IMapper injectedMapper)
+        public StorageController(IScalableStorage dtorage, IMapper mapper)
         {
-            storage = injectedStorage;
-            mapper = injectedMapper;
+            storage = dtorage;
+            this.mapper = mapper;
         }
 
     }

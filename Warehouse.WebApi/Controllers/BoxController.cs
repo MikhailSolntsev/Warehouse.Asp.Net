@@ -20,13 +20,13 @@ namespace Warehouse.Web.Api.Controllers
         /// <summary>
         /// .ctor
         /// </summary>
-        /// <param name="injectedStorage"></param>
-        /// <param name="injectedMapper"></param>
-        public BoxController(IScalableStorage injectedStorage, IMapper injectedMapper, IValidator<BoxDto> injectedValidator)
+        /// <param name="storage"></param>
+        /// <param name="mapper"></param>
+        public BoxController(IScalableStorage storage, IMapper mapper, IValidator<BoxDto> validator)
         {
-            storage = injectedStorage;
-            mapper = injectedMapper;
-            validator = injectedValidator;
+            this.storage = storage;
+            this.mapper = mapper;
+            this.validator = validator;
         }
 
         /// <summary>
