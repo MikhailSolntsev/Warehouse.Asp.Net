@@ -40,7 +40,7 @@ namespace Warehouse.Data
             pallets.Should().HaveCount(1);
         }
 
-        [Fact(DisplayName = "Storage can retrieve boxes with SKIP pagination")]
+        [Fact(DisplayName = "Storage can retrieve pallets with SKIP pagination")]
         public async Task CanRetrievePalletWithSkipPagination()
         {
             // Arrange
@@ -53,7 +53,7 @@ namespace Warehouse.Data
             pallets.Should().HaveCount(3);
         }
 
-        [Fact(DisplayName = "Storage can retrieve boxes with TAKE pagination")]
+        [Fact(DisplayName = "Storage can retrieve pallets with TAKE pagination")]
         public async Task CanRetrievePalletWithTakePagination()
         {
             // Arrange

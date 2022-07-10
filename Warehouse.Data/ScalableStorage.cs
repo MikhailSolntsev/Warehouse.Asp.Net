@@ -4,6 +4,7 @@ using Warehouse.EntityContext.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Warehouse.Data;
 
@@ -51,6 +52,7 @@ public class ScalableStorage : IScalableStorage
         
         return await
             query
+            //.ProjectTo<Pallet>()
             .Select(palletModel => mapper.Map<Pallet>(palletModel))
             .ToListAsync();
     }
@@ -209,7 +211,8 @@ public class ScalableStorage : IScalableStorage
 
         return await 
             query
-            .Select(boxModel => mapper.Map<Box>(boxModel))
+            .ProjectTo<Box>(mapper.ConfigurationProvider)
+            //.Select(boxModel => mapper.Map<Box>(boxModel))
             .ToListAsync();
     }
     public async Task<Box?> GetBoxAsync(int id)
