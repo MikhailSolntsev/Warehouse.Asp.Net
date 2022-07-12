@@ -19,13 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.EntityContext.Mod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Web.Models", "Warehouse.Web.Models\Warehouse.Web.Models.csproj", "{1B266CEF-04A2-45F3-85C3-C97308EBDDE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Web.Tests", "Warehouse.Web.Tests\Warehouse.Web.Tests.csproj", "{6BC263B7-AC37-4B4C-B14D-679FBC70FEDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Web.Tests", "Warehouse.Web.Tests\Warehouse.Web.Tests.csproj", "{6BC263B7-AC37-4B4C-B14D-679FBC70FEDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.IntegrationTests", "Warehouse.IntegrationTests\Warehouse.IntegrationTests.csproj", "{D2537B37-3E55-4FAF-89A4-ABD74C7C1742}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.IntegrationTests", "Warehouse.IntegrationTests\Warehouse.IntegrationTests.csproj", "{D2537B37-3E55-4FAF-89A4-ABD74C7C1742}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Console", "Warehouse.Console\Warehouse.Console.csproj", "{FA9CAD72-11EE-44F4-AF3B-7F98796B773D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Web.Api", "Warehouse.WebApi\Warehouse.Web.Api.csproj", "{8CB96C16-A3F8-45F2-8070-DA87A2A682FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Web.Api", "Warehouse.WebApi\Warehouse.Web.Api.csproj", "{8CB96C16-A3F8-45F2-8070-DA87A2A682FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,10 +71,6 @@ Global
 		{D2537B37-3E55-4FAF-89A4-ABD74C7C1742}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2537B37-3E55-4FAF-89A4-ABD74C7C1742}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2537B37-3E55-4FAF-89A4-ABD74C7C1742}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA9CAD72-11EE-44F4-AF3B-7F98796B773D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA9CAD72-11EE-44F4-AF3B-7F98796B773D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA9CAD72-11EE-44F4-AF3B-7F98796B773D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA9CAD72-11EE-44F4-AF3B-7F98796B773D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8CB96C16-A3F8-45F2-8070-DA87A2A682FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8CB96C16-A3F8-45F2-8070-DA87A2A682FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CB96C16-A3F8-45F2-8070-DA87A2A682FD}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -3,6 +3,10 @@ using Warehouse.Data.Models;
 using Warehouse.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Warehouse.Web.Api.Controllers
 {
@@ -10,26 +14,46 @@ namespace Warehouse.Web.Api.Controllers
     [ApiController]
     public class BoxController : ControllerBase
     {
-        private IScalableStorage storage;
+        private readonly IScalableStorage storage;
+        private readonly IMapper mapper;
+        private readonly IValidator<BoxDto> validator;
 
-        public BoxController(IScalableStorage injectedStorage)
+        /// <summary>
+        /// .ctor
+        /// </summary>
+        /// <param name="storage"></param>
+        /// <param name="mapper"></param>
+        public BoxController(IScalableStorage storage, IMapper mapper, IValidator<BoxDto> validator)
         {
-            storage = injectedStorage;
+            this.storage = storage;
+            this.mapper = mapper;
+            this.validator = validator;
         }
 
+        /// <summary>
+        /// Gets $take boxes with pagination, can skip boxes
+        /// </summary>
+        /// <param name="skip">Boxes to skip</param>
+        /// <param name="take">Boxes to take</param>
+        /// <returns></returns>
         [HttpGet("Boxes")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<BoxDto>))]
-        public async Task<IEnumerable<BoxDto>> GetBoxes()
+        public async Task<IEnumerable<BoxDto>> GetBoxes([BindRequired] int take, int? skip)
         {
-            var boxes = await storage.GetAllBoxesAsync();
+            var boxes = await storage.GetAllBoxesAsync(take, skip);
 
-            return boxes.Select(box => box.ToBoxDto()).AsEnumerable();
+            return boxes.Select(box => mapper.Map<BoxDto>(box)).AsEnumerable();
         }
 
+        /// <summary>
+        /// Gets specific box with Id
+        /// </summary>
+        /// <param name="id">Id to find Box</param>
+        /// <returns></returns>
         [HttpGet("Box/{id}", Name = nameof(GetBox))]
         [ProducesResponseType(200, Type = typeof(BoxDto))]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetBox(int id)
+        public async Task<ActionResult<BoxDto>> GetBox(int id)
         {
             if (id == 0)
             {
@@ -44,13 +68,18 @@ namespace Warehouse.Web.Api.Controllers
                 ResponseMessage response = new() { Message = $"Can't find box wit id = {id}" };
                 return NotFound(response);
             }
-            return Ok(box.ToBoxDto());
+            return mapper.Map<BoxDto>(box);
         }
 
+        /// <summary>
+        /// Creates or updates box from model
+        /// </summary>
+        /// <param name="boxDto">model to create box</param>
+        /// <returns></returns>
         [HttpPost("Box")]
         [ProducesResponseType(200, Type = typeof(BoxDto))]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> CreateBox([FromBody] BoxDto boxDto)
+        public async Task<ActionResult<BoxDto>> CreateBox([FromBody] BoxDto boxDto)
         {
             if (boxDto is null)
             {
@@ -58,34 +87,31 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
-            Box? box = null;
-
-            if (boxDto.Id is not null)
+            ValidationResult result = await validator.ValidateAsync(boxDto);
+            if (!result.IsValid)
             {
-                box = await storage.GetBoxAsync(boxDto.Id ?? 0);
+                return BadRequest(result.ToDictionary());
             }
 
-            if (box is null)
-            {
-                box = await storage.AddBoxAsync(boxDto.ToBox());
-            }
-            else
-            {
-                box = await storage.UpdateBoxAsync(boxDto.ToBox());
-            }
+            Box? box = await storage.AddBoxAsync(mapper.Map<Box>(boxDto));
 
             if (box is null)
             {
                 ResponseMessage response = new() { Message = "Error during creating/updating box" };
                 return BadRequest(response);
             }
-            return Ok(box.ToBoxDto());
+            return mapper.Map<BoxDto>(box);
         }
 
+        /// <summary>
+        /// Updates Box
+        /// </summary>
+        /// <param name="boxDto">model to update box</param>
+        /// <returns></returns>
         [HttpPut("Box")]
         [ProducesResponseType(204, Type = typeof(BoxDto))]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateBox([FromBody] BoxDto boxDto)
+        public async Task<ActionResult<BoxDto>> UpdateBox([FromBody] BoxDto boxDto)
         {
             if (boxDto is null)
             {
@@ -93,11 +119,22 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
-            var box = await storage.UpdateBoxAsync(boxDto.ToBox());
+            ValidationResult result = await validator.ValidateAsync(boxDto);
+            if (!result.IsValid)
+            {
+                return BadRequest(result.ToDictionary());
+            }
 
-            return Ok(box?.ToBoxDto());
+            var box = await storage.UpdateBoxAsync(mapper.Map<Box>(boxDto));
+
+            return mapper.Map<BoxDto>(box);
         }
 
+        /// <summary>
+        /// Deletes box wit Id
+        /// </summary>
+        /// <param name="id">Id to find box</param>
+        /// <returns></returns>
         [HttpDelete("Box/{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(204)]

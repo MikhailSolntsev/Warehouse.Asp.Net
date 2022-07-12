@@ -3,20 +3,36 @@ using Warehouse.EntityContext;
 using Warehouse.EntityContext.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Warehouse.Data;
 
 public class ScalableStorage : IScalableStorage
 {
     private WarehouseContext db;
+    private IMapper mapper;
 
-    public ScalableStorage(WarehouseContext injectedContext)
+    /// <summary>
+    /// .ctor
+    /// </summary>
+    /// <param name="context">Database context</param>
+    /// <param name="mapper">Automapper</param>
+    public ScalableStorage(WarehouseContext context, IMapper mapper)
     {
-        db = injectedContext;
+        db = context;
         db.Database.EnsureCreated();
+
+        this.mapper = mapper;
     }
 
-    public async Task<List<Pallet>> GetAllPalletsAsync(int skip = 0, int count = 0)
+    /// <summary>
+    /// Get all pallets with pagination
+    /// </summary>
+    /// <param name="skip">Skip N elements</param>
+    /// <param name="take">Get N elements</param>
+    /// <returns>List of pallets</returns>
+    public async Task<List<Pallet>> GetAllPalletsAsync(int take, int? skip)
     {
         var pallets = db.Pallets;
         if (pallets is null)
@@ -25,20 +41,27 @@ public class ScalableStorage : IScalableStorage
         }
 
         var query = (IQueryable<PalletModel>) pallets.Include(p => p.Boxes);
-        if (skip > 0)
+        if (skip is not null)
         {
-            query = query.Skip(skip);
+            query = query.Skip(skip ?? 0);
         }
-        if (count > 0)
+        if (take > 0)
         {
-            query = query.Take(count);
+            query = query.Take(take);
         }
-
-        return await Task.FromResult(
+        
+        return await
             query
-            .Select(palletModel => palletModel.ToPallet())
-            .ToList());
+            //.ProjectTo<Pallet>()
+            .Select(palletModel => mapper.Map<Pallet>(palletModel))
+            .ToListAsync();
     }
+
+    /// <summary>
+    /// Gets one pallen async
+    /// </summary>
+    /// <param name="id">pallet Id</param>
+    /// <returns>founded pallet</returns>
     public async Task<Pallet?> GetPalletAsync(int id)
     {
         var pallets = db.Pallets;
@@ -52,8 +75,14 @@ public class ScalableStorage : IScalableStorage
         {
             return null;
         }
-        return storedPallet.ToPallet();
+        return mapper.Map<Pallet>(storedPallet);
     }
+
+    /// <summary>
+    /// Adding one pallet with his boxes
+    /// </summary>
+    /// <param name="pallet">Pallet needs to add</param>
+    /// <returns></returns>
     public async Task<Pallet?> AddPalletAsync(Pallet pallet)
     {
         if (db.Pallets is null)
@@ -61,18 +90,24 @@ public class ScalableStorage : IScalableStorage
             return null;
         }
 
-        PalletModel model = pallet.ToPalletModel();
+        PalletModel model = mapper.Map<PalletModel>(pallet);
         await db.Pallets.AddAsync(model);
 
         int affected = await db.SaveChangesAsync();
 
         if (affected > 0)
         {
-            return model.ToPallet();
+            return mapper.Map<Pallet>(model);
         }
 
         return null;
     }
+
+    /// <summary>
+    /// Updates pallet information
+    /// </summary>
+    /// <param name="pallet">Pallet with new information</param>
+    /// <returns>New version of pallet</returns>
     public async Task<Pallet?> UpdatePalletAsync(Pallet pallet)
     {
         var pallets = db.Pallets;
@@ -84,19 +119,19 @@ public class ScalableStorage : IScalableStorage
         var storedPallet = await pallets.FindAsync(pallet.Id);
         if (storedPallet is null)
         {
-            storedPallet = pallet.ToPalletModel();
+            storedPallet = mapper.Map<PalletModel>(pallet);
             await pallets.AddAsync(storedPallet);
         }
         else
         {
-            EntityContext.Models.ModelExtensions.GetMapperInstance().Map<Pallet, PalletModel>(pallet, storedPallet);
+            mapper.Map<Pallet, PalletModel>(pallet, storedPallet);
         }
 
         int affected = await db.SaveChangesAsync();
 
         if (affected > 0)
         {
-            return storedPallet.ToPallet();
+            return mapper.Map<Pallet>(storedPallet);
         }
         return null;
     }
@@ -156,16 +191,29 @@ public class ScalableStorage : IScalableStorage
         return true;
     }
 
-    public async Task<List<Box>> GetAllBoxesAsync()
+    public async Task<List<Box>> GetAllBoxesAsync(int take, int? skip)
     {
         var boxes = db.Boxes;
         if (boxes is null)
         {
             return new List<Box>();
         }
-        return await Task.FromResult(boxes
-            .Select(boxModel => boxModel.ToBox())
-            .ToList());
+
+        var query = (IQueryable<BoxModel>)boxes;
+        if (skip is not null)
+        {
+            query = query.Skip(skip ?? 0);
+        }
+        if (take > 0)
+        {
+            query = query.Take(take);
+        }
+
+        return await 
+            query
+            .ProjectTo<Box>(mapper.ConfigurationProvider)
+            //.Select(boxModel => mapper.Map<Box>(boxModel))
+            .ToListAsync();
     }
     public async Task<Box?> GetBoxAsync(int id)
     {
@@ -181,7 +229,7 @@ public class ScalableStorage : IScalableStorage
         {
             return null;
         }
-        return storedBox.ToBox();
+        return mapper.Map<Box>(storedBox);
     }
     public async Task<Box?> AddBoxAsync(Box box)
     {
@@ -190,13 +238,13 @@ public class ScalableStorage : IScalableStorage
             return null;
         }
 
-        BoxModel model = box.ToBoxModel();
+        BoxModel model = mapper.Map<BoxModel>(box);
         await db.Boxes.AddAsync(model);
 
         int affected = await db.SaveChangesAsync();
         if (affected > 0)
         {
-            return model.ToBox();
+            return mapper.Map<Box>(model);
         }
         return null;
     }
@@ -211,24 +259,24 @@ public class ScalableStorage : IScalableStorage
         var storedBox = await boxes.FindAsync(box.Id);
         if (storedBox is null)
         {
-            storedBox = box.ToBoxModel();
+            storedBox = mapper.Map<BoxModel>(box);
             await boxes.AddAsync(storedBox);
         }
         else
         {
-            EntityContext.Models.ModelExtensions.GetMapperInstance().Map<Box, BoxModel>(box, storedBox);
+            mapper.Map<Box, BoxModel>(box, storedBox);
         }
 
         int affected = await db.SaveChangesAsync();
         if (affected > 0)
         {
-            return storedBox.ToBox();
+            return mapper.Map<Box>(storedBox);
         }
         return null;
     }
     public async Task<bool> DeleteBoxAsync(Box box)
     {
-        db.Boxes?.Remove(box.ToBoxModel());
+        db.Boxes?.Remove(mapper.Map<BoxModel>(box));
         int affected = await db.SaveChangesAsync();
         return affected > 0;
     }
@@ -261,7 +309,7 @@ public class ScalableStorage : IScalableStorage
         BoxModel? boxModel = await db.Boxes.FindAsync(box.Id);
         if (boxModel is null)
         {
-            boxModel = box.ToBoxModel();
+            boxModel = mapper.Map<BoxModel>(box);
             await db.Boxes.AddAsync(boxModel);
         }
 

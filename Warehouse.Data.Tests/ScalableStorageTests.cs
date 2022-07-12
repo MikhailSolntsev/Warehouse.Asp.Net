@@ -1,82 +1,75 @@
 ﻿using Warehouse.Data.Models;
 using Warehouse.EntityContext;
+using Warehouse.EntityContext.Models;
 using Warehouse.EntityContext.Sqlite;
 using FluentAssertions;
+using AutoMapper;
 
 namespace Warehouse.Data
 {
     public class ScalableStorageTests
     {
         private ScalableStorage storage;
+
         public ScalableStorageTests()
         {
             string fileName = Path.GetRandomFileName();
             WarehouseContext context = new WarehouseSqliteContext(fileName);
-            storage = new ScalableStorage(context);
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(typeof(ModelMappingProfile));
+            });
+
+            IMapper mapper = config.CreateMapper();
+
+            storage = new ScalableStorage(context, mapper);
         }
 
-        [Fact(DisplayName = "Storage can add pallet")]
+        [Fact(DisplayName = "Storage can add box")]
         public async Task CanAddPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
 
             // Act
             await storage.AddPalletAsync(pallet);
 
             // Assert
-            var pallets = await storage.GetAllPalletsAsync();
+            var pallets = await storage.GetAllPalletsAsync(100, null);
             pallets.Should().HaveCount(1);
         }
 
         [Fact(DisplayName = "Storage can retrieve pallets with SKIP pagination")]
-        public async Task CanRetrieveWithSkipPagination()
+        public async Task CanRetrievePalletWithSkipPagination()
         {
-            // Assign
-            Pallet pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 13);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 17);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 19);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 23);
-            await storage.AddPalletAsync(pallet);
+            // Arrange
+            await FillStorageWithPalletAndBoxesAsync();
 
             // Act
-            var pallets = await storage.GetAllPalletsAsync(skip: 2);
+            var pallets = await storage.GetAllPalletsAsync(take: 100, skip: 2);
 
             // Assert
             pallets.Should().HaveCount(3);
         }
 
         [Fact(DisplayName = "Storage can retrieve pallets with TAKE pagination")]
-        public async Task CanRetrieveWithTakePagination()
+        public async Task CanRetrievePalletWithTakePagination()
         {
-            // Assign
-            Pallet pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 13);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 17);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 19);
-            await storage.AddPalletAsync(pallet);
-            pallet = new(3, 5, 7, 23);
-            await storage.AddPalletAsync(pallet);
+            // Arrange
+            await FillStorageWithPalletAndBoxesAsync();
 
             // Act
-            var pallets = await storage.GetAllPalletsAsync(count: 2);
+            var pallets = await storage.GetAllPalletsAsync(2, null);
 
             // Assert
             pallets.Should().HaveCount(2);
         }
 
-        [Fact(DisplayName = "Adding pallet should return new Pallet, not null")]
+        [Fact(DisplayName = "Adding box should return new Pallet, not null")]
         public async Task AddingPalletShouldReturnNewPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7);
             Box box = new Box(3, 3, 3, 3, DateTime.Now);
             pallet.AddBox(box);
@@ -88,10 +81,10 @@ namespace Warehouse.Data
             newPallet.Should().NotBeNull();
         }
 
-        [Fact(DisplayName = "Storage can modify pallet")]
+        [Fact(DisplayName = "Storage can modify box")]
         public async Task CanModifyPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
@@ -105,10 +98,10 @@ namespace Warehouse.Data
             storedPallet.Length.Should().Be(13);
         }
 
-        [Fact(DisplayName = "Storage can delete pallet")]
+        [Fact(DisplayName = "Storage can delete box")]
         public async Task CanDeletePallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
@@ -120,10 +113,10 @@ namespace Warehouse.Data
             storedPallet.Should().BeNull();
         }
 
-        [Fact(DisplayName = "Can add box to pallet")]
+        [Fact(DisplayName = "Can add box to box")]
         public async Task CanAddBoxToPallet()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
@@ -140,7 +133,7 @@ namespace Warehouse.Data
         [Fact(DisplayName = "Pallet without Id stores with Id")]
         public void PalletWithoutIdStoresWithId()
         {
-            // Assign
+            // Arrange
             Pallet pallet = new(3, 5, 7);
 
             // Act
@@ -148,6 +141,60 @@ namespace Warehouse.Data
 
             // Assert
             addedPallet.Id.Should().NotBe(0);
+        }
+
+        [Fact(DisplayName = "Storage can retrieve boxes with SKIP pagination")]
+        public async Task CanRetrieveBoxWithSkipPagination()
+        {
+            // Arrange
+            await FillStorageWithBoxesAsync();
+
+            // Act
+            var boxes = await storage.GetAllBoxesAsync(take: 100, skip: 2);
+
+            // Assert
+            boxes.Should().HaveCount(3);
+        }
+
+        [Fact(DisplayName = "Storage can retrieve boxes with TAKE pagination")]
+        public async Task CanRetrieveBpxWithTakePagination()
+        {
+            // Arrange
+            await FillStorageWithBoxesAsync();
+
+            // Act
+            var boxes = await storage.GetAllBoxesAsync(take: 2, null);
+
+            // Assert
+            boxes.Should().HaveCount(2);
+        }
+
+        private async Task FillStorageWithPalletAndBoxesAsync()
+        {
+            Pallet pallet = new(3, 5, 7, 11);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 13);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 17);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 19);
+            await storage.AddPalletAsync(pallet);
+            pallet = new(3, 5, 7, 23);
+            await storage.AddPalletAsync(pallet);
+        }
+
+        private async Task FillStorageWithBoxesAsync()
+        {
+            Box box = new(3, 5, 7, 11, DateTime.Today);
+            await storage.AddBoxAsync(box);
+            box = new(3, 5, 7, 13, DateTime.Today);
+            await storage.AddBoxAsync(box);
+            box = new(3, 5, 7, 17, DateTime.Today);
+            await storage.AddBoxAsync(box);
+            box = new(3, 5, 7, 19, DateTime.Today);
+            await storage.AddBoxAsync(box);
+            box = new(3, 5, 7, 23, DateTime.Today);
+            await storage.AddBoxAsync(box);
         }
     }
 }

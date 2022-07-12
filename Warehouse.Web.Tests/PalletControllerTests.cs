@@ -1,12 +1,12 @@
 ﻿using Warehouse.Data;
-using Warehouse.Data.Models;
 using Warehouse.EntityContext;
+using Warehouse.EntityContext.Models;
 using Warehouse.EntityContext.Sqlite;
 using Warehouse.Web.Models;
 using Warehouse.Web.Api.Controllers;
-using System.Net.Http;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using Warehouse.Web.Api.Infrastructure;
 
 namespace Warehouse.Web.Api
 {
@@ -18,8 +18,17 @@ namespace Warehouse.Web.Api
         {
             string fileName = Path.GetRandomFileName();
             WarehouseContext context = new WarehouseSqliteContext(fileName);
-            ScalableStorage storage = new(context);
-            controller = new(storage);
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(typeof(ModelMappingProfile));
+                cfg.AddProfile(typeof(DtoMappingProfile));
+            });
+
+            IMapper mapper = config.CreateMapper();
+
+            ScalableStorage storage = new(context, mapper);
+            controller = new(storage, mapper, new PalletValidator());
         }
 
         [Fact(DisplayName = "Can create Pallet without Boxes")]
@@ -33,17 +42,13 @@ namespace Warehouse.Web.Api
             };
             var response = await controller.CreatePallet(model);
 
-            response.Should().BeAssignableTo<OkObjectResult>();
-
-            var result = response as OkObjectResult;
-
-            result?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
+            response?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
         }
 
         [Fact(DisplayName = "Can create Pallet(without Id) with Boxes(without Id)")]
         public async Task CanCreatePalletWithBoxesWithoutId()
         {
-            // Assign
+            // Arrange
             PalletDto model = new()
             {
                 Length = 13,
@@ -66,15 +71,13 @@ namespace Warehouse.Web.Api
             var response = await controller.CreatePallet(model);
 
             // Assert
-            response.Should().BeAssignableTo<OkObjectResult>();
-
-            (response as OkObjectResult)?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
+            response?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
         }
 
         [Fact(DisplayName = "Can create Pallet(with Id) with Boxes(wit Id)")]
         public async Task CanCreatePalletWithBoxesWithId()
         {
-            // Assign
+            // Arrange
             PalletDto model = new()
             {
                 Id = 17,
@@ -99,9 +102,7 @@ namespace Warehouse.Web.Api
             var response = await controller.CreatePallet(model);
 
             // Assert
-            response.Should().BeAssignableTo<OkObjectResult>();
-
-            (response as OkObjectResult)?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
+            response?.Value.Should().NotBeNull().And.BeAssignableTo<PalletDto>();
         }
 
         [Fact(DisplayName = "Can retrieve all Pallets")]
@@ -124,7 +125,7 @@ namespace Warehouse.Web.Api
         [Fact(DisplayName = "Can retrieve Pallet by Id")]
         public async Task CanRetrievePalletById()
         {
-            // Assign
+            // Arrange
             PalletDto model = new()
             {
                 Length = 3,
@@ -151,9 +152,7 @@ namespace Warehouse.Web.Api
             var response = await controller.GetPallet(2);
 
             // Assert
-            var pallet = (response as OkObjectResult)?.Value;
-
-            (pallet as PalletDto).Length.Should().Be(5);
+            response.Value.Length.Should().Be(5);
         }
 
     }
