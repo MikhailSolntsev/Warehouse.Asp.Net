@@ -41,13 +41,13 @@ namespace Warehouse.EntityContext.Tests
                 Weight = 11,
                 ExpirationDate = DateTime.Today
             };
-            db.Boxes?.Add(model);
+            db.Boxes.Add(model);
 
             // Act
             db.SaveChanges();
 
             // Assert
-            db.Boxes?.ToArray().Length.Should().Be(1, "After adding new 1 item, count should be 1");
+            db.Boxes.ToArray().Length.Should().Be(1, "After adding new 1 item, count should be 1");
         }
 
         [Fact(DisplayName = "Can't add box without Required property")]
@@ -63,7 +63,7 @@ namespace Warehouse.EntityContext.Tests
                 Height = 7,
                 ExpirationDate = DateTime.Today
             };
-            db.Boxes?.Add(model);
+            db.Boxes.Add(model);
 
             // Act
             Action action = () => db.SaveChanges();
@@ -85,7 +85,7 @@ namespace Warehouse.EntityContext.Tests
                 Width = 5,
                 Height = 7
             };
-            db.Pallets?.Add(pallet);
+            db.Pallets.Add(pallet);
 
             BoxModel box = new()
             {
@@ -97,7 +97,7 @@ namespace Warehouse.EntityContext.Tests
                 ExpirationDate = DateTime.Today
                 ,PalletModelId = 13
             };
-            db.Boxes?.Add(box);
+            db.Boxes.Add(box);
 
             // Act
             db.SaveChanges();
@@ -106,7 +106,7 @@ namespace Warehouse.EntityContext.Tests
             db.Pallets.Should().NotBeNullOrEmpty("Pallets set should not be empty");
             db.Boxes.Should().NotBeNullOrEmpty("Boxes set should not be empty");
 
-            db.Pallets?
+            db.Pallets
                 .Include(pallet => pallet.Boxes)?
                 .FirstOrDefault()?
                 .Boxes

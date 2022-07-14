@@ -11,7 +11,7 @@ namespace Warehouse.EntityContext
         public WarehouseContext(DbContextOptions<WarehouseContext> options) : base(options)
         {
         }
-        public abstract DbSet<BoxModel>? Boxes { get; set; }
-        public abstract DbSet<PalletModel>? Pallets { get; set; }
+        public abstract DbSet<BoxModel> Boxes { get; set; }
+        public abstract DbSet<PalletModel> Pallets { get; set; }
     }
 }

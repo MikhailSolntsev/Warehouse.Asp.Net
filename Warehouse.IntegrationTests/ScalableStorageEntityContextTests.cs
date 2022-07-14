@@ -53,7 +53,7 @@ namespace Warehouse.IntegrationTests
             await storage.UpdatePalletAsync(pallet);
 
             //Assert
-            context.Pallets?.Find(pallet.Id)?.Length.Should().Be(13);
+            context.Pallets.Find(pallet.Id)?.Length.Should().Be(13);
         }
 
         [Fact(DisplayName = "Storage can delete pallet")]
@@ -67,7 +67,7 @@ namespace Warehouse.IntegrationTests
             await storage.DeletePalletAsync(pallet);
 
             //Assert
-            context.Pallets?.Find(pallet.Id).Should().BeNull();
+            context.Pallets.Find(pallet.Id).Should().BeNull();
         }
 
         [Fact(DisplayName = "Can add box to pallet")]
@@ -83,7 +83,7 @@ namespace Warehouse.IntegrationTests
             await storage.AddBoxToPalletAsync(box, pallet);
 
             //Assert
-            context.Boxes?.Find(pallet.Id).Should().BeNull();
+            context.Boxes.Find(pallet.Id).Should().BeNull();
         }
     }
 }

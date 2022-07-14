@@ -95,7 +95,7 @@ namespace Warehouse.Data
             //Assert
             var storedPallet = await storage.GetPalletAsync(pallet.Id??0);
             storedPallet.Should().NotBeNull();
-            storedPallet.Length.Should().Be(13);
+            storedPallet?.Length.Should().Be(13);
         }
 
         [Fact(DisplayName = "Storage can delete box")]
@@ -127,7 +127,7 @@ namespace Warehouse.Data
 
             //Assert
             var storedPallet = await storage.GetPalletAsync(pallet.Id ?? 0);
-            storedPallet.Boxes.Should().HaveCount(1);
+            storedPallet.Boxes?.Should().HaveCount(1);
         }
 
         [Fact(DisplayName = "Pallet without Id stores with Id")]
@@ -140,6 +140,7 @@ namespace Warehouse.Data
             var addedPallet = storage.AddPalletAsync(pallet).Result;
 
             // Assert
+            addedPallet.Should().NotBeNull();
             addedPallet.Id.Should().NotBe(0);
         }
 

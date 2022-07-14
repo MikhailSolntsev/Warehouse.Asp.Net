@@ -152,6 +152,7 @@ namespace Warehouse.Web.Api
             var response = await controller.GetPallet(2);
 
             // Assert
+            response.Value.Should().NotBeNull();
             response.Value.Length.Should().Be(5);
         }
 

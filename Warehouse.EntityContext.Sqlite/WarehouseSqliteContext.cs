@@ -6,7 +6,7 @@ namespace Warehouse.EntityContext.Sqlite;
 public partial class WarehouseSqliteContext : WarehouseContext
 {
     private const string DefaultFileName = "../Warehouse.db";
-    private string fileName;
+    private readonly string fileName;
 
     public WarehouseSqliteContext()
         : base()
@@ -27,8 +27,8 @@ public partial class WarehouseSqliteContext : WarehouseContext
         this.fileName = fileName;
     }
 
-    public override DbSet<BoxModel>? Boxes { get; set; }
-    public override DbSet<PalletModel>? Pallets { get; set; }
+    public override DbSet<BoxModel> Boxes { get; set; }
+    public override DbSet<PalletModel> Pallets { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
