@@ -32,7 +32,7 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpGet("Pallets")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<PalletDto>))]
-        public async Task<IEnumerable<PalletDto>> GetPallets([BindRequired] int take, int? skip)
+        public async Task<IEnumerable<PalletDto>> GetPallets([BindRequired]int take, int? skip)
         {
             var pallets = await storage.GetAllPalletsAsync(take, skip);
 

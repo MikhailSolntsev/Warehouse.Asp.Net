@@ -9,7 +9,6 @@ using FluentValidation.Results;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.WebHost.UseUrls("https://localhost:6002");
 
 builder.Services.AddValidatorsFromAssemblyContaining<PalletValidator>();
@@ -19,12 +18,10 @@ builder.Services.AddScoped<WarehouseContext, WarehouseSqliteContext>();
 
 builder.Services.AddAutoMapper(typeof(DtoMappingProfile), typeof(ModelMappingProfile));
 
-//builder.Services.AddValidatorsFromAssemblyContaining(typeof(BoxValidator));
-
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen( c =>
 {
     c.SwaggerDoc("v1", new()
@@ -36,7 +33,6 @@ builder.Services.AddSwaggerGen( c =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
