@@ -1,7 +1,7 @@
 ﻿
 namespace Warehouse.EntityContext.Models
 {
-    public partial class PalletModel
+    public class PalletModel
     {
         public int? Id { get; set; }
         public int? Length { get; set; }

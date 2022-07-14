@@ -3,7 +3,7 @@ using Warehouse.EntityContext.Models;
 
 namespace Warehouse.EntityContext.Sqlite;
 
-public partial class WarehouseSqliteContext : WarehouseContext
+public class WarehouseSqliteContext : WarehouseContext
 {
     private const string DefaultFileName = "../Warehouse.db";
     private readonly string fileName;
