@@ -2,7 +2,6 @@
 using Warehouse.Data.Models;
 using Warehouse.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
@@ -37,12 +36,12 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="take">Boxes to take</param>
         /// <returns></returns>
         [HttpGet("Boxes")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<BoxDto>))]
-        public async Task<IEnumerable<BoxDto>> GetBoxes([BindRequired] int take, int? skip)
+        [ProducesResponseType(200, Type = typeof(IList<BoxDto>))]
+        public async Task<IList<BoxDto>> GetBoxes([BindRequired] int take, int? skip)
         {
             var boxes = await storage.GetAllBoxesAsync(take, skip);
 
-            return boxes.Select(box => mapper.Map<BoxDto>(box)).AsEnumerable();
+            return boxes.Select(box => mapper.Map<BoxDto>(box)).ToList();
         }
 
         /// <summary>

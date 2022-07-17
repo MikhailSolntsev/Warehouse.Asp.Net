@@ -17,6 +17,12 @@ namespace Warehouse.Web.Api.Controllers
         private readonly IMapper mapper;
         private readonly IValidator<PalletDto> validator;
 
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="storage"></param>
+        /// <param name="mapper"></param>
+        /// <param name="validator"></param>
         public PalletController(IScalableStorage storage, IMapper mapper, IValidator<PalletDto> validator)
         {
             this.storage = storage;
@@ -31,12 +37,12 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="take">Pallets to get. All if 0</param>
         /// <returns></returns>
         [HttpGet("Pallets")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<PalletDto>))]
-        public async Task<IEnumerable<PalletDto>> GetPallets([BindRequired]int take, int? skip)
+        [ProducesResponseType(200, Type = typeof(IList<PalletDto>))]
+        public async Task<IList<PalletDto>> GetPallets([BindRequired]int take, int? skip)
         {
             var pallets = await storage.GetAllPalletsAsync(take, skip);
 
-            return pallets.Select(pallet => mapper.Map<PalletDto>(pallet)).AsEnumerable();
+            return pallets.Select(pallet => mapper.Map<PalletDto>(pallet)).ToList();
         }
 
         /// <summary>
