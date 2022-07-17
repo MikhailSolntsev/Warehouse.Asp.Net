@@ -11,7 +11,7 @@ namespace Warehouse.IntegrationTests
     public class ScalableStorageEntityContextTests
     {
         private ScalableStorage storage;
-        private WarehouseContext context;
+        private IWarehouseContext context;
 
         public ScalableStorageEntityContextTests()
         {

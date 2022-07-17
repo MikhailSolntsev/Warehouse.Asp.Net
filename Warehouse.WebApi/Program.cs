@@ -14,7 +14,7 @@ builder.WebHost.UseUrls("https://localhost:6002");
 builder.Services.AddValidatorsFromAssemblyContaining<PalletValidator>();
 
 builder.Services.AddScoped<IScalableStorage, ScalableStorage>();
-builder.Services.AddScoped<WarehouseContext, WarehouseSqliteContext>();
+builder.Services.AddScoped<IWarehouseContext, WarehouseSqliteContext>();
 
 builder.Services.AddAutoMapper(typeof(DtoMappingProfile), typeof(ModelMappingProfile));
 

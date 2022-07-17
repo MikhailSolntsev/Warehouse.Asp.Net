@@ -10,7 +10,7 @@ namespace Warehouse.Data;
 
 public class ScalableStorage : IScalableStorage
 {
-    private readonly WarehouseContext db;
+    private readonly IWarehouseContext db;
     private readonly IMapper mapper;
 
     /// <summary>
@@ -18,7 +18,7 @@ public class ScalableStorage : IScalableStorage
     /// </summary>
     /// <param name="context">Database context</param>
     /// <param name="mapper">Automapper</param>
-    public ScalableStorage(WarehouseContext context, IMapper mapper)
+    public ScalableStorage(IWarehouseContext context, IMapper mapper)
     {
         db = context;
         db.Database.EnsureCreated();

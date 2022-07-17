@@ -14,7 +14,7 @@ namespace Warehouse.Data
         public ScalableStorageTests()
         {
             string fileName = Path.GetRandomFileName();
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
+            IWarehouseContext context = new WarehouseSqliteContext(fileName);
 
             var config = new MapperConfiguration(cfg =>
             {

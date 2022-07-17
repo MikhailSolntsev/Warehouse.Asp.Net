@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Warehouse.EntityContext.Models;
 
 namespace Warehouse.EntityContext.Sqlite;
 
-public class WarehouseSqliteContext : WarehouseContext
+public class WarehouseSqliteContext : DbContext, IWarehouseContext
 {
     private const string DefaultFileName = "../Warehouse.db";
     private readonly string fileName;
@@ -18,17 +19,22 @@ public class WarehouseSqliteContext : WarehouseContext
     {
         this.fileName = fileName;
     }
-    public WarehouseSqliteContext(DbContextOptions<WarehouseContext> options) : base(options)
+    public WarehouseSqliteContext(DbContextOptions<WarehouseSqliteContext> options) : base(options)
     {
         fileName = DefaultFileName;
     }
-    public WarehouseSqliteContext(string fileName, DbContextOptions<WarehouseContext> options) : base(options)
+    public WarehouseSqliteContext(string fileName, DbContextOptions<WarehouseSqliteContext> options) : base(options)
     {
         this.fileName = fileName;
     }
 
-    public override DbSet<BoxModel> Boxes { get; set; }
-    public override DbSet<PalletModel> Pallets { get; set; }
+    public virtual DbSet<BoxModel> Boxes => Set<BoxModel>();
+    public virtual DbSet<PalletModel> Pallets => Set<PalletModel>();
+
+    public async Task<int> SaveChangesAsync()
+    {
+        return await base.SaveChangesAsync();
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

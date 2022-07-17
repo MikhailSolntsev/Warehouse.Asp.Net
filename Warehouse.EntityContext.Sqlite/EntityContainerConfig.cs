@@ -9,7 +9,7 @@ public static class EntityContainerConfig
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterType<WarehouseSqliteContext>().As<WarehouseContext>();
+        builder.RegisterType<WarehouseSqliteContext>().As<IWarehouseContext>();
 
         return builder.Build();
     }
