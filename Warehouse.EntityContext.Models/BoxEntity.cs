@@ -1,7 +1,7 @@
 ﻿
 namespace Warehouse.EntityContext.Models
 {
-    public class BoxModel
+    public class BoxEntity
     {
         public int? Id { get; set; }
 
@@ -16,6 +16,6 @@ namespace Warehouse.EntityContext.Models
         public DateTime ExpirationDate { get; set; }
 
         public int? PalletModelId { get; set; }
-        public PalletModel? PalletModel { get; set; }
+        public PalletEntity? PalletModel { get; set; }
     }
 }

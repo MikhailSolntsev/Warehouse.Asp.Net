@@ -6,8 +6,8 @@ namespace Warehouse.EntityContext
 {
     public interface IWarehouseContext
     {
-        DbSet<BoxModel> Boxes { get; }
-        DbSet<PalletModel> Pallets { get; }
+        DbSet<BoxEntity> Boxes { get; }
+        DbSet<PalletEntity> Pallets { get; }
 
         DatabaseFacade Database { get; }
         Task<int> SaveChangesAsync();

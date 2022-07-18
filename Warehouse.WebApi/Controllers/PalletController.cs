@@ -93,7 +93,7 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(result.ToDictionary());
             } 
 
-            Pallet? pallet = mapper.Map<Pallet>(palletDto);
+            PalletModel? pallet = mapper.Map<PalletModel>(palletDto);
             pallet = await storage.AddPalletAsync(pallet);
 
             if (pallet is null)
@@ -126,7 +126,7 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(result.ToDictionary());
             }
 
-            var pallet = await storage.UpdatePalletAsync(mapper.Map<Pallet>(palletDto));
+            var pallet = await storage.UpdatePalletAsync(mapper.Map<PalletModel>(palletDto));
 
             return mapper.Map<PalletDto>(pallet);
         }

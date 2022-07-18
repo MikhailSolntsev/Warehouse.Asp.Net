@@ -32,7 +32,7 @@ namespace Warehouse.IntegrationTests
         public async Task CanAddPallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
 
             // Act
             await storage.AddPalletAsync(pallet);
@@ -45,7 +45,7 @@ namespace Warehouse.IntegrationTests
         public async Task CanModifyPallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
             // Act
@@ -60,7 +60,7 @@ namespace Warehouse.IntegrationTests
         public async Task CanDeletePallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
             // Act
@@ -74,10 +74,10 @@ namespace Warehouse.IntegrationTests
         public async Task CanAddBoxToPallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
-            Box box = new Box(3, 5, 7, 11, DateTime.Today);
+            BoxModel box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             // Act
             await storage.AddBoxToPalletAsync(box, pallet);

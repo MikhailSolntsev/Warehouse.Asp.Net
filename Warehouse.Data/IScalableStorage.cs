@@ -4,22 +4,22 @@ namespace Warehouse.Data
 {
     public interface IScalableStorage
     {
-        Task<List<Pallet>> GetAllPalletsAsync(int take, int? skip);
-        Task<Pallet?> GetPalletAsync(int id);
-        Task<Pallet?> AddPalletAsync(Pallet pallet);
-        Task<Pallet?> UpdatePalletAsync(Pallet pallet);
-        Task<bool> DeletePalletAsync(Pallet pallet);
+        Task<List<PalletModel>> GetAllPalletsAsync(int take, int? skip);
+        Task<PalletModel?> GetPalletAsync(int id);
+        Task<PalletModel?> AddPalletAsync(PalletModel pallet);
+        Task<PalletModel?> UpdatePalletAsync(PalletModel pallet);
+        Task<bool> DeletePalletAsync(PalletModel pallet);
         Task<bool> DeletePalletAsync(int id);
 
-        Task<List<Box>> GetAllBoxesAsync(int take, int? skip);
-        Task<Box?> GetBoxAsync(int id);
-        Task<Box?> AddBoxAsync(Box box);
-        Task<Box?> UpdateBoxAsync(Box box);
-        Task<bool> DeleteBoxAsync(Box box);
+        Task<List<BoxModel>> GetAllBoxesAsync(int take, int? skip);
+        Task<BoxModel?> GetBoxAsync(int id);
+        Task<BoxModel?> AddBoxAsync(BoxModel box);
+        Task<BoxModel?> UpdateBoxAsync(BoxModel box);
+        Task<bool> DeleteBoxAsync(BoxModel box);
         Task<bool> DeleteBoxAsync(int id);
 
-        Task<bool> AddBoxToPalletAsync(Box box, Pallet pallet);
-        Task<bool> RemoveBoxFromPallet(Box box);
+        Task<bool> AddBoxToPalletAsync(BoxModel box, PalletModel pallet);
+        Task<bool> RemoveBoxFromPallet(BoxModel box);
         
     }
 }

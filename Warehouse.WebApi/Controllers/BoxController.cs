@@ -92,7 +92,7 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(result.ToDictionary());
             }
 
-            Box? box = await storage.AddBoxAsync(mapper.Map<Box>(boxDto));
+            BoxModel? box = await storage.AddBoxAsync(mapper.Map<BoxModel>(boxDto));
 
             if (box is null)
             {
@@ -124,7 +124,7 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(result.ToDictionary());
             }
 
-            var box = await storage.UpdateBoxAsync(mapper.Map<Box>(boxDto));
+            var box = await storage.UpdateBoxAsync(mapper.Map<BoxModel>(boxDto));
 
             return mapper.Map<BoxDto>(box);
         }

@@ -30,7 +30,7 @@ namespace Warehouse.Data
         public async Task CanAddPallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
 
             // Act
             await storage.AddPalletAsync(pallet);
@@ -70,8 +70,8 @@ namespace Warehouse.Data
         public async Task AddingPalletShouldReturnNewPallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7);
-            Box box = new Box(3, 3, 3, 3, DateTime.Now);
+            PalletModel pallet = new(3, 5, 7);
+            BoxModel box = new BoxModel(3, 3, 3, 3, DateTime.Now);
             pallet.AddBox(box);
 
             // Act
@@ -85,7 +85,7 @@ namespace Warehouse.Data
         public async Task GetPalletWithWrongIdShouldReturnNull()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7);
+            PalletModel pallet = new(3, 5, 7);
             
             // Act
             await storage.AddPalletAsync(pallet);
@@ -99,7 +99,7 @@ namespace Warehouse.Data
         public async Task CanModifyPallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
             // Act
@@ -116,7 +116,7 @@ namespace Warehouse.Data
         public async Task CanDeletePallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
             // Act
@@ -131,10 +131,10 @@ namespace Warehouse.Data
         public async Task CanAddBoxToPallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
-            Box box = new Box(3, 5, 7, 11, DateTime.Today);
+            BoxModel box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             // Act
             await storage.AddBoxToPalletAsync(box, pallet);
@@ -148,10 +148,10 @@ namespace Warehouse.Data
         public async Task CanAddRetrievePalletWithBoxes()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
 
-            Box box = new Box(3, 5, 7, 11, DateTime.Today);
+            BoxModel box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             // Act
             await storage.AddBoxToPalletAsync(box, pallet);
@@ -165,7 +165,7 @@ namespace Warehouse.Data
         public void PalletWithoutIdStoresWithId()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7);
+            PalletModel pallet = new(3, 5, 7);
 
             // Act
             var addedPallet = storage.AddPalletAsync(pallet).Result;
@@ -203,7 +203,7 @@ namespace Warehouse.Data
 
         private async Task FillStorageWithPalletAndBoxesAsync()
         {
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
             await storage.AddPalletAsync(pallet);
             pallet = new(3, 5, 7, 13);
             await storage.AddPalletAsync(pallet);
@@ -217,7 +217,7 @@ namespace Warehouse.Data
 
         private async Task FillStorageWithBoxesAsync()
         {
-            Box box = new(3, 5, 7, 11, DateTime.Today);
+            BoxModel box = new(3, 5, 7, 11, DateTime.Today);
             await storage.AddBoxAsync(box);
             box = new(3, 5, 7, 13, DateTime.Today);
             await storage.AddBoxAsync(box);

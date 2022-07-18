@@ -32,7 +32,7 @@ namespace Warehouse.EntityContext.Tests
         public void CanAddBox()
         {
             db.Database.EnsureCreated();
-            BoxModel model = new()
+            BoxEntity model = new()
             {
                 Id = 1,
                 Length = 3,
@@ -55,7 +55,7 @@ namespace Warehouse.EntityContext.Tests
         {
             // Arrange
             db.Database.EnsureCreated();
-            BoxModel model = new()
+            BoxEntity model = new()
             {
                 Id = 1,
                 Length = 3,
@@ -78,7 +78,7 @@ namespace Warehouse.EntityContext.Tests
             // Arrange
             db.Database.EnsureCreated();
 
-            PalletModel pallet = new()
+            PalletEntity pallet = new()
             {
                 Id = 13,
                 Length = 3,
@@ -87,7 +87,7 @@ namespace Warehouse.EntityContext.Tests
             };
             db.Pallets.Add(pallet);
 
-            BoxModel box = new()
+            BoxEntity box = new()
             {
                 Id = 17,
                 Length = 3,

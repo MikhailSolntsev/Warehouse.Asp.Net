@@ -28,8 +28,8 @@ public class WarehouseSqliteContext : DbContext, IWarehouseContext
         this.fileName = fileName;
     }
 
-    public virtual DbSet<BoxModel> Boxes => Set<BoxModel>();
-    public virtual DbSet<PalletModel> Pallets => Set<PalletModel>();
+    public virtual DbSet<BoxEntity> Boxes => Set<BoxEntity>();
+    public virtual DbSet<PalletEntity> Pallets => Set<PalletEntity>();
 
     public async Task<int> SaveChangesAsync()
     {
@@ -53,73 +53,73 @@ public class WarehouseSqliteContext : DbContext, IWarehouseContext
 
     private void DiscribeBox(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<BoxModel>()
+        modelBuilder.Entity<BoxEntity>()
             .ToTable("Boxes")
             .HasIndex("Id");
 
-        modelBuilder.Entity<BoxModel>()
+        modelBuilder.Entity<BoxEntity>()
             .HasKey(box => box.Id);
 
-        modelBuilder.Entity<BoxModel>()
+        modelBuilder.Entity<BoxEntity>()
             .Property(box => box.Length)
             .HasColumnType("INTEGER")
             .IsRequired();
 
-        modelBuilder.Entity<BoxModel>()
+        modelBuilder.Entity<BoxEntity>()
             .Property(box => box.Width)
             .HasColumnType("INTEGER")
             .IsRequired();
 
-        modelBuilder.Entity<BoxModel>()
+        modelBuilder.Entity<BoxEntity>()
             .Property(box => box.Height)
             .HasColumnType("INTEGER")
             .IsRequired();
 
-        modelBuilder.Entity<BoxModel>()
+        modelBuilder.Entity<BoxEntity>()
             .Property(box => box.Weight)
             .HasColumnType("INTEGER")
             .IsRequired();
 
-        modelBuilder.Entity<BoxModel>()
+        modelBuilder.Entity<BoxEntity>()
             .Property(box => box.ExpirationDate)
             .HasColumnType("datetime")
             .IsRequired();
 
-        modelBuilder.Entity<BoxModel>()
+        modelBuilder.Entity<BoxEntity>()
             .Property(box => box.PalletModelId)
             .HasColumnName("PalletId")
             .HasColumnType("INTEGER");
 
-        modelBuilder.Entity<BoxModel>()
+        modelBuilder.Entity<BoxEntity>()
             .HasOne(box => box.PalletModel)
             .WithMany(pallet => pallet.Boxes);
     }
 
     private void DiscribePallet(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<PalletModel>()
+        modelBuilder.Entity<PalletEntity>()
             .ToTable("Pallets")
             .HasIndex("Id");
 
-        modelBuilder.Entity<PalletModel>()
+        modelBuilder.Entity<PalletEntity>()
             .HasKey(pallet => pallet.Id);
 
-        modelBuilder.Entity<PalletModel>()
+        modelBuilder.Entity<PalletEntity>()
             .Property(pallet => pallet.Length)
             .HasColumnType("INTEGER")
             .IsRequired();
 
-        modelBuilder.Entity<PalletModel>()
+        modelBuilder.Entity<PalletEntity>()
             .Property(pallet => pallet.Width)
             .HasColumnType("INTEGER")
             .IsRequired();
 
-        modelBuilder.Entity<PalletModel>()
+        modelBuilder.Entity<PalletEntity>()
             .Property(pallet => pallet.Height)
             .HasColumnType("INTEGER")
             .IsRequired();
 
-        modelBuilder.Entity<PalletModel>()
+        modelBuilder.Entity<PalletEntity>()
             .HasMany(pallet => pallet.Boxes);
     }
 }

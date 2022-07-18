@@ -22,12 +22,12 @@ namespace Warehouse.EntityContext.Tests
         [Fact(DisplayName = "Pallets with Boxes convert to PalletModel with BoxModels")]
         public void PalletsConvertWithBoxes()
         {
-            Pallet pallet = new Pallet(3, 5, 7);
-            Box box = new Box(3, 5, 7, 11, DateTime.Today);
+            PalletModel pallet = new PalletModel(3, 5, 7);
+            BoxModel box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             pallet.AddBox(box);
 
-            PalletModel model = mapper.Map<PalletModel>(pallet);
+            PalletEntity model = mapper.Map<PalletEntity>(pallet);
 
             model.Boxes.Should().HaveCount(1);
         }
@@ -36,12 +36,12 @@ namespace Warehouse.EntityContext.Tests
         public void PalletModelsConvertWithBoxModels()
         {
             // Arrange
-            PalletModel palletModel = new PalletModel();
-            BoxModel boxModel = new BoxModel();
+            PalletEntity palletModel = new PalletEntity();
+            BoxEntity boxModel = new BoxEntity();
 
-            palletModel.Boxes = new List<BoxModel>() { boxModel};
+            palletModel.Boxes = new List<BoxEntity>() { boxModel};
 
-            Pallet pallet = mapper.Map<Pallet>(palletModel);
+            PalletModel pallet = mapper.Map<PalletModel>(palletModel);
 
             pallet.Boxes.Should().HaveCount(1);
         }

@@ -7,13 +7,13 @@ namespace Warehouse.EntityContext.Models
     {
         public ModelMappingProfile()
         {
-            CreateMap<Box, BoxModel>()
+            CreateMap<BoxModel, BoxEntity>()
                 .ForMember(b => b.PalletModelId, opt => opt.Ignore())
                 .ForMember(b => b.PalletModel, opt => opt.Ignore());
-            CreateMap<BoxModel, Box>();
+            CreateMap<BoxEntity, BoxModel>();
 
-            CreateMap<Pallet, PalletModel>();
-            CreateMap<PalletModel, Pallet>()
+            CreateMap<PalletModel, PalletEntity>();
+            CreateMap<PalletEntity, PalletModel>()
                 .ForMember(p => p.ExpirationDate, opt => opt.Ignore());
         }  
     }
