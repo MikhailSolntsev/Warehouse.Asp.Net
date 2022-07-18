@@ -34,18 +34,18 @@ public class ScalableStorage : IScalableStorage
     /// <returns>List of pallets</returns>
     public async Task<List<Pallet>> GetAllPalletsAsync(int take, int? skip)
     {
-        var query = (IQueryable<PalletModel>) db.Pallets.Include(p => p.Boxes);
+        var query = (IQueryable<PalletModel>) db.Pallets;
 
         if (skip is not null)
         {
             query = query.Skip(skip ?? 0);
         }
 
-        query = query.Take(take);
+        query = query.Take(take).Include(p => p.Boxes);
         
         return await
             query
-            //.ProjectTo<Pallet>()
+            //.ProjectTo<Pallet>(mapper.ConfigurationProvider)
             .Select(palletModel => mapper.Map<Pallet>(palletModel))
             .ToListAsync();
     }

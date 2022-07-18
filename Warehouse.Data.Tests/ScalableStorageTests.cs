@@ -66,7 +66,7 @@ namespace Warehouse.Data
             pallets.Should().HaveCount(2);
         }
 
-        [Fact(DisplayName = "Adding box should return new Pallet, not null")]
+        [Fact(DisplayName = "Adding pallet should return new Pallet, not null")]
         public async Task AddingPalletShouldReturnNewPallet()
         {
             // Arrange
@@ -81,7 +81,21 @@ namespace Warehouse.Data
             newPallet.Should().NotBeNull();
         }
 
-        [Fact(DisplayName = "Storage can modify box")]
+        [Fact(DisplayName = "Get pallet with wrong Id should return null")]
+        public async Task GetPalletWithWrongIdShouldReturnNull()
+        {
+            // Arrange
+            Pallet pallet = new(3, 5, 7);
+            
+            // Act
+            await storage.AddPalletAsync(pallet);
+            var newPallet = await storage.GetPalletAsync(100);
+            // Assert
+
+            newPallet.Should().BeNull();
+        }
+
+        [Fact(DisplayName = "Storage can modify pallet")]
         public async Task CanModifyPallet()
         {
             // Arrange
@@ -98,7 +112,7 @@ namespace Warehouse.Data
             storedPallet?.Length.Should().Be(13);
         }
 
-        [Fact(DisplayName = "Storage can delete box")]
+        [Fact(DisplayName = "Storage can delete pallet")]
         public async Task CanDeletePallet()
         {
             // Arrange
@@ -113,7 +127,7 @@ namespace Warehouse.Data
             storedPallet.Should().BeNull();
         }
 
-        [Fact(DisplayName = "Can add box to box")]
+        [Fact(DisplayName = "Can add box to pallet")]
         public async Task CanAddBoxToPallet()
         {
             // Arrange
@@ -128,6 +142,23 @@ namespace Warehouse.Data
             //Assert
             var storedPallet = await storage.GetPalletAsync(pallet.Id ?? 0);
             storedPallet.Boxes?.Should().HaveCount(1);
+        }
+
+        [Fact(DisplayName = "Get all pallet retrieves pallet with boxes")]
+        public async Task CanAddRetrievePalletWithBoxes()
+        {
+            // Arrange
+            Pallet pallet = new(3, 5, 7, 11);
+            await storage.AddPalletAsync(pallet);
+
+            Box box = new Box(3, 5, 7, 11, DateTime.Today);
+
+            // Act
+            await storage.AddBoxToPalletAsync(box, pallet);
+
+            //Assert
+            var pallets = await storage.GetAllPalletsAsync(1, null);
+            pallets[0].Boxes?.Should().HaveCount(1);
         }
 
         [Fact(DisplayName = "Pallet without Id stores with Id")]
