@@ -18,6 +18,7 @@ namespace Warehouse.Web.Api
         {
             string fileName = Path.GetRandomFileName();
             IWarehouseContext context = new WarehouseSqliteContext(fileName);
+            context.Database.EnsureCreated();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -27,7 +28,7 @@ namespace Warehouse.Web.Api
 
             IMapper mapper = config.CreateMapper();
 
-            ScalableStorage storage = new(context, mapper);
+            IPalletStorage storage = new PalletStorage(context, mapper);
             controller = new(storage, mapper, new PalletValidator());
         }
 

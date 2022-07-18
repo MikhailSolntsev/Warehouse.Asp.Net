@@ -13,7 +13,7 @@ namespace Warehouse.Web.Api.Controllers
     [ApiController]
     public class PalletController : ControllerBase
     {
-        private readonly IScalableStorage storage;
+        private readonly IPalletStorage storage;
         private readonly IMapper mapper;
         private readonly IValidator<PalletDto> validator;
 
@@ -23,7 +23,7 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="storage"></param>
         /// <param name="mapper"></param>
         /// <param name="validator"></param>
-        public PalletController(IScalableStorage storage, IMapper mapper, IValidator<PalletDto> validator)
+        public PalletController(IPalletStorage storage, IMapper mapper, IValidator<PalletDto> validator)
         {
             this.storage = storage;
             this.mapper = mapper;

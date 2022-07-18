@@ -10,13 +10,15 @@ namespace Warehouse.IntegrationTests
 {
     public class ScalableStorageEntityContextTests
     {
-        private ScalableStorage storage;
+        private IPalletStorage palletStorage;
+        private IScalableStorage storage;
         private IWarehouseContext context;
 
         public ScalableStorageEntityContextTests()
         {
             string fileName = Path.GetRandomFileName();
             context = new WarehouseSqliteContext(fileName);
+            context.Database.EnsureCreated();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -25,6 +27,7 @@ namespace Warehouse.IntegrationTests
 
             IMapper mapper = config.CreateMapper();
 
+            palletStorage = new PalletStorage(context, mapper);
             storage = new ScalableStorage(context, mapper);
         }
 
@@ -35,7 +38,7 @@ namespace Warehouse.IntegrationTests
             PalletModel pallet = new(3, 5, 7, 11);
 
             // Act
-            await storage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet);
 
             //Assert
             context.Pallets.Should().HaveCount(1);
@@ -46,11 +49,11 @@ namespace Warehouse.IntegrationTests
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet);
 
             // Act
             pallet = new(13, 5, 7, 11);
-            await storage.UpdatePalletAsync(pallet);
+            await palletStorage.UpdatePalletAsync(pallet);
 
             //Assert
             context.Pallets.Find(pallet.Id)?.Length.Should().Be(13);
@@ -61,10 +64,10 @@ namespace Warehouse.IntegrationTests
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet);
 
             // Act
-            await storage.DeletePalletAsync(pallet);
+            await palletStorage.DeletePalletAsync(pallet);
 
             //Assert
             context.Pallets.Find(pallet.Id).Should().BeNull();
@@ -75,7 +78,7 @@ namespace Warehouse.IntegrationTests
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet);
 
             BoxModel box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 

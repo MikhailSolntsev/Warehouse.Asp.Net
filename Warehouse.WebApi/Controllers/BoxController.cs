@@ -13,7 +13,7 @@ namespace Warehouse.Web.Api.Controllers
     [ApiController]
     public class BoxController : ControllerBase
     {
-        private readonly IScalableStorage storage;
+        private readonly IBoxStorage storage;
         private readonly IMapper mapper;
         private readonly IValidator<BoxDto> validator;
 
@@ -22,7 +22,7 @@ namespace Warehouse.Web.Api.Controllers
         /// </summary>
         /// <param name="storage"></param>
         /// <param name="mapper"></param>
-        public BoxController(IScalableStorage storage, IMapper mapper, IValidator<BoxDto> validator)
+        public BoxController(IBoxStorage storage, IMapper mapper, IValidator<BoxDto> validator)
         {
             this.storage = storage;
             this.mapper = mapper;
