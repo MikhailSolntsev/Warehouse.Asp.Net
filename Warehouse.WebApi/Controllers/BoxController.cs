@@ -56,7 +56,7 @@ namespace Warehouse.Web.Api.Controllers
         {
             if (id == 0)
             {
-                ResponseMessage response = new() { Message = "Id parameter is not set" };
+                ResponseMessage response = new("Id parameter is not set");
                 return BadRequest(response);
             }
 
@@ -64,7 +64,7 @@ namespace Warehouse.Web.Api.Controllers
 
             if (box is null)
             {
-                ResponseMessage response = new() { Message = $"Can't find box wit id = {id}" };
+                ResponseMessage response = new($"Can't find box wit id = {id}");
                 return NotFound(response);
             }
             return mapper.Map<BoxDto>(box);
@@ -82,7 +82,7 @@ namespace Warehouse.Web.Api.Controllers
         {
             if (boxDto is null)
             {
-                ResponseMessage response = new() { Message = "Bad model for box" };
+                ResponseMessage response = new("Bad model for box");
                 return BadRequest(response);
             }
 
@@ -96,7 +96,7 @@ namespace Warehouse.Web.Api.Controllers
 
             if (box is null)
             {
-                ResponseMessage response = new() { Message = "Error during creating/updating box" };
+                ResponseMessage response = new("Error during creating/updating box");
                 return BadRequest(response);
             }
             return mapper.Map<BoxDto>(box);
@@ -114,7 +114,7 @@ namespace Warehouse.Web.Api.Controllers
         {
             if (boxDto is null)
             {
-                ResponseMessage response = new() { Message = "Bad model for box" };
+                ResponseMessage response = new("Bad model for box");
                 return BadRequest(response);
             }
 
@@ -135,27 +135,19 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="id">Id to find box</param>
         /// <returns></returns>
         [HttpDelete("Box/{id}")]
-        [ProducesResponseType(200)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteBox(int id)
         {
-            var box = await storage.GetBoxAsync(id);
-
-            if (box is null)
-            {
-                return NoContent();
-            }
-
             bool deleted = await storage.DeleteBoxAsync(id);
 
             if (deleted)
             {
-                return Ok();
+                return NoContent();
             }
 
-            ResponseMessage response = new() { Message = "Error during deleting box" };
-            return BadRequest(response);
+            ResponseMessage response = new($"Box with Id={id} was not found");
+            return NotFound(response);
         }
 
     }

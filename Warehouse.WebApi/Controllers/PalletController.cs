@@ -57,7 +57,7 @@ namespace Warehouse.Web.Api.Controllers
         {
             if (id == 0)
             {
-                ResponseMessage response = new() { Message = "Id parameter is not set" };
+                ResponseMessage response = new("Id parameter is not set");
                 return BadRequest(response);
             }
 
@@ -65,7 +65,7 @@ namespace Warehouse.Web.Api.Controllers
 
             if (pallet is null)
             {
-                ResponseMessage response = new() { Message = $"Can't find pallet wit id = {id}" };
+                ResponseMessage response = new($"Can't find pallet wit id = {id}");
                 return NotFound(response);
             }
             return mapper.Map<PalletDto>(pallet);
@@ -83,7 +83,7 @@ namespace Warehouse.Web.Api.Controllers
         {
             if (palletDto is null)
             {
-                ResponseMessage response = new() { Message = "Bad model for pallet" };
+                ResponseMessage response = new("Bad model for pallet");
                 return BadRequest(response);
             }
 
@@ -98,7 +98,7 @@ namespace Warehouse.Web.Api.Controllers
 
             if (pallet is null)
             {
-                ResponseMessage response = new() { Message = "Error during creating/updating pallet" };
+                ResponseMessage response = new("Error during creating/updating pallet");
                 return BadRequest(response);
             }
             return mapper.Map<PalletDto>(pallet);
@@ -116,7 +116,7 @@ namespace Warehouse.Web.Api.Controllers
         {
             if (palletDto is null)
             {
-                ResponseMessage response = new() { Message = "Bad model for pallet" };
+                ResponseMessage response = new("Bad model for pallet");
                 return BadRequest(response);
             }
 
@@ -137,27 +137,19 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="id">Id to find pallet</param>
         /// <returns></returns>
         [HttpDelete("Pallet/{id}")]
-        [ProducesResponseType(200)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeletePallet(int id)
         {
-            var pallet = await storage.GetPalletAsync(id);
-
-            if (pallet is null)
-            {
-                return NoContent();
-            }
-
             bool deleted = await storage.DeletePalletAsync(id);
             
             if (deleted)
             {
-                return Ok();
+                return NoContent();
             }
 
-            ResponseMessage response = new() { Message = "Error during deleting pallet" };
-            return BadRequest(response);
+            ResponseMessage response = new($"Box with Id={id} was not found");
+            return NotFound(response);
         }
 
     }

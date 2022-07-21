@@ -81,6 +81,20 @@ namespace Warehouse.Data
             await action.Should().NotThrowAsync<Exception>();
         }
 
+        [Fact(DisplayName = "Find box should not drop exception with wrong Id")]
+        public async Task FindBoxShouldNotDropExceptionWithWrongId()
+        {
+            // Arrange
+            BoxModel box = new(3, 5, 7, 11, DateTime.Today);
+            await storage.AddBoxAsync(box);
+
+            // Act
+            Func<Task> action = async () => await storage.GetBoxAsync(15);
+
+            // Assert
+            await action.Should().NotThrowAsync<Exception>();
+        }
+
         private async Task FillStorageWithBoxesAsync()
         {
             BoxModel box = new(3, 5, 7, 11, DateTime.Today);

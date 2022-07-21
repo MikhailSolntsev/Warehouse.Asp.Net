@@ -67,7 +67,7 @@ namespace Warehouse.IntegrationTests
             await palletStorage.AddPalletAsync(pallet);
 
             // Act
-            await palletStorage.DeletePalletAsync(pallet);
+            await palletStorage.DeletePalletAsync(11);
 
             //Assert
             context.Pallets.Find(pallet.Id).Should().BeNull();

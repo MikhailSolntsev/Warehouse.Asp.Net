@@ -111,27 +111,6 @@ public class PalletStorage : IPalletStorage
         return null;
     }
 
-    public async Task<bool> DeletePalletAsync(PalletModel pallet)
-    {
-        var pallets = db.Pallets;
-
-        var storedPallet = await pallets
-            .Include(p => p.Boxes)
-            .FirstOrDefaultAsync(p => p.Id == pallet.Id);
-
-        if (storedPallet is null)
-        {
-            return false;
-        }
-
-        storedPallet.Boxes?.Select(box => { box.PalletModelId = 0; return true; });
-
-        pallets.Remove(storedPallet);
-
-        var affetcted = await db.SaveChangesAsync();
-        return affetcted > 0;
-    }
-
     public async Task<bool> DeletePalletAsync(int id)
     {
         var pallets = db.Pallets;
@@ -143,7 +122,7 @@ public class PalletStorage : IPalletStorage
 
         if (storedPallet is null)
         {
-            return true;
+            return false;
         }
 
         storedPallet.Boxes?.Select(box => { box.PalletModelId = 0; return true; });
@@ -151,7 +130,6 @@ public class PalletStorage : IPalletStorage
         pallets.Remove(storedPallet);
 
         var affected = await db.SaveChangesAsync();
-
         return affected > 0;
     }
 

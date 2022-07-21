@@ -90,7 +90,7 @@ public class BoxStorage : IBoxStorage
 
         if (box is null)
         {
-            throw new ArgumentException($"Box with Id={id} not found");
+            return false;
         }
 
         boxes.Remove(box);

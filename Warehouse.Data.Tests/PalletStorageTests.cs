@@ -121,7 +121,7 @@ namespace Warehouse.Data
             await storage.AddPalletAsync(pallet);
 
             // Act
-            await storage.DeletePalletAsync(pallet);
+            await storage.DeletePalletAsync(11);
 
             //Assert
             var storedPallet = await storage.GetPalletAsync(pallet.Id ?? 0);
