@@ -117,8 +117,7 @@ public class PalletStorage : IPalletStorage
 
         var storedPallet = await pallets
             .Include(p => p.Boxes)
-            .Where(p => p.Id == pallet.Id)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(p => p.Id == pallet.Id);
 
         if (storedPallet is null)
         {
@@ -130,36 +129,30 @@ public class PalletStorage : IPalletStorage
         pallets.Remove(storedPallet);
 
         var affetcted = await db.SaveChangesAsync();
-        return affetcted == 1;
+        return affetcted > 0;
     }
 
     public async Task<bool> DeletePalletAsync(int id)
     {
         var pallets = db.Pallets;
 
-        var pallet = await pallets.FindAsync(id);
-        if (pallet is null)
-        {
-            return false;
-        }
-
         var storedPallet = await pallets
             .Include(p => p.Boxes)
-            .Where(b => b.Id == pallet.Id)
-            .FirstOrDefaultAsync();
+            //.Where(b => b.Id == pallet.Id)
+            .FirstOrDefaultAsync(p => p.Id == id);
 
         if (storedPallet is null)
         {
-            return false;
+            return true;
         }
 
         storedPallet.Boxes?.Select(box => { box.PalletModelId = 0; return true; });
 
         pallets.Remove(storedPallet);
 
-        await db.SaveChangesAsync();
+        var affected = await db.SaveChangesAsync();
 
-        return true;
+        return affected > 0;
     }
 
 }

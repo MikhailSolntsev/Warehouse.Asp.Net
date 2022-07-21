@@ -52,7 +52,35 @@ namespace Warehouse.Data
             // Assert
             boxes.Should().HaveCount(2);
         }
-        
+
+        [Fact(DisplayName = "Can't delete box with wrong Id")]
+        public async Task CantDeleteBoxWithWrongId()
+        {
+            // Arrange
+            BoxModel box = new(3, 5, 7, 11, DateTime.Today);
+            await storage.AddBoxAsync(box);
+
+            // Act
+            Func<Task> action = async () => await storage.DeleteBoxAsync(15);
+
+            // Assert
+            await action.Should().ThrowAsync<Exception>();
+        }
+
+        [Fact(DisplayName = "Storage can delete boxes with good Id")]
+        public async Task CanDeleteBoxWithGoodId()
+        {
+            // Arrange
+            BoxModel box = new(3, 5, 7, 11, DateTime.Today);
+            await storage.AddBoxAsync(box);
+
+            // Act
+            Func<Task> action = async () => await storage.DeleteBoxAsync(1);
+
+            // Assert
+            await action.Should().NotThrowAsync<Exception>();
+        }
+
         private async Task FillStorageWithBoxesAsync()
         {
             BoxModel box = new(3, 5, 7, 11, DateTime.Today);

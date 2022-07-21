@@ -8,6 +8,5 @@ public interface IBoxStorage
     Task<BoxModel?> GetBoxAsync(int id);
     Task<BoxModel?> AddBoxAsync(BoxModel box);
     Task<BoxModel?> UpdateBoxAsync(BoxModel box);
-    Task<bool> DeleteBoxAsync(BoxModel box);
     Task<bool> DeleteBoxAsync(int id);
 }

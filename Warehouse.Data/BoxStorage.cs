@@ -83,27 +83,20 @@ public class BoxStorage : IBoxStorage
         return null;
     }
 
-    public async Task<bool> DeleteBoxAsync(BoxModel box)
-    {
-        db.Boxes.Remove(mapper.Map<BoxEntity>(box));
-
-        var affected = await db.SaveChangesAsync();
-        return affected > 0;
-    }
-
     public async Task<bool> DeleteBoxAsync(int id)
     {
         var boxes = db.Boxes;
-        BoxEntity? boxModel = await boxes.FindAsync(id);
+        BoxEntity? box = await boxes.FindAsync(id);
 
-        if (boxModel is null)
+        if (box is null)
         {
-            return true;
+            throw new ArgumentException($"Box with Id={id} not found");
         }
-        boxes.Remove(boxModel);
+
+        boxes.Remove(box);
 
         var affected = await db.SaveChangesAsync();
-        return (affected > 0);
+        return affected > 0;
     }
 
 }
