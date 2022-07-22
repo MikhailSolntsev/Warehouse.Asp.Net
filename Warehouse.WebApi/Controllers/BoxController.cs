@@ -51,12 +51,12 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpGet("Box/{id}", Name = nameof(GetBox))]
         [ProducesResponseType(200, Type = typeof(BoxDto))]
-        [ProducesResponseType(404)]
-        public async Task<ActionResult<BoxDto>> GetBox(int id)
+        [ProducesResponseType(404, Type = typeof(ResponseMessage))]
+        public async Task<ActionResult<BoxDto>> GetBox([BindRequired] int id)
         {
             if (id == 0)
             {
-                ResponseMessage response = new("Id parameter is not set");
+                ResponseMessage response = new("Id parameter should be greater than 0");
                 return BadRequest(response);
             }
 
@@ -77,7 +77,7 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpPost("Box")]
         [ProducesResponseType(200, Type = typeof(BoxDto))]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(400, Type = typeof(ResponseMessage))]
         public async Task<ActionResult<BoxDto>> CreateBox([FromBody] BoxDto boxDto)
         {
             if (boxDto is null)
@@ -108,8 +108,8 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="boxDto">model to update box</param>
         /// <returns></returns>
         [HttpPut("Box")]
-        [ProducesResponseType(204, Type = typeof(BoxDto))]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(200, Type = typeof(BoxDto))]
+        [ProducesResponseType(400, Type = typeof(ResponseMessage))]
         public async Task<ActionResult<BoxDto>> UpdateBox([FromBody] BoxDto boxDto)
         {
             if (boxDto is null)
@@ -121,7 +121,8 @@ namespace Warehouse.Web.Api.Controllers
             ValidationResult result = await validator.ValidateAsync(boxDto);
             if (!result.IsValid)
             {
-                return BadRequest(result.ToDictionary());
+                var message = new ResponseMessage(result.ToDictionary());
+                return BadRequest(message);
             }
 
             var box = await storage.UpdateBoxAsync(mapper.Map<BoxModel>(boxDto));
@@ -136,7 +137,7 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpDelete("Box/{id}")]
         [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(404, Type = typeof(ResponseMessage))]
         public async Task<IActionResult> DeleteBox(int id)
         {
             bool deleted = await storage.DeleteBoxAsync(id);

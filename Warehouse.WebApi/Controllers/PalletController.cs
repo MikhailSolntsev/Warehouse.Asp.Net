@@ -78,7 +78,7 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpPost("Pallet")]
         [ProducesResponseType(200, Type = typeof(PalletDto))]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(400, Type = typeof(ResponseMessage))]
         public async Task<ActionResult<PalletDto>> CreatePallet([FromBody] PalletDto palletDto)
         {
             if (palletDto is null)
@@ -111,7 +111,7 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpPut("Pallet")]
         [ProducesResponseType(204, Type = typeof(PalletDto))]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(400, Type = typeof(ResponseMessage))]
         public async Task<ActionResult<PalletDto>> UpdatePallet([FromBody] PalletDto palletDto)
         {
             if (palletDto is null)
@@ -123,7 +123,8 @@ namespace Warehouse.Web.Api.Controllers
             ValidationResult result = await validator.ValidateAsync(palletDto);
             if (!result.IsValid)
             {
-                return BadRequest(result.ToDictionary());
+                ResponseMessage response = new(result.ToDictionary());
+                return BadRequest(response);
             }
 
             var pallet = await storage.UpdatePalletAsync(mapper.Map<PalletModel>(palletDto));
@@ -138,7 +139,7 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpDelete("Pallet/{id}")]
         [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(404, Type = typeof(ResponseMessage))]
         public async Task<IActionResult> DeletePallet(int id)
         {
             bool deleted = await storage.DeletePalletAsync(id);
