@@ -5,13 +5,26 @@ using Warehouse.EntityContext.Sqlite;
 using Warehouse.Web.Models;
 using Warehouse.Web.Api.Infrastructure;
 using FluentValidation;
-using FluentValidation.Results;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("https://localhost:6002");
+//builder.WebHost.UseUrls("https://localhost:6002");
+builder.WebHost.UseUrls("http://localhost:6001");
 
 builder.Services.AddValidatorsFromAssemblyContaining<PalletValidator>();
+builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddMvc(options =>
+{
+    options.Filters.Add(typeof(ValidateModelStateAttribute));
+});
+
+builder.Services.Configure<ApiBehaviorOptions>(opt =>
+{
+    opt.SuppressModelStateInvalidFilter = true;
+});
 
 builder.Services.AddScoped<IScalableStorage, ScalableStorage>();
 builder.Services.AddScoped<IBoxStorage, BoxStorage>();
@@ -42,7 +55,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

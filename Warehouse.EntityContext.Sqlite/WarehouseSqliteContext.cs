@@ -46,8 +46,7 @@ public class WarehouseSqliteContext : DbContext, IWarehouseContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new PalletConfiguration());
-        modelBuilder.ApplyConfiguration(new BoxConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PalletConfiguration).Assembly);
     }
 
 }

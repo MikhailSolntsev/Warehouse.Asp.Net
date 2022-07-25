@@ -15,18 +15,16 @@ namespace Warehouse.Web.Api.Controllers
     {
         private readonly IBoxStorage storage;
         private readonly IMapper mapper;
-        private readonly IValidator<BoxDto> validator;
 
         /// <summary>
         /// .ctor
         /// </summary>
         /// <param name="storage"></param>
         /// <param name="mapper"></param>
-        public BoxController(IBoxStorage storage, IMapper mapper, IValidator<BoxDto> validator)
+        public BoxController(IBoxStorage storage, IMapper mapper)
         {
             this.storage = storage;
             this.mapper = mapper;
-            this.validator = validator;
         }
 
         /// <summary>
@@ -86,12 +84,6 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
-            ValidationResult result = await validator.ValidateAsync(boxDto);
-            if (!result.IsValid)
-            {
-                return BadRequest(result.ToDictionary());
-            }
-
             BoxModel? box = await storage.AddBoxAsync(mapper.Map<BoxModel>(boxDto));
 
             if (box is null)
@@ -116,13 +108,6 @@ namespace Warehouse.Web.Api.Controllers
             {
                 ResponseMessage response = new("Bad model for box");
                 return BadRequest(response);
-            }
-
-            ValidationResult result = await validator.ValidateAsync(boxDto);
-            if (!result.IsValid)
-            {
-                var message = new ResponseMessage(result.ToDictionary());
-                return BadRequest(message);
             }
 
             var box = await storage.UpdateBoxAsync(mapper.Map<BoxModel>(boxDto));

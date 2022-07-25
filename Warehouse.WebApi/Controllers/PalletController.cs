@@ -15,19 +15,16 @@ namespace Warehouse.Web.Api.Controllers
     {
         private readonly IPalletStorage storage;
         private readonly IMapper mapper;
-        private readonly IValidator<PalletDto> validator;
 
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="storage"></param>
         /// <param name="mapper"></param>
-        /// <param name="validator"></param>
-        public PalletController(IPalletStorage storage, IMapper mapper, IValidator<PalletDto> validator)
+        public PalletController(IPalletStorage storage, IMapper mapper)
         {
             this.storage = storage;
             this.mapper = mapper;
-            this.validator = validator;
         }
 
         /// <summary>
@@ -87,12 +84,6 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
-            ValidationResult result = await validator.ValidateAsync(palletDto);
-            if (!result.IsValid)
-            {
-                return BadRequest(result.ToDictionary());
-            } 
-
             PalletModel? pallet = mapper.Map<PalletModel>(palletDto);
             pallet = await storage.AddPalletAsync(pallet);
 
@@ -117,13 +108,6 @@ namespace Warehouse.Web.Api.Controllers
             if (palletDto is null)
             {
                 ResponseMessage response = new("Bad model for pallet");
-                return BadRequest(response);
-            }
-
-            ValidationResult result = await validator.ValidateAsync(palletDto);
-            if (!result.IsValid)
-            {
-                ResponseMessage response = new(result.ToDictionary());
                 return BadRequest(response);
             }
 
