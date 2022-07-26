@@ -21,8 +21,8 @@ namespace Warehouse.Web.Models
         [Fact(DisplayName = "Pallet with Boxes convert to PalletModel with BoxModels")]
         public void PalletsConvertWithBoxes()
         {
-            Pallet pallet = new Pallet(3, 5, 7);
-            Box box = new Box(3, 5, 7, 11, DateTime.Today);
+            PalletModel pallet = new PalletModel(3, 5, 7);
+            BoxModel box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             pallet.AddBox(box);
 
@@ -34,7 +34,7 @@ namespace Warehouse.Web.Models
         [Fact(DisplayName = "Pallet without Boxes convert to PalletModel with Boxes = null")]
         public void PalletsConvertToNullWithoutBoxes()
         {
-            Pallet pallet = new Pallet(3, 5, 7);
+            PalletModel pallet = new PalletModel(3, 5, 7);
 
             var palletDto = mapper.Map<PalletDto>(pallet);
 
@@ -51,7 +51,7 @@ namespace Warehouse.Web.Models
 
             palletModel.Boxes = new List<BoxDto>() { boxModel };
 
-            Pallet pallet = mapper.Map<Pallet>(palletModel);
+            PalletModel pallet = mapper.Map<PalletModel>(palletModel);
 
             pallet.Boxes.Should().HaveCount(1);
         }
@@ -64,7 +64,7 @@ namespace Warehouse.Web.Models
             BoxDto boxModel = new BoxDto();
 
             // Act
-            Pallet pallet = mapper.Map<Pallet>(palletModel);
+            PalletModel pallet = mapper.Map<PalletModel>(palletModel);
 
             // Assert
             pallet.Id.Should().BeNull("PalletModel with null Id converts to Pallet with null Id");

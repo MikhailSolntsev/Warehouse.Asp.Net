@@ -1,7 +1,7 @@
 ﻿
 namespace Warehouse.Data.Models;
 
-public class Scalable
+public class ScalableModel
 {
     public int? Id { get; protected set; }
     public int Length { get; }
@@ -11,19 +11,19 @@ public class Scalable
     public virtual int Volume { get => Length * Width * Height; }
     public virtual DateTime ExpirationDate { get; protected set; }
 
-    public Scalable(int length, int height, int width, int weight)
+    public ScalableModel(int length, int height, int width, int weight)
     {
         Length = length;
         Height = height;
         Width = width;
         Weight = weight;
     }
-    public Scalable(int length, int height, int width)
+    public ScalableModel(int length, int height, int width)
     {
         Length = length;
         Height = height;
         Width = width;
     }
     public override int GetHashCode() => Id ?? 0;
-    public override bool Equals(object? obj) => obj is Scalable && ((Scalable)obj).Id == Id;
+    public override bool Equals(object? obj) => obj is ScalableModel && ((ScalableModel)obj).Id == Id;
 }

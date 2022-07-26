@@ -17,7 +17,8 @@ namespace Warehouse.Web.Api
         public PalletControllerTests()
         {
             string fileName = Path.GetRandomFileName();
-            WarehouseContext context = new WarehouseSqliteContext(fileName);
+            IWarehouseContext context = new WarehouseSqliteContext(fileName);
+            context.Database.EnsureCreated();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -27,7 +28,7 @@ namespace Warehouse.Web.Api
 
             IMapper mapper = config.CreateMapper();
 
-            ScalableStorage storage = new(context, mapper);
+            IPalletStorage storage = new PalletStorage(context, mapper);
             controller = new(storage, mapper, new PalletValidator());
         }
 
@@ -118,8 +119,8 @@ namespace Warehouse.Web.Api
             await controller.CreatePallet(model);
             await controller.CreatePallet(model);
 
-            var response = await controller.GetPallets(0, 0);
-            response.Should().NotBeNull().And.BeAssignableTo<IEnumerable<PalletDto>>().And.HaveCount(2);
+            var response = await controller.GetPallets(2, 0);
+            response.Should().NotBeNull().And.BeAssignableTo<IList<PalletDto>>().And.HaveCount(2);
         }
 
         [Fact(DisplayName = "Can retrieve Pallet by Id")]
@@ -152,6 +153,7 @@ namespace Warehouse.Web.Api
             var response = await controller.GetPallet(2);
 
             // Assert
+            response.Value.Should().NotBeNull();
             response.Value.Length.Should().Be(5);
         }
 

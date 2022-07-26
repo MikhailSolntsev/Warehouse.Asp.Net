@@ -13,15 +13,18 @@ namespace Warehouse.Web.Api.Controllers
     [ApiController]
     public class PalletController : ControllerBase
     {
-        private readonly IScalableStorage storage;
+        private readonly IPalletStorage storage;
         private readonly IMapper mapper;
-        private readonly IValidator<PalletDto> validator;
 
-        public PalletController(IScalableStorage storage, IMapper mapper, IValidator<PalletDto> validator)
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="storage"></param>
+        /// <param name="mapper"></param>
+        public PalletController(IPalletStorage storage, IMapper mapper)
         {
             this.storage = storage;
             this.mapper = mapper;
-            this.validator = validator;
         }
 
         /// <summary>
@@ -31,12 +34,12 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="take">Pallets to get. All if 0</param>
         /// <returns></returns>
         [HttpGet("Pallets")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<PalletDto>))]
-        public async Task<IEnumerable<PalletDto>> GetPallets([BindRequired] int take, int? skip)
+        [ProducesResponseType(200, Type = typeof(IList<PalletDto>))]
+        public async Task<IList<PalletDto>> GetPallets([BindRequired]int take, int? skip)
         {
             var pallets = await storage.GetAllPalletsAsync(take, skip);
 
-            return pallets.Select(pallet => mapper.Map<PalletDto>(pallet)).AsEnumerable();
+            return pallets.Select(pallet => mapper.Map<PalletDto>(pallet)).ToList();
         }
 
         /// <summary>
@@ -51,7 +54,7 @@ namespace Warehouse.Web.Api.Controllers
         {
             if (id == 0)
             {
-                ResponseMessage response = new() { Message = "Id parameter is not set" };
+                ResponseMessage response = new("Id parameter is not set");
                 return BadRequest(response);
             }
 
@@ -59,7 +62,7 @@ namespace Warehouse.Web.Api.Controllers
 
             if (pallet is null)
             {
-                ResponseMessage response = new() { Message = $"Can't find pallet wit id = {id}" };
+                ResponseMessage response = new($"Can't find pallet wit id = {id}");
                 return NotFound(response);
             }
             return mapper.Map<PalletDto>(pallet);
@@ -72,27 +75,21 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpPost("Pallet")]
         [ProducesResponseType(200, Type = typeof(PalletDto))]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(400, Type = typeof(ResponseMessage))]
         public async Task<ActionResult<PalletDto>> CreatePallet([FromBody] PalletDto palletDto)
         {
             if (palletDto is null)
             {
-                ResponseMessage response = new() { Message = "Bad model for pallet" };
+                ResponseMessage response = new("Bad model for pallet");
                 return BadRequest(response);
             }
 
-            ValidationResult result = await validator.ValidateAsync(palletDto);
-            if (!result.IsValid)
-            {
-                return BadRequest(result.ToDictionary());
-            } 
-
-            Pallet? pallet = mapper.Map<Pallet>(palletDto);
+            PalletModel? pallet = mapper.Map<PalletModel>(palletDto);
             pallet = await storage.AddPalletAsync(pallet);
 
             if (pallet is null)
             {
-                ResponseMessage response = new() { Message = "Error during creating/updating pallet" };
+                ResponseMessage response = new("Error during creating/updating pallet");
                 return BadRequest(response);
             }
             return mapper.Map<PalletDto>(pallet);
@@ -105,22 +102,16 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpPut("Pallet")]
         [ProducesResponseType(204, Type = typeof(PalletDto))]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(400, Type = typeof(ResponseMessage))]
         public async Task<ActionResult<PalletDto>> UpdatePallet([FromBody] PalletDto palletDto)
         {
             if (palletDto is null)
             {
-                ResponseMessage response = new() { Message = "Bad model for pallet" };
+                ResponseMessage response = new("Bad model for pallet");
                 return BadRequest(response);
             }
 
-            ValidationResult result = await validator.ValidateAsync(palletDto);
-            if (!result.IsValid)
-            {
-                return BadRequest(result.ToDictionary());
-            }
-
-            var pallet = await storage.UpdatePalletAsync(mapper.Map<Pallet>(palletDto));
+            var pallet = await storage.UpdatePalletAsync(mapper.Map<PalletModel>(palletDto));
 
             return mapper.Map<PalletDto>(pallet);
         }
@@ -131,27 +122,19 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="id">Id to find pallet</param>
         /// <returns></returns>
         [HttpDelete("Pallet/{id}")]
-        [ProducesResponseType(200)]
         [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(404, Type = typeof(ResponseMessage))]
         public async Task<IActionResult> DeletePallet(int id)
         {
-            var pallet = await storage.GetPalletAsync(id);
-
-            if (pallet is null)
-            {
-                return NoContent();
-            }
-
             bool deleted = await storage.DeletePalletAsync(id);
             
             if (deleted)
             {
-                return Ok();
+                return NoContent();
             }
 
-            ResponseMessage response = new() { Message = "Error during deleting pallet" };
-            return BadRequest(response);
+            ResponseMessage response = new($"Box with Id={id} was not found");
+            return NotFound(response);
         }
 
     }

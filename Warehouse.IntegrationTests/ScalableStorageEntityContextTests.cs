@@ -10,13 +10,15 @@ namespace Warehouse.IntegrationTests
 {
     public class ScalableStorageEntityContextTests
     {
-        private ScalableStorage storage;
-        private WarehouseContext context;
+        private IPalletStorage palletStorage;
+        private IScalableStorage storage;
+        private IWarehouseContext context;
 
         public ScalableStorageEntityContextTests()
         {
             string fileName = Path.GetRandomFileName();
             context = new WarehouseSqliteContext(fileName);
+            context.Database.EnsureCreated();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -25,6 +27,7 @@ namespace Warehouse.IntegrationTests
 
             IMapper mapper = config.CreateMapper();
 
+            palletStorage = new PalletStorage(context, mapper);
             storage = new ScalableStorage(context, mapper);
         }
 
@@ -32,10 +35,10 @@ namespace Warehouse.IntegrationTests
         public async Task CanAddPallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, 11);
 
             // Act
-            await storage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet);
 
             //Assert
             context.Pallets.Should().HaveCount(1);
@@ -45,45 +48,45 @@ namespace Warehouse.IntegrationTests
         public async Task CanModifyPallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
+            PalletModel pallet = new(3, 5, 7, 11);
+            await palletStorage.AddPalletAsync(pallet);
 
             // Act
             pallet = new(13, 5, 7, 11);
-            await storage.UpdatePalletAsync(pallet);
+            await palletStorage.UpdatePalletAsync(pallet);
 
             //Assert
-            context.Pallets?.Find(pallet.Id)?.Length.Should().Be(13);
+            context.Pallets.Find(pallet.Id)?.Length.Should().Be(13);
         }
 
         [Fact(DisplayName = "Storage can delete pallet")]
         public async Task CanDeletePallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
+            PalletModel pallet = new(3, 5, 7, 11);
+            await palletStorage.AddPalletAsync(pallet);
 
             // Act
-            await storage.DeletePalletAsync(pallet);
+            await palletStorage.DeletePalletAsync(11);
 
             //Assert
-            context.Pallets?.Find(pallet.Id).Should().BeNull();
+            context.Pallets.Find(pallet.Id).Should().BeNull();
         }
 
         [Fact(DisplayName = "Can add box to pallet")]
         public async Task CanAddBoxToPallet()
         {
             // Arrange
-            Pallet pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
+            PalletModel pallet = new(3, 5, 7, 11);
+            await palletStorage.AddPalletAsync(pallet);
 
-            Box box = new Box(3, 5, 7, 11, DateTime.Today);
+            BoxModel box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             // Act
             await storage.AddBoxToPalletAsync(box, pallet);
 
             //Assert
-            context.Boxes?.Find(pallet.Id).Should().BeNull();
+            context.Boxes.Find(pallet.Id).Should().BeNull();
         }
     }
 }
