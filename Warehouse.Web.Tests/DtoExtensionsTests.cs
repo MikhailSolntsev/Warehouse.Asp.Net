@@ -1,8 +1,10 @@
 using Warehouse.Data.Models;
 using FluentAssertions;
 using AutoMapper;
+using Warehouse.Web.Api.Infrastructure.Mapping;
+using Warehouse.Web.Models;
 
-namespace Warehouse.Web.Models
+namespace Warehouse.Web.Tests
 {
     public class DtoExtensionsTests
     {
@@ -26,7 +28,7 @@ namespace Warehouse.Web.Models
 
             pallet.AddBox(box);
 
-            PalletDto model = mapper.Map<PalletDto>(pallet);
+            var model = mapper.Map<PalletResponseDto>(pallet);
 
             model.Boxes.Should().HaveCount(1);
         }
@@ -36,7 +38,7 @@ namespace Warehouse.Web.Models
         {
             PalletModel pallet = new PalletModel(3, 5, 7);
 
-            var palletDto = mapper.Map<PalletDto>(pallet);
+            var palletDto = mapper.Map<PalletResponseDto>(pallet);
 
             palletDto.Boxes.Should().BeNull();
         }
@@ -46,10 +48,10 @@ namespace Warehouse.Web.Models
         public void PalletModelsConvertWithBoxModels()
         {
             // Arrange
-            PalletDto palletModel = new PalletDto();
-            BoxDto boxModel = new BoxDto();
+            PalletCreateDto palletModel = new PalletCreateDto();
+            BoxCreateDto boxModel = new BoxCreateDto();
 
-            palletModel.Boxes = new List<BoxDto>() { boxModel };
+            palletModel.Boxes = new List<BoxCreateDto>() { boxModel };
 
             PalletModel pallet = mapper.Map<PalletModel>(palletModel);
 
@@ -60,8 +62,8 @@ namespace Warehouse.Web.Models
         public void PalletModelsWithIdConvertsCorrect()
         {
             // Arrange
-            PalletDto palletModel = new PalletDto();
-            BoxDto boxModel = new BoxDto();
+            PalletCreateDto palletModel = new PalletCreateDto();
+            BoxUpdateDto boxModel = new BoxUpdateDto();
 
             // Act
             PalletModel pallet = mapper.Map<PalletModel>(palletModel);

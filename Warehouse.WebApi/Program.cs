@@ -3,17 +3,17 @@ using Warehouse.EntityContext;
 using Warehouse.EntityContext.Models;
 using Warehouse.EntityContext.Sqlite;
 using Warehouse.Web.Models;
-using Warehouse.Web.Api.Infrastructure;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using Warehouse.Web.Api.Infrastructure.Mapping;
+using Warehouse.Web.Api.Infrastructure.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.WebHost.UseUrls("https://localhost:6002");
 builder.WebHost.UseUrls("http://localhost:6001");
 
-builder.Services.AddValidatorsFromAssemblyContaining<PalletValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<PalletCreateValidator>();
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddMvc(options =>

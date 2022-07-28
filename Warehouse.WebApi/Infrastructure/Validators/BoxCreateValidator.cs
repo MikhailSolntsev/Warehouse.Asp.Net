@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using Warehouse.Web.Models;
 
-namespace Warehouse.Web.Api.Infrastructure
+namespace Warehouse.Web.Api.Infrastructure.Validators
 {
-    public class BoxValidator : AbstractValidator<BoxDto>
+    public class BoxCreateValidator : AbstractValidator<BoxCreateDto>
     {
-        public BoxValidator()
+        public BoxCreateValidator()
         {
             RuleFor(b => b.Length).NotNull().GreaterThan(0);
             RuleFor(b => b.Width).NotNull().GreaterThan(0);

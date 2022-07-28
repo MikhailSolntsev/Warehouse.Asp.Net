@@ -34,12 +34,12 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="take">Boxes to take</param>
         /// <returns></returns>
         [HttpGet("Boxes")]
-        [ProducesResponseType(200, Type = typeof(IList<BoxDto>))]
-        public async Task<IList<BoxDto>> GetBoxes([BindRequired] int take, int? skip)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<BoxResponseDto>))]
+        public async Task<IList<BoxResponseDto>> GetBoxes([BindRequired] int take, int? skip)
         {
             var boxes = await storage.GetAllBoxesAsync(take, skip);
 
-            return boxes.Select(box => mapper.Map<BoxDto>(box)).ToList();
+            return boxes.Select(box => mapper.Map<BoxResponseDto>(box)).ToList();
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="id">Id to find Box</param>
         /// <returns></returns>
         [HttpGet("Box/{id}", Name = nameof(GetBox))]
-        [ProducesResponseType(200, Type = typeof(BoxDto))]
-        [ProducesResponseType(404, Type = typeof(ResponseMessage))]
-        public async Task<ActionResult<BoxDto>> GetBox([BindRequired] int id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BoxResponseDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseMessage))]
+        public async Task<IActionResult> GetBox([BindRequired] int id)
         {
             if (id == 0)
             {
@@ -65,7 +65,7 @@ namespace Warehouse.Web.Api.Controllers
                 ResponseMessage response = new($"Can't find box wit id = {id}");
                 return NotFound(response);
             }
-            return mapper.Map<BoxDto>(box);
+            return Ok(mapper.Map<BoxResponseDto>(box));
         }
 
         /// <summary>
@@ -74,24 +74,13 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="boxDto">model to create box</param>
         /// <returns></returns>
         [HttpPost("Box")]
-        [ProducesResponseType(200, Type = typeof(BoxDto))]
-        [ProducesResponseType(400, Type = typeof(ResponseMessage))]
-        public async Task<ActionResult<BoxDto>> CreateBox([FromBody] BoxDto boxDto)
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BoxResponseDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ResponseMessage))]
+        public async Task<IActionResult> CreateBox([FromBody] BoxCreateDto boxDto)
         {
-            if (boxDto is null)
-            {
-                ResponseMessage response = new("Bad model for box");
-                return BadRequest(response);
-            }
-
             BoxModel? box = await storage.AddBoxAsync(mapper.Map<BoxModel>(boxDto));
 
-            if (box is null)
-            {
-                ResponseMessage response = new("Error during creating/updating box");
-                return BadRequest(response);
-            }
-            return mapper.Map<BoxDto>(box);
+            return Created($"{Request.Path}/{box?.Id}", mapper.Map<BoxResponseDto>(box));
         }
 
         /// <summary>
@@ -100,19 +89,14 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="boxDto">model to update box</param>
         /// <returns></returns>
         [HttpPut("Box")]
-        [ProducesResponseType(200, Type = typeof(BoxDto))]
-        [ProducesResponseType(400, Type = typeof(ResponseMessage))]
-        public async Task<ActionResult<BoxDto>> UpdateBox([FromBody] BoxDto boxDto)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BoxResponseDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ResponseMessage))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseMessage))]
+        public async Task<IActionResult> UpdateBox([FromBody] BoxUpdateDto boxDto)
         {
-            if (boxDto is null)
-            {
-                ResponseMessage response = new("Bad model for box");
-                return BadRequest(response);
-            }
-
             var box = await storage.UpdateBoxAsync(mapper.Map<BoxModel>(boxDto));
 
-            return mapper.Map<BoxDto>(box);
+            return Ok(mapper.Map<BoxResponseDto>(box));
         }
 
         /// <summary>
@@ -121,8 +105,8 @@ namespace Warehouse.Web.Api.Controllers
         /// <param name="id">Id to find box</param>
         /// <returns></returns>
         [HttpDelete("Box/{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404, Type = typeof(ResponseMessage))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseMessage))]
         public async Task<IActionResult> DeleteBox(int id)
         {
             bool deleted = await storage.DeleteBoxAsync(id);

@@ -139,7 +139,7 @@ namespace Warehouse.Data
 
             // Assert
             addedPallet.Should().NotBeNull();
-            addedPallet.Id.Should().NotBe(0);
+            addedPallet?.Id.Should().NotBe(0);
         }
 
         private async Task FillStorageWithPalletAndBoxesAsync()

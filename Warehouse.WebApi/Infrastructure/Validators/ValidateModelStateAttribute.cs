@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-namespace Warehouse.Web.Api.Infrastructure;
+namespace Warehouse.Web.Api.Infrastructure.Validators;
 public class ValidateModelStateAttribute : ActionFilterAttribute
 {
     /// <inheritdoc />

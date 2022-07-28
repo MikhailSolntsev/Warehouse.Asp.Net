@@ -28,6 +28,7 @@
     <ProjectReference Include="..\Warehouse.EntityContext.Sqlite\Warehouse.EntityContext.Sqlite.csproj" />
     <ProjectReference Include="..\Warehouse.EntityContext\Warehouse.EntityContext.csproj" />
     <ProjectReference Include="..\Warehouse.Web.Models\Warehouse.Web.Models.csproj" />
+    <ProjectReference Include="..\Warehouse.WebApi\Warehouse.Web.Api.csproj" />
   </ItemGroup>
 
 </Project>

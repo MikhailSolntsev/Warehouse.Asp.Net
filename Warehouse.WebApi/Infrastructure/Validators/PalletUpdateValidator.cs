@@ -1,12 +1,13 @@
 ﻿using FluentValidation;
 using Warehouse.Web.Models;
 
-namespace Warehouse.Web.Api.Infrastructure
+namespace Warehouse.Web.Api.Infrastructure.Validators
 {
-    public class PalletValidator : AbstractValidator<PalletDto>
+    public class PalletUpdateValidator : AbstractValidator<PalletUpdateDto>
     {
-        public PalletValidator()
+        public PalletUpdateValidator()
         {
+            RuleFor(p => p.Id).NotNull().GreaterThan(0);
             RuleFor(p => p.Length).NotNull().GreaterThan(0);
             RuleFor(p => p.Width).NotNull().GreaterThan(0);
             RuleFor(p => p.Height).NotNull().GreaterThan(0);

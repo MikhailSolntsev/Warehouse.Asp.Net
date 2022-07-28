@@ -2,10 +2,9 @@
 
 namespace Warehouse.Web.Models;
 
-public class BoxDto
+public class BoxResponseDto
 {
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public int? Id { get; set; }
+    public int Id { get; set; }
     public int Length { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }

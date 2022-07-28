@@ -2,13 +2,12 @@
 
 namespace Warehouse.Web.Models;
 
-public class PalletDto
+public class BoxCreateDto
 {
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? Id { get; set; }
     public int Length { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public IList<BoxDto>? Boxes { get; set; }
+    public int Weight { get; set; }
+    public DateTime ExpirationDate { get; set; }
 }

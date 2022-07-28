@@ -43,7 +43,9 @@ namespace Warehouse.Data
 
             //Assert
             var storedPallet = await palletStorage.GetPalletAsync(pallet.Id ?? 0);
-            storedPallet.Boxes?.Should().HaveCount(1);
+
+            storedPallet.Should().NotBeNull();
+            storedPallet?.Boxes?.Should().HaveCount(1);
         }
 
         [Fact(DisplayName = "Get all pallet retrieves pallet with boxes")]

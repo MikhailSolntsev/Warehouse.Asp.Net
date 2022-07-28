@@ -86,7 +86,7 @@ public class BoxStorage : IBoxStorage
     public async Task<bool> DeleteBoxAsync(int id)
     {
         var boxes = db.Boxes;
-        BoxEntity? box = await boxes.FindAsync(id);
+        BoxEntity? box = await boxes.FirstAsync(b => b.Id == id);
 
         if (box is null)
         {

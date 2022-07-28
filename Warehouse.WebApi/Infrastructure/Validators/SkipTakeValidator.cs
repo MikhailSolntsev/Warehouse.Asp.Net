@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Warehouse.Web.Models;
 
-namespace Warehouse.Web.Api.Infrastructure
+namespace Warehouse.Web.Api.Infrastructure.Validators
 {
     public class SkipTakeValidator : AbstractValidator<SkipTakeParametres>
     {
