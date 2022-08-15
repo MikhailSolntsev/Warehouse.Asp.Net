@@ -8,9 +8,13 @@ internal abstract class BaseConfiguration<TEntity> : IEntityTypeConfiguration<TE
 {
     public virtual void Configure(EntityTypeBuilder<TEntity> builder)
     {
-        builder.HasIndex("id");
+        //builder.Property<int>("id")
+        //    .HasColumnType("INTEGER")
+        //    .IsRequired();
 
         builder.HasKey("Id");
+
+        //builder.HasIndex("id");
 
         builder.Property<int>("Length")
             .HasColumnType("INTEGER")
