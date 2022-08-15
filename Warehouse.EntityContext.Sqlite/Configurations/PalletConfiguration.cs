@@ -4,26 +4,13 @@ using Warehouse.EntityContext.Models;
 
 namespace Warehouse.EntityContext.Sqlite.Configurations
 {
-    internal class PalletConfiguration : IEntityTypeConfiguration<PalletEntity>
+    internal class PalletConfiguration : BaseConfiguration<PalletEntity>
     {
-        public void Configure(EntityTypeBuilder<PalletEntity> builder)
+        public override void Configure(EntityTypeBuilder<PalletEntity> builder)
         {
-            builder.ToTable("Pallets")
-                .HasIndex("Id");
+            builder.ToTable("Pallets");
 
-            builder.HasKey(pallet => pallet.Id);
-
-            builder.Property(pallet => pallet.Length)
-                .HasColumnType("INTEGER")
-                .IsRequired();
-
-            builder.Property(pallet => pallet.Width)
-                .HasColumnType("INTEGER")
-                .IsRequired();
-
-            builder.Property(pallet => pallet.Height)
-                .HasColumnType("INTEGER")
-                .IsRequired();
+            base.Configure(builder);
 
             builder.HasMany(pallet => pallet.Boxes);
         }

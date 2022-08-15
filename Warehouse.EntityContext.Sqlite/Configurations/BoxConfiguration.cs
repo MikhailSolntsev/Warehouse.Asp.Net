@@ -4,26 +4,13 @@ using Warehouse.EntityContext.Models;
 
 namespace Warehouse.EntityContext.Sqlite.Configurations
 {
-    internal class BoxConfiguration : IEntityTypeConfiguration<BoxEntity>
+    internal class BoxConfiguration : BaseConfiguration<BoxEntity>
     {
-        public void Configure(EntityTypeBuilder<BoxEntity> builder)
+        public override void Configure(EntityTypeBuilder<BoxEntity> builder)
         {
-            builder.ToTable("Boxes")
-                .HasIndex("Id");
+            builder.ToTable("Boxes");
 
-            builder.HasKey(box => box.Id);
-
-            builder.Property(box => box.Length)
-                .HasColumnType("INTEGER")
-                .IsRequired();
-
-            builder.Property(box => box.Width)
-                .HasColumnType("INTEGER")
-                .IsRequired();
-
-            builder.Property(box => box.Height)
-                .HasColumnType("INTEGER")
-                .IsRequired();
+            base.Configure(builder);
 
             builder.Property(box => box.Weight)
                 .HasColumnType("INTEGER")
