@@ -1,6 +1,7 @@
 ﻿using Warehouse.Data;
 using Warehouse.Data.Models;
 using Warehouse.Web.Models;
+using Warehouse.Web.Api.Infrastructure.Validators;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using FluentValidation;
@@ -15,16 +16,18 @@ namespace Warehouse.Web.Api.Controllers
     {
         private readonly IBoxStorage storage;
         private readonly IMapper mapper;
+        private readonly IValidationService validationService;
 
         /// <summary>
         /// .ctor
         /// </summary>
         /// <param name="storage"></param>
         /// <param name="mapper"></param>
-        public BoxController(IBoxStorage storage, IMapper mapper)
+        public BoxController(IBoxStorage storage, IMapper mapper, IValidationService validationService)
         {
             this.storage = storage;
             this.mapper = mapper;
+            this.validationService = validationService;
         }
 
         /// <summary>
@@ -78,6 +81,12 @@ namespace Warehouse.Web.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ResponseMessage))]
         public async Task<IActionResult> CreateBox([FromBody] BoxCreateDto boxDto)
         {
+            var result = validationService.Validate<BoxCreateDto>(boxDto);
+            if (!result.IsValid)
+            {
+                throw new ArgumentException("Box create model is invalid.");
+            }
+
             BoxModel? box = await storage.AddBoxAsync(mapper.Map<BoxModel>(boxDto));
 
             return Created($"{Request.Path}/{box?.Id}", mapper.Map<BoxResponseDto>(box));

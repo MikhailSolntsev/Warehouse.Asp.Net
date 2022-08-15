@@ -15,6 +15,7 @@ builder.WebHost.UseUrls("http://localhost:6001");
 
 builder.Services.AddValidatorsFromAssemblyContaining<PalletCreateValidator>();
 builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidationService, ValidationService>();
 
 builder.Services.AddMvc(options =>
 {
