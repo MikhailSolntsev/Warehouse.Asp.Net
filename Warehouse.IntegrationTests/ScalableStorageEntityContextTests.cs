@@ -11,7 +11,6 @@ namespace Warehouse.IntegrationTests
     public class ScalableStorageEntityContextTests
     {
         private IPalletStorage palletStorage;
-        private IScalableStorage storage;
         private IWarehouseContext context;
 
         public ScalableStorageEntityContextTests()
@@ -28,7 +27,6 @@ namespace Warehouse.IntegrationTests
             IMapper mapper = config.CreateMapper();
 
             palletStorage = new PalletStorage(context, mapper);
-            storage = new ScalableStorage(context, mapper);
         }
 
         [Fact(DisplayName = "Storage can add pallet")]
@@ -83,7 +81,7 @@ namespace Warehouse.IntegrationTests
             BoxModel box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             // Act
-            await storage.AddBoxToPalletAsync(box, pallet);
+            await palletStorage.AddBoxToPalletAsync(box, pallet);
 
             //Assert
             context.Boxes.Find(pallet.Id).Should().BeNull();

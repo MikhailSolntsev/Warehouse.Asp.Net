@@ -10,7 +10,6 @@ namespace Warehouse.Data
     public class ScalableStorageTests
     {
         private readonly IPalletStorage palletStorage;
-        private readonly IScalableStorage scalableStorage;
 
         public ScalableStorageTests()
         {
@@ -26,7 +25,6 @@ namespace Warehouse.Data
             IMapper mapper = config.CreateMapper();
 
             palletStorage = new PalletStorage(context, mapper);
-            scalableStorage = new ScalableStorage(context, mapper);
         }
 
         [Fact(DisplayName = "Can add box to pallet")]
@@ -39,7 +37,7 @@ namespace Warehouse.Data
             var box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             // Act
-            await scalableStorage.AddBoxToPalletAsync(box, pallet);
+            await palletStorage.AddBoxToPalletAsync(box, pallet);
 
             //Assert
             var storedPallet = await palletStorage.GetPalletAsync(pallet.Id ?? 0);
@@ -58,7 +56,7 @@ namespace Warehouse.Data
             var box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             // Act
-            await scalableStorage.AddBoxToPalletAsync(box, pallet);
+            await palletStorage.AddBoxToPalletAsync(box, pallet);
 
             //Assert
             var pallets = await palletStorage.GetAllPalletsAsync(1, null);

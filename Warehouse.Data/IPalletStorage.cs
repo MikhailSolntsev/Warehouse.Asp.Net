@@ -9,4 +9,6 @@ public interface IPalletStorage
     Task<PalletModel?> AddPalletAsync(PalletModel pallet);
     Task<PalletModel?> UpdatePalletAsync(PalletModel pallet);
     Task<bool> DeletePalletAsync(int id);
+    Task<bool> AddBoxToPalletAsync(BoxModel box, PalletModel pallet);
+    Task<bool> RemoveBoxFromPallet(BoxModel box);
 }

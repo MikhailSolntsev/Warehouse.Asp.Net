@@ -111,6 +111,11 @@ public class PalletStorage : IPalletStorage
         return null;
     }
 
+    /// <summary>
+    /// Deletes pallet with clearing pallet in boxes
+    /// </summary>
+    /// <param name="id">Pallet Id</param>
+    /// <returns></returns>
     public async Task<bool> DeletePalletAsync(int id)
     {
         var pallets = db.Pallets;
@@ -132,5 +137,47 @@ public class PalletStorage : IPalletStorage
         var affected = await db.SaveChangesAsync();
         return affected > 0;
     }
+
+    /// <summary>
+    /// Add box in pallet with size validation
+    /// </summary>
+    /// <param name="box"></param>
+    /// <param name="pallet"></param>
+    /// <returns></returns>
+    public async Task<bool> AddBoxToPalletAsync(BoxModel box, PalletModel pallet)
+    {
+        BoxEntity? boxModel = await db.Boxes.FindAsync(box.Id);
+        if (boxModel is null)
+        {
+            boxModel = mapper.Map<BoxEntity>(box);
+            await db.Boxes.AddAsync(boxModel);
+        }
+
+        boxModel.PalletModelId = pallet.Id;
+
+        var affected = await db.SaveChangesAsync();
+        return affected > 0;
+    }
+
+    /// <summary>
+    /// Removes box from pallet
+    /// </summary>
+    /// <param name="box"></param>
+    /// <returns></returns>
+    public async Task<bool> RemoveBoxFromPallet(BoxModel box)
+    {
+        BoxEntity? boxModel = await db.Boxes.FindAsync(box.Id);
+
+        if (boxModel == null)
+        {
+            return true;
+        }
+
+        boxModel.PalletModelId = 0;
+
+        var affected = await db.SaveChangesAsync();
+        return affected > 0;
+    }
+
 
 }

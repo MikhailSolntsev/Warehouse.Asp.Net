@@ -27,7 +27,6 @@ builder.Services.Configure<ApiBehaviorOptions>(opt =>
     opt.SuppressModelStateInvalidFilter = true;
 });
 
-builder.Services.AddScoped<IScalableStorage, ScalableStorage>();
 builder.Services.AddScoped<IBoxStorage, BoxStorage>();
 builder.Services.AddScoped<IPalletStorage, PalletStorage>();
 
