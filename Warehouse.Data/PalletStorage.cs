@@ -29,7 +29,7 @@ public class PalletStorage : IPalletStorage
     /// <param name="skip">Skip N elements</param>
     /// <param name="take">Get N elements</param>
     /// <returns>List of pallets</returns>
-    public async Task<IReadOnlyList<PalletModel>> GetAllPalletsAsync(int take, int? skip)
+    public async Task<IReadOnlyList<PalletModel>> GetAllPalletsAsync(int take, int? skip, CancellationToken token)
     {
         var query = (IQueryable<PalletEntity>)db.Pallets;
 
@@ -44,7 +44,7 @@ public class PalletStorage : IPalletStorage
             query
             //.ProjectTo<Pallet>(mapper.ConfigurationProvider)
             .Select(palletModel => mapper.Map<PalletModel>(palletModel))
-            .ToListAsync();
+            .ToListAsync(token);
     }
 
     /// <summary>
@@ -52,11 +52,11 @@ public class PalletStorage : IPalletStorage
     /// </summary>
     /// <param name="id">pallet Id</param>
     /// <returns>founded pallet</returns>
-    public async Task<PalletModel?> GetPalletAsync(int id)
+    public async Task<PalletModel?> GetPalletAsync(int id, CancellationToken token)
     {
         var storedPallet = await db.Pallets
             .Include(p => p.Boxes)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == id, token);
 
         if (storedPallet is null)
         {
@@ -70,10 +70,10 @@ public class PalletStorage : IPalletStorage
     /// </summary>
     /// <param name="pallet">Pallet needs to add</param>
     /// <returns></returns>
-    public async Task<PalletModel?> AddPalletAsync(PalletModel pallet)
+    public async Task<PalletModel?> AddPalletAsync(PalletModel pallet, CancellationToken token)
     {
         PalletEntity model = mapper.Map<PalletEntity>(pallet);
-        await db.Pallets.AddAsync(model);
+        await db.Pallets.AddAsync(model, token);
 
         var affected = await db.SaveChangesAsync();
         if (affected > 0)
@@ -88,15 +88,15 @@ public class PalletStorage : IPalletStorage
     /// </summary>
     /// <param name="pallet">Pallet with new information</param>
     /// <returns>New version of pallet</returns>
-    public async Task<PalletModel?> UpdatePalletAsync(PalletModel pallet)
+    public async Task<PalletModel?> UpdatePalletAsync(PalletModel pallet, CancellationToken token)
     {
         var pallets = db.Pallets;
 
-        var storedPallet = await pallets.FindAsync(pallet.Id);
+        var storedPallet = await pallets.FirstOrDefaultAsync(p => p.Id == pallet.Id, token);
         if (storedPallet is null)
         {
             storedPallet = mapper.Map<PalletEntity>(pallet);
-            await pallets.AddAsync(storedPallet);
+            await pallets.AddAsync(storedPallet, token);
         }
         else
         {
@@ -116,14 +116,14 @@ public class PalletStorage : IPalletStorage
     /// </summary>
     /// <param name="id">Pallet Id</param>
     /// <returns></returns>
-    public async Task<bool> DeletePalletAsync(int id)
+    public async Task<bool> DeletePalletAsync(int id, CancellationToken token)
     {
         var pallets = db.Pallets;
 
         var storedPallet = await pallets
             .Include(p => p.Boxes)
             //.Where(b => b.Id == pallet.Id)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == id, token);
 
         if (storedPallet is null)
         {
@@ -144,13 +144,13 @@ public class PalletStorage : IPalletStorage
     /// <param name="box"></param>
     /// <param name="pallet"></param>
     /// <returns></returns>
-    public async Task<bool> AddBoxToPalletAsync(BoxModel box, PalletModel pallet)
+    public async Task<bool> AddBoxToPalletAsync(BoxModel box, PalletModel pallet, CancellationToken token)
     {
-        BoxEntity? boxModel = await db.Boxes.FindAsync(box.Id);
+        BoxEntity? boxModel = await db.Boxes.FindAsync(box.Id, token);
         if (boxModel is null)
         {
             boxModel = mapper.Map<BoxEntity>(box);
-            await db.Boxes.AddAsync(boxModel);
+            await db.Boxes.AddAsync(boxModel, token);
         }
 
         boxModel.PalletModelId = pallet.Id;
@@ -164,9 +164,9 @@ public class PalletStorage : IPalletStorage
     /// </summary>
     /// <param name="box"></param>
     /// <returns></returns>
-    public async Task<bool> RemoveBoxFromPallet(BoxModel box)
+    public async Task<bool> RemoveBoxFromPallet(BoxModel box, CancellationToken token)
     {
-        BoxEntity? boxModel = await db.Boxes.FindAsync(box.Id);
+        BoxEntity? boxModel = await db.Boxes.FindAsync(box.Id, token);
 
         if (boxModel == null)
         {

@@ -10,6 +10,7 @@ namespace Warehouse.Data
     public class ScalableStorageTests
     {
         private readonly IPalletStorage palletStorage;
+        private readonly CancellationToken token = CancellationToken.None;
 
         public ScalableStorageTests()
         {
@@ -32,15 +33,15 @@ namespace Warehouse.Data
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7, 11);
-            await palletStorage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet, token);
 
             var box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             // Act
-            await palletStorage.AddBoxToPalletAsync(box, pallet);
+            await palletStorage.AddBoxToPalletAsync(box, pallet, token);
 
             //Assert
-            var storedPallet = await palletStorage.GetPalletAsync(pallet.Id ?? 0);
+            var storedPallet = await palletStorage.GetPalletAsync(pallet.Id ?? 0, token);
 
             storedPallet.Should().NotBeNull();
             storedPallet?.Boxes?.Should().HaveCount(1);
@@ -51,15 +52,15 @@ namespace Warehouse.Data
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7, 11);
-            await palletStorage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet, token);
 
             var box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             // Act
-            await palletStorage.AddBoxToPalletAsync(box, pallet);
+            await palletStorage.AddBoxToPalletAsync(box, pallet, token);
 
             //Assert
-            var pallets = await palletStorage.GetAllPalletsAsync(1, null);
+            var pallets = await palletStorage.GetAllPalletsAsync(1, null, token);
             pallets[0].Boxes?.Should().HaveCount(1);
         }
 

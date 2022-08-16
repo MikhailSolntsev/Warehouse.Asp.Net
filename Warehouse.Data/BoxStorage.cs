@@ -18,7 +18,7 @@ public class BoxStorage : IBoxStorage
         this.mapper = mapper;
     }
 
-    public async Task<IReadOnlyList<BoxModel>> GetAllBoxesAsync(int take, int? skip)
+    public async Task<IReadOnlyList<BoxModel>> GetAllBoxesAsync(int take, int? skip, CancellationToken token)
     {
         var query = (IQueryable<BoxEntity>)db.Boxes;
 
@@ -32,12 +32,12 @@ public class BoxStorage : IBoxStorage
         return await
             query
             .ProjectTo<BoxModel>(mapper.ConfigurationProvider)
-            .ToListAsync();
+            .ToListAsync(token);
     }
 
-    public async Task<BoxModel?> GetBoxAsync(int id)
+    public async Task<BoxModel?> GetBoxAsync(int id, CancellationToken token)
     {
-        var storedBox = await db.Boxes.FindAsync(id);
+        var storedBox = await db.Boxes.FirstOrDefaultAsync(b => b.Id == id, token);
 
         if (storedBox is null)
         {
@@ -46,11 +46,11 @@ public class BoxStorage : IBoxStorage
         return mapper.Map<BoxModel>(storedBox);
     }
 
-    public async Task<BoxModel?> AddBoxAsync(BoxModel box)
+    public async Task<BoxModel?> AddBoxAsync(BoxModel box, CancellationToken token)
     {
         BoxEntity model = mapper.Map<BoxEntity>(box);
 
-        await db.Boxes.AddAsync(model);
+        await db.Boxes.AddAsync(model, token);
 
         var affected = await db.SaveChangesAsync();
         if (affected > 0)
@@ -60,15 +60,15 @@ public class BoxStorage : IBoxStorage
         return null;
     }
 
-    public async Task<BoxModel?> UpdateBoxAsync(BoxModel box)
+    public async Task<BoxModel?> UpdateBoxAsync(BoxModel box, CancellationToken token)
     {
         var boxes = db.Boxes;
 
-        var storedBox = await boxes.FindAsync(box.Id);
+        var storedBox = await boxes.FindAsync(box.Id, token);
         if (storedBox is null)
         {
             storedBox = mapper.Map<BoxEntity>(box);
-            await boxes.AddAsync(storedBox);
+            await boxes.AddAsync(storedBox, token);
         }
         else
         {
@@ -83,10 +83,10 @@ public class BoxStorage : IBoxStorage
         return null;
     }
 
-    public async Task<bool> DeleteBoxAsync(int id)
+    public async Task<bool> DeleteBoxAsync(int id, CancellationToken token)
     {
         var boxes = db.Boxes;
-        BoxEntity? box = await boxes.FirstAsync(b => b.Id == id);
+        BoxEntity? box = await boxes.FirstAsync(b => b.Id == id, token);
 
         if (box is null)
         {

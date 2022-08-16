@@ -4,11 +4,11 @@ namespace Warehouse.Data;
 
 public interface IPalletStorage
 {
-    Task<IReadOnlyList<PalletModel>> GetAllPalletsAsync(int take, int? skip);
-    Task<PalletModel?> GetPalletAsync(int id);
-    Task<PalletModel?> AddPalletAsync(PalletModel pallet);
-    Task<PalletModel?> UpdatePalletAsync(PalletModel pallet);
-    Task<bool> DeletePalletAsync(int id);
-    Task<bool> AddBoxToPalletAsync(BoxModel box, PalletModel pallet);
-    Task<bool> RemoveBoxFromPallet(BoxModel box);
+    Task<IReadOnlyList<PalletModel>> GetAllPalletsAsync(int take, int? skip, CancellationToken token);
+    Task<PalletModel?> GetPalletAsync(int id, CancellationToken token);
+    Task<PalletModel?> AddPalletAsync(PalletModel pallet, CancellationToken token);
+    Task<PalletModel?> UpdatePalletAsync(PalletModel pallet, CancellationToken token);
+    Task<bool> DeletePalletAsync(int id, CancellationToken token);
+    Task<bool> AddBoxToPalletAsync(BoxModel box, PalletModel pallet, CancellationToken token);
+    Task<bool> RemoveBoxFromPallet(BoxModel box, CancellationToken token);
 }

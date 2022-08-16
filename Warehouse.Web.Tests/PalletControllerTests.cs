@@ -16,6 +16,8 @@ namespace Warehouse.Web.Api
     {
         private readonly PalletController controller;
         private readonly DateTime today;
+        private readonly CancellationToken token = CancellationToken.None;
+
         public PalletControllerTests()
         {
             string fileName = Path.GetRandomFileName();
@@ -45,7 +47,7 @@ namespace Warehouse.Web.Api
                 Width = 3,
                 Height = 3
             };
-            var response = await controller.CreatePallet(model);
+            var response = await controller.CreatePallet(model, token);
 
             response.Should().BeAssignableTo<ObjectResult>();
 
@@ -77,7 +79,7 @@ namespace Warehouse.Web.Api
             };
 
             // Act
-            var response = await controller.CreatePallet(model);
+            var response = await controller.CreatePallet(model, token);
 
             // Assert
             response.Should().BeAssignableTo<ObjectResult>();
@@ -112,7 +114,7 @@ namespace Warehouse.Web.Api
             };
 
             // Act
-            var response = await controller.CreatePallet(model);
+            var response = await controller.CreatePallet(model, token);
 
             // Assert
             response.Should().BeAssignableTo<ObjectResult>();
@@ -145,10 +147,10 @@ namespace Warehouse.Web.Api
                 Height = 3
             };
 
-            await controller.CreatePallet(model);
-            await controller.CreatePallet(model);
+            await controller.CreatePallet(model, token);
+            await controller.CreatePallet(model, token);
 
-            var response = await controller.GetPallets(2, 0);
+            var response = await controller.GetPallets(2, 0, token);
             response.Should().NotBeNull().And.BeAssignableTo<IList<PalletResponseDto>>().And.HaveCount(2);
         }
 
@@ -162,24 +164,24 @@ namespace Warehouse.Web.Api
                 Width = 3,
                 Height = 3
             };
-            await controller.CreatePallet(model);
+            await controller.CreatePallet(model, token);
             model = new()
             {
                 Length = 5,
                 Width = 5,
                 Height = 5
             };
-            await controller.CreatePallet(model);
+            await controller.CreatePallet(model, token);
             model = new()
             {
                 Length = 5,
                 Width = 5,
                 Height = 5
             };
-            await controller.CreatePallet(model);
+            await controller.CreatePallet(model, token);
 
             // Act
-            var response = await controller.GetPallet(2);
+            var response = await controller.GetPallet(2, token);
 
             // Assert
             response.Should().BeAssignableTo<ObjectResult>();

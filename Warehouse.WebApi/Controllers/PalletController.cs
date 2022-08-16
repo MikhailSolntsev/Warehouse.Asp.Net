@@ -35,9 +35,9 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpGet("Pallets")]
         [ProducesResponseType(200, Type = typeof(IList<PalletResponseDto>))]
-        public async Task<IList<PalletResponseDto>> GetPallets([BindRequired]int take, int? skip)
+        public async Task<IList<PalletResponseDto>> GetPallets([BindRequired]int take, int? skip, CancellationToken token)
         {
-            var pallets = await storage.GetAllPalletsAsync(take, skip);
+            var pallets = await storage.GetAllPalletsAsync(take, skip, token);
 
             return pallets.Select(pallet => mapper.Map<PalletResponseDto>(pallet)).ToList();
         }
@@ -50,7 +50,7 @@ namespace Warehouse.Web.Api.Controllers
         [HttpGet("Pallet/{id}", Name = nameof(GetPallet))]
         [ProducesResponseType(200, Type = typeof(PalletResponseDto))]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetPallet(int id)
+        public async Task<IActionResult> GetPallet(int id, CancellationToken token)
         {
             if (id == 0)
             {
@@ -58,7 +58,7 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
-            var pallet = await storage.GetPalletAsync(id);
+            var pallet = await storage.GetPalletAsync(id, token);
 
             if (pallet is null)
             {
@@ -76,11 +76,11 @@ namespace Warehouse.Web.Api.Controllers
         [HttpPost("Pallet")]
         [ProducesResponseType(200, Type = typeof(PalletResponseDto))]
         [ProducesResponseType(400, Type = typeof(ResponseMessage))]
-        public async Task<IActionResult> CreatePallet([FromBody] PalletCreateDto palletDto)
+        public async Task<IActionResult> CreatePallet([FromBody] PalletCreateDto palletDto, CancellationToken token)
         {
             PalletModel? pallet = mapper.Map<PalletModel>(palletDto);
 
-            pallet = await storage.AddPalletAsync(pallet);
+            pallet = await storage.AddPalletAsync(pallet, token);
 
             if (pallet is null)
             {
@@ -98,9 +98,9 @@ namespace Warehouse.Web.Api.Controllers
         [HttpPut("Pallet")]
         [ProducesResponseType(204, Type = typeof(PalletResponseDto))]
         [ProducesResponseType(400, Type = typeof(ResponseMessage))]
-        public async Task<IActionResult> UpdatePallet([FromBody] PalletCreateDto palletDto)
+        public async Task<IActionResult> UpdatePallet([FromBody] PalletCreateDto palletDto, CancellationToken token)
         {
-            var pallet = await storage.UpdatePalletAsync(mapper.Map<PalletModel>(palletDto));
+            var pallet = await storage.UpdatePalletAsync(mapper.Map<PalletModel>(palletDto), token);
 
             return Ok(mapper.Map<PalletResponseDto>(pallet));
         }
@@ -113,9 +113,9 @@ namespace Warehouse.Web.Api.Controllers
         [HttpDelete("Pallet/{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404, Type = typeof(ResponseMessage))]
-        public async Task<IActionResult> DeletePallet(int id)
+        public async Task<IActionResult> DeletePallet(int id, CancellationToken token)
         {
-            bool deleted = await storage.DeletePalletAsync(id);
+            bool deleted = await storage.DeletePalletAsync(id, token);
             
             if (deleted)
             {

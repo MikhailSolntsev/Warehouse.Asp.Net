@@ -9,7 +9,8 @@ namespace Warehouse.Data
 {
     public class PalletStorageTests
     {
-        private IPalletStorage storage;
+        private readonly IPalletStorage storage;
+        private readonly CancellationToken token = CancellationToken.None;
 
         public PalletStorageTests()
         {
@@ -34,10 +35,10 @@ namespace Warehouse.Data
             PalletModel pallet = new(3, 5, 7, 11);
 
             // Act
-            await storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet, token);
 
             // Assert
-            var pallets = await storage.GetAllPalletsAsync(100, null);
+            var pallets = await storage.GetAllPalletsAsync(100, null, token);
             pallets.Should().HaveCount(1);
         }
 
@@ -48,7 +49,7 @@ namespace Warehouse.Data
             await FillStorageWithPalletAndBoxesAsync();
 
             // Act
-            var pallets = await storage.GetAllPalletsAsync(take: 100, skip: 2);
+            var pallets = await storage.GetAllPalletsAsync(take: 100, skip: 2, token);
 
             // Assert
             pallets.Should().HaveCount(3);
@@ -61,7 +62,7 @@ namespace Warehouse.Data
             await FillStorageWithPalletAndBoxesAsync();
 
             // Act
-            var pallets = await storage.GetAllPalletsAsync(2, null);
+            var pallets = await storage.GetAllPalletsAsync(2, null, token);
 
             // Assert
             pallets.Should().HaveCount(2);
@@ -76,7 +77,7 @@ namespace Warehouse.Data
             pallet.AddBox(box);
 
             // Act
-            var newPallet = await storage.AddPalletAsync(pallet);
+            var newPallet = await storage.AddPalletAsync(pallet, token);
 
             // Assert
             newPallet.Should().NotBeNull();
@@ -89,8 +90,8 @@ namespace Warehouse.Data
             PalletModel pallet = new(3, 5, 7);
             
             // Act
-            await storage.AddPalletAsync(pallet);
-            var newPallet = await storage.GetPalletAsync(100);
+            await storage.AddPalletAsync(pallet, token);
+            var newPallet = await storage.GetPalletAsync(100, token);
             // Assert
 
             newPallet.Should().BeNull();
@@ -101,14 +102,14 @@ namespace Warehouse.Data
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet, token);
 
             // Act
             pallet = new(13, 5, 7, 11);
-            await storage.UpdatePalletAsync(pallet);
+            await storage.UpdatePalletAsync(pallet, token);
 
             //Assert
-            var storedPallet = await storage.GetPalletAsync(pallet.Id??0);
+            var storedPallet = await storage.GetPalletAsync(pallet.Id??0, token);
             storedPallet.Should().NotBeNull();
             storedPallet?.Length.Should().Be(13);
         }
@@ -118,24 +119,24 @@ namespace Warehouse.Data
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet, token);
 
             // Act
-            await storage.DeletePalletAsync(11);
+            await storage.DeletePalletAsync(11, token);
 
             //Assert
-            var storedPallet = await storage.GetPalletAsync(pallet.Id ?? 0);
+            var storedPallet = await storage.GetPalletAsync(pallet.Id ?? 0, token);
             storedPallet.Should().BeNull();
         }
 
         [Fact(DisplayName = "Pallet without Id stores with Id")]
-        public void PalletWithoutIdStoresWithId()
+        public async void PalletWithoutIdStoresWithId()
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7);
 
             // Act
-            var addedPallet = storage.AddPalletAsync(pallet).Result;
+            var addedPallet = await storage.AddPalletAsync(pallet, token);
 
             // Assert
             addedPallet.Should().NotBeNull();
@@ -145,15 +146,15 @@ namespace Warehouse.Data
         private async Task FillStorageWithPalletAndBoxesAsync()
         {
             PalletModel pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet, token);
             pallet = new(3, 5, 7, 13);
-            await storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet, token);
             pallet = new(3, 5, 7, 17);
-            await storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet, token);
             pallet = new(3, 5, 7, 19);
-            await storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet, token);
             pallet = new(3, 5, 7, 23);
-            await storage.AddPalletAsync(pallet);
+            await storage.AddPalletAsync(pallet, token);
         }
 
     }

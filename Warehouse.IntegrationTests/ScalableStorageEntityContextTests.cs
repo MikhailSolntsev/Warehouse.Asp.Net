@@ -10,8 +10,9 @@ namespace Warehouse.IntegrationTests
 {
     public class ScalableStorageEntityContextTests
     {
-        private IPalletStorage palletStorage;
-        private IWarehouseContext context;
+        private readonly IPalletStorage palletStorage;
+        private readonly IWarehouseContext context;
+        private readonly CancellationToken token = CancellationToken.None;
 
         public ScalableStorageEntityContextTests()
         {
@@ -36,7 +37,7 @@ namespace Warehouse.IntegrationTests
             PalletModel pallet = new(3, 5, 7, 11);
 
             // Act
-            await palletStorage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet, token);
 
             //Assert
             context.Pallets.Should().HaveCount(1);
@@ -47,11 +48,11 @@ namespace Warehouse.IntegrationTests
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7, 11);
-            await palletStorage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet, token);
 
             // Act
             pallet = new(13, 5, 7, 11);
-            await palletStorage.UpdatePalletAsync(pallet);
+            await palletStorage.UpdatePalletAsync(pallet, token);
 
             //Assert
             context.Pallets.Find(pallet.Id)?.Length.Should().Be(13);
@@ -62,10 +63,10 @@ namespace Warehouse.IntegrationTests
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7, 11);
-            await palletStorage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet, token);
 
             // Act
-            await palletStorage.DeletePalletAsync(11);
+            await palletStorage.DeletePalletAsync(11, token);
 
             //Assert
             context.Pallets.Find(pallet.Id).Should().BeNull();
@@ -76,12 +77,12 @@ namespace Warehouse.IntegrationTests
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7, 11);
-            await palletStorage.AddPalletAsync(pallet);
+            await palletStorage.AddPalletAsync(pallet, token);
 
             BoxModel box = new BoxModel(3, 5, 7, 11, DateTime.Today);
 
             // Act
-            await palletStorage.AddBoxToPalletAsync(box, pallet);
+            await palletStorage.AddBoxToPalletAsync(box, pallet, token);
 
             //Assert
             context.Boxes.Find(pallet.Id).Should().BeNull();

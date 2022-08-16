@@ -9,7 +9,8 @@ namespace Warehouse.Data
 {
     public class BoxStorageTests
     {
-        private IBoxStorage storage;
+        private readonly IBoxStorage storage;
+        private readonly CancellationToken token = CancellationToken.None;
 
         public BoxStorageTests()
         {
@@ -34,7 +35,7 @@ namespace Warehouse.Data
             await FillStorageWithBoxesAsync();
 
             // Act
-            var boxes = await storage.GetAllBoxesAsync(take: 100, skip: 2);
+            var boxes = await storage.GetAllBoxesAsync(take: 100, skip: 2, token);
 
             // Assert
             boxes.Should().HaveCount(3);
@@ -47,7 +48,7 @@ namespace Warehouse.Data
             await FillStorageWithBoxesAsync();
 
             // Act
-            var boxes = await storage.GetAllBoxesAsync(take: 2, null);
+            var boxes = await storage.GetAllBoxesAsync(take: 2, null, token);
 
             // Assert
             boxes.Should().HaveCount(2);
@@ -58,10 +59,10 @@ namespace Warehouse.Data
         {
             // Arrange
             BoxModel box = new(3, 5, 7, 11, DateTime.Today);
-            await storage.AddBoxAsync(box);
+            await storage.AddBoxAsync(box, token);
 
             // Act
-            Func<Task> action = async () => await storage.DeleteBoxAsync(15);
+            Func<Task> action = async () => await storage.DeleteBoxAsync(15, token);
 
             // Assert
             await action.Should().ThrowAsync<Exception>();
@@ -72,10 +73,10 @@ namespace Warehouse.Data
         {
             // Arrange
             BoxModel box = new(3, 5, 7, 11, DateTime.Today);
-            await storage.AddBoxAsync(box);
+            await storage.AddBoxAsync(box, token);
 
             // Act
-            Func<Task> action = async () => await storage.DeleteBoxAsync(1);
+            Func<Task> action = async () => await storage.DeleteBoxAsync(1, token);
 
             // Assert
             await action.Should().NotThrowAsync<Exception>();
@@ -86,10 +87,10 @@ namespace Warehouse.Data
         {
             // Arrange
             BoxModel box = new(3, 5, 7, 11, DateTime.Today);
-            await storage.AddBoxAsync(box);
+            await storage.AddBoxAsync(box, token);
 
             // Act
-            Func<Task> action = async () => await storage.GetBoxAsync(15);
+            Func<Task> action = async () => await storage.GetBoxAsync(15, token);
 
             // Assert
             await action.Should().NotThrowAsync<Exception>();
@@ -98,15 +99,15 @@ namespace Warehouse.Data
         private async Task FillStorageWithBoxesAsync()
         {
             BoxModel box = new(3, 5, 7, 11, DateTime.Today);
-            await storage.AddBoxAsync(box);
+            await storage.AddBoxAsync(box, token);
             box = new(3, 5, 7, 13, DateTime.Today);
-            await storage.AddBoxAsync(box);
+            await storage.AddBoxAsync(box, token);
             box = new(3, 5, 7, 17, DateTime.Today);
-            await storage.AddBoxAsync(box);
+            await storage.AddBoxAsync(box, token);
             box = new(3, 5, 7, 19, DateTime.Today);
-            await storage.AddBoxAsync(box);
+            await storage.AddBoxAsync(box, token);
             box = new(3, 5, 7, 23, DateTime.Today);
-            await storage.AddBoxAsync(box);
+            await storage.AddBoxAsync(box, token);
         }
     }
 }

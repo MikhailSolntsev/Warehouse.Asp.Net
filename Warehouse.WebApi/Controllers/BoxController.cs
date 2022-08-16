@@ -38,9 +38,9 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpGet("Boxes")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<BoxResponseDto>))]
-        public async Task<IList<BoxResponseDto>> GetBoxes([BindRequired] int take, int? skip)
+        public async Task<IList<BoxResponseDto>> GetBoxes([BindRequired] int take, int? skip, CancellationToken token)
         {
-            var boxes = await storage.GetAllBoxesAsync(take, skip);
+            var boxes = await storage.GetAllBoxesAsync(take, skip, token);
 
             return boxes.Select(box => mapper.Map<BoxResponseDto>(box)).ToList();
         }
@@ -53,7 +53,7 @@ namespace Warehouse.Web.Api.Controllers
         [HttpGet("Box/{id}", Name = nameof(GetBox))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BoxResponseDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseMessage))]
-        public async Task<IActionResult> GetBox([BindRequired] int id)
+        public async Task<IActionResult> GetBox([BindRequired] int id, CancellationToken token)
         {
             if (id == 0)
             {
@@ -61,7 +61,7 @@ namespace Warehouse.Web.Api.Controllers
                 return BadRequest(response);
             }
 
-            var box = await storage.GetBoxAsync(id);
+            var box = await storage.GetBoxAsync(id, token);
 
             if (box is null)
             {
@@ -79,7 +79,7 @@ namespace Warehouse.Web.Api.Controllers
         [HttpPost("Box")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BoxResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ResponseMessage))]
-        public async Task<IActionResult> CreateBox([FromBody] BoxCreateDto boxDto)
+        public async Task<IActionResult> CreateBox([FromBody] BoxCreateDto boxDto, CancellationToken token)
         {
             var result = validationService.Validate<BoxCreateDto>(boxDto);
             if (!result.IsValid)
@@ -87,7 +87,7 @@ namespace Warehouse.Web.Api.Controllers
                 throw new ArgumentException("Box create model is invalid.");
             }
 
-            BoxModel? box = await storage.AddBoxAsync(mapper.Map<BoxModel>(boxDto));
+            BoxModel? box = await storage.AddBoxAsync(mapper.Map<BoxModel>(boxDto), token);
 
             return Created($"{Request.Path}/{box?.Id}", mapper.Map<BoxResponseDto>(box));
         }
@@ -101,9 +101,9 @@ namespace Warehouse.Web.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BoxResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ResponseMessage))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseMessage))]
-        public async Task<IActionResult> UpdateBox([FromBody] BoxUpdateDto boxDto)
+        public async Task<IActionResult> UpdateBox([FromBody] BoxUpdateDto boxDto, CancellationToken token)
         {
-            var box = await storage.UpdateBoxAsync(mapper.Map<BoxModel>(boxDto));
+            var box = await storage.UpdateBoxAsync(mapper.Map<BoxModel>(boxDto), token);
 
             return Ok(mapper.Map<BoxResponseDto>(box));
         }
@@ -116,9 +116,9 @@ namespace Warehouse.Web.Api.Controllers
         [HttpDelete("Box/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseMessage))]
-        public async Task<IActionResult> DeleteBox(int id)
+        public async Task<IActionResult> DeleteBox(int id, CancellationToken token)
         {
-            bool deleted = await storage.DeleteBoxAsync(id);
+            bool deleted = await storage.DeleteBoxAsync(id, token);
 
             if (deleted)
             {
