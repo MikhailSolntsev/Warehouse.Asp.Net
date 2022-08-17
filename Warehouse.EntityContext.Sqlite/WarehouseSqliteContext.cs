@@ -6,22 +6,17 @@ namespace Warehouse.EntityContext.Sqlite;
 
 public class WarehouseSqliteContext : DbContext, IWarehouseContext
 {
-    private const string DefaultFileName = "../Warehouse.db";
+    public const string DefaultFileName = "../Warehouse.db";
+
     private readonly string fileName;
 
-    public WarehouseSqliteContext()
-        : base()
+    public WarehouseSqliteContext() : base()
     {
         fileName = DefaultFileName;
     }
-    public WarehouseSqliteContext(string fileName)
-        : base()
+     public WarehouseSqliteContext(string fileName) : base()
     {
         this.fileName = fileName;
-    }
-    public WarehouseSqliteContext(DbContextOptions<WarehouseSqliteContext> options) : base(options)
-    {
-        fileName = DefaultFileName;
     }
     public WarehouseSqliteContext(string fileName, DbContextOptions<WarehouseSqliteContext> options) : base(options)
     {

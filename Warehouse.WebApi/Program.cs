@@ -2,13 +2,16 @@ using Warehouse.Data;
 using Warehouse.EntityContext;
 using Warehouse.EntityContext.Models;
 using Warehouse.EntityContext.Sqlite;
-using Warehouse.Web.Models;
+using Warehouse.EntityContext.Sqlite.Migrations;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Warehouse.Web.Api.Infrastructure.Mapping;
 using Warehouse.Web.Api.Infrastructure.Validators;
 using Warehouse.Web.Api.Infrastructure.Filters;
+
+
+await WarehouseMigrationManager.MigrateAsync();
 
 var builder = WebApplication.CreateBuilder(args);
 
