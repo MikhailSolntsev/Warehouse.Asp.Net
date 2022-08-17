@@ -8,6 +8,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Warehouse.Web.Api.Infrastructure.Mapping;
 using Warehouse.Web.Api.Infrastructure.Validators;
+using Warehouse.Web.Api.Infrastructure.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,8 @@ builder.Services.AddScoped<IValidationService, ValidationService>();
 
 builder.Services.AddMvc(options =>
 {
-    options.Filters.Add(typeof(ValidateModelStateAttribute));
+    options.Filters.Add<ValidateModelStateAttribute>();
+    options.Filters.Add<OperationCancelledExceptionFilter>();
 });
 
 builder.Services.Configure<ApiBehaviorOptions>(opt =>
