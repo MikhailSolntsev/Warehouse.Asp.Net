@@ -1,6 +1,6 @@
 using Warehouse.Data;
 using Warehouse.EntityContext;
-using Warehouse.EntityContext.Models;
+using Warehouse.EntityContext.Entities;
 using Warehouse.EntityContext.Sqlite;
 using Warehouse.EntityContext.Sqlite.Migrations;
 using FluentValidation;

@@ -1,5 +1,5 @@
 ﻿
-namespace Warehouse.EntityContext.Models
+namespace Warehouse.EntityContext.Entities
 {
     public class PalletEntity
     {

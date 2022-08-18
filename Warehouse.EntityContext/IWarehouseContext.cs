@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Warehouse.EntityContext.Models;
+using Warehouse.EntityContext.Entities;
 
 namespace Warehouse.EntityContext
 {

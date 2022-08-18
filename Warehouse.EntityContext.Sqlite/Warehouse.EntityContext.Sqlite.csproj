@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Warehouse.Data.Models\Warehouse.Data.Models.csproj" />
-    <ProjectReference Include="..\Warehouse.EntityContext.Models\Warehouse.EntityContext.Models.csproj" />
+    <ProjectReference Include="..\Warehouse.EntityContext.Models\Warehouse.EntityContext.Entities.csproj" />
     <ProjectReference Include="..\Warehouse.EntityContext\Warehouse.EntityContext.csproj" />
   </ItemGroup>
 

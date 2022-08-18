@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Warehouse.EntityContext.Models;
+using Warehouse.EntityContext.Entities;
 using Warehouse.EntityContext.Sqlite;
 using FluentAssertions;
 using Xunit.Abstractions;

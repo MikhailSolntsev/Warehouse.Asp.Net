@@ -1,5 +1,5 @@
 ﻿using Warehouse.Data.Models;
-using Warehouse.EntityContext.Models;
+using Warehouse.EntityContext.Entities;
 using FluentAssertions;
 using AutoMapper;
 

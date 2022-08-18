@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Warehouse.EntityContext.Sqlite.Configurations;
-using Warehouse.EntityContext.Models;
+using Warehouse.EntityContext.Entities;
 
 namespace Warehouse.EntityContext.Sqlite;
 

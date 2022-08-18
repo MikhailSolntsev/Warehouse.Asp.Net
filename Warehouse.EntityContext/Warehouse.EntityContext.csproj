@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Warehouse.EntityContext.Models\Warehouse.EntityContext.Models.csproj" />
+    <ProjectReference Include="..\Warehouse.EntityContext.Models\Warehouse.EntityContext.Entities.csproj" />
   </ItemGroup>
   
 </Project>

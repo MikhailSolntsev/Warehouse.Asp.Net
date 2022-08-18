@@ -1,6 +1,6 @@
 ﻿using Warehouse.Data.Models;
 using Warehouse.EntityContext;
-using Warehouse.EntityContext.Models;
+using Warehouse.EntityContext.Entities;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -64,17 +64,14 @@ public class BoxStorage : IBoxStorage
     {
         var boxes = db.Boxes;
 
-        var storedBox = await boxes.FindAsync(box.Id, token);
+        var storedBox = await boxes.FirstOrDefaultAsync(b => b.Id == box.Id, token);
         if (storedBox is null)
         {
-            storedBox = mapper.Map<BoxEntity>(box);
-            await boxes.AddAsync(storedBox, token);
-        }
-        else
-        {
-            mapper.Map<BoxModel, BoxEntity>(box, storedBox);
+            throw new ArgumentException($"No such box with id {box.Id}");
         }
 
+        mapper.Map<BoxModel, BoxEntity>(box, storedBox);
+        
         var affected = await db.SaveChangesAsync();
         if (affected > 0)
         {

@@ -1,6 +1,6 @@
 ﻿using Warehouse.Data.Models;
 using Warehouse.EntityContext;
-using Warehouse.EntityContext.Models;
+using Warehouse.EntityContext.Entities;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
@@ -95,14 +95,11 @@ public class PalletStorage : IPalletStorage
         var storedPallet = await pallets.FirstOrDefaultAsync(p => p.Id == pallet.Id, token);
         if (storedPallet is null)
         {
-            storedPallet = mapper.Map<PalletEntity>(pallet);
-            await pallets.AddAsync(storedPallet, token);
-        }
-        else
-        {
-            mapper.Map<PalletModel, PalletEntity>(pallet, storedPallet);
+            throw new ArgumentException($"No such pallet wit id {pallet.Id}");
         }
 
+        mapper.Map<PalletModel, PalletEntity>(pallet, storedPallet);
+        
         var affected = await db.SaveChangesAsync();
         if (affected > 0)
         {

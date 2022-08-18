@@ -1,5 +1,5 @@
 using AutoMapper;
-using Warehouse.EntityContext.Models;
+using Warehouse.EntityContext.Entities;
 using Warehouse.Web.Api.Infrastructure.Mapping;
 
 namespace Warehouse.IntegrationTests

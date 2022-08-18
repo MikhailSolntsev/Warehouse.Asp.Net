@@ -17,7 +17,7 @@ namespace Warehouse.EntityContext.Sqlite.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
 
-            modelBuilder.Entity("Warehouse.EntityContext.Models.BoxEntity", b =>
+            modelBuilder.Entity("Warehouse.EntityContext.Entities.BoxEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -49,7 +49,7 @@ namespace Warehouse.EntityContext.Sqlite.Migrations
                     b.ToTable("Boxes", (string)null);
                 });
 
-            modelBuilder.Entity("Warehouse.EntityContext.Models.PalletEntity", b =>
+            modelBuilder.Entity("Warehouse.EntityContext.Entities.PalletEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,16 +69,16 @@ namespace Warehouse.EntityContext.Sqlite.Migrations
                     b.ToTable("Pallets", (string)null);
                 });
 
-            modelBuilder.Entity("Warehouse.EntityContext.Models.BoxEntity", b =>
+            modelBuilder.Entity("Warehouse.EntityContext.Entities.BoxEntity", b =>
                 {
-                    b.HasOne("Warehouse.EntityContext.Models.PalletEntity", "PalletModel")
+                    b.HasOne("Warehouse.EntityContext.Entities.PalletEntity", "PalletModel")
                         .WithMany("Boxes")
                         .HasForeignKey("PalletModelId");
 
                     b.Navigation("PalletModel");
                 });
 
-            modelBuilder.Entity("Warehouse.EntityContext.Models.PalletEntity", b =>
+            modelBuilder.Entity("Warehouse.EntityContext.Entities.PalletEntity", b =>
                 {
                     b.Navigation("Boxes");
                 });

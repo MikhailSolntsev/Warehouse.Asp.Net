@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Warehouse.Data.Models;
 
-namespace Warehouse.EntityContext.Models
+namespace Warehouse.EntityContext.Entities
 {
     public class ModelMappingProfile : Profile
     {
