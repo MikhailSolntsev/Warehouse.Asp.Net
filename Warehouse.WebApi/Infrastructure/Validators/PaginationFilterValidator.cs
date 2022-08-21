@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using Warehouse.Web.Models;
+using Warehouse.Web.Dto;
 
 namespace Warehouse.Web.Api.Infrastructure.Validators
 {
-    public class SkipTakeValidator : AbstractValidator<SkipTakeParametres>
+    public class PaginationFilterValidator : AbstractValidator<PaginationFilter>
     {
-        public SkipTakeValidator()
+        public PaginationFilterValidator()
         {
             RuleFor(p => p.Take).NotNull().GreaterThan(0);
         }

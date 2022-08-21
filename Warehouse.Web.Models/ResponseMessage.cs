@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Warehouse.Web.Models;
+namespace Warehouse.Web.Dto;
 
 public class ResponseMessage
 {

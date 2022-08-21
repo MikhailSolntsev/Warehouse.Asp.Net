@@ -2,7 +2,7 @@
 using Warehouse.EntityContext;
 using Warehouse.Data.Infrastructure;
 using Warehouse.EntityContext.Sqlite;
-using Warehouse.Web.Models;
+using Warehouse.Web.Dto;
 using Warehouse.Web.Api.Controllers;
 using FluentAssertions;
 using AutoMapper;
@@ -149,7 +149,9 @@ namespace Warehouse.Web.Api
             await controller.CreatePallet(model, token);
             await controller.CreatePallet(model, token);
 
-            var response = await controller.GetPallets(2, 0, token);
+            var filter = new PaginationFilter { Take = 2, Skip = 0 };
+            var response = await controller.GetPallets(filter, token);
+
             response.Should().NotBeNull().And.BeAssignableTo<IList<PalletResponseDto>>().And.HaveCount(2);
         }
 

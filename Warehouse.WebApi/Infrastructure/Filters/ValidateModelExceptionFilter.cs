@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-namespace Warehouse.Web.Api.Infrastructure.Validators;
-public class ValidateModelStateAttribute : ActionFilterAttribute
+namespace Warehouse.Web.Api.Infrastructure.Filters;
+public class ValidateModelExceptionFilter : ActionFilterAttribute
 {
     /// <inheritdoc />
     public override void OnActionExecuting(ActionExecutingContext context)

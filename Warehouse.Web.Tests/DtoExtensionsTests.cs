@@ -2,7 +2,7 @@ using Warehouse.Data.Models;
 using FluentAssertions;
 using AutoMapper;
 using Warehouse.Web.Api.Infrastructure.Mapping;
-using Warehouse.Web.Models;
+using Warehouse.Web.Dto;
 
 namespace Warehouse.Web.Tests
 {

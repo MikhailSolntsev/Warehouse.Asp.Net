@@ -4,7 +4,7 @@ namespace Warehouse.Data;
 
 public interface IPalletStorage
 {
-    Task<IReadOnlyList<PalletModel>> GetAllPalletsAsync(int take, int? skip, CancellationToken token);
+    Task<IReadOnlyList<PalletModel>> GetAllPalletsAsync(int take, int skip, CancellationToken token);
     Task<PalletModel?> GetPalletAsync(int id, CancellationToken token);
     Task<PalletModel?> AddPalletAsync(PalletModel pallet, CancellationToken token);
     Task<PalletModel?> UpdatePalletAsync(PalletModel pallet, CancellationToken token);

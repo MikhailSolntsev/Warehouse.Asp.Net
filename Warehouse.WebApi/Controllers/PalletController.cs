@@ -1,6 +1,6 @@
 ﻿using Warehouse.Data;
 using Warehouse.Data.Models;
-using Warehouse.Web.Models;
+using Warehouse.Web.Dto;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using FluentValidation;
@@ -35,9 +35,9 @@ namespace Warehouse.Web.Api.Controllers
         /// <returns></returns>
         [HttpGet("Pallets")]
         [ProducesResponseType(200, Type = typeof(IList<PalletResponseDto>))]
-        public async Task<IList<PalletResponseDto>> GetPallets([BindRequired]int take, int? skip, CancellationToken token)
+        public async Task<IList<PalletResponseDto>> GetPallets([FromQuery] PaginationFilter paginationFilter, CancellationToken token)
         {
-            var pallets = await storage.GetAllPalletsAsync(take, skip, token);
+            var pallets = await storage.GetAllPalletsAsync(paginationFilter.Take, paginationFilter.Skip, token);
 
             return pallets.Select(pallet => mapper.Map<PalletResponseDto>(pallet)).ToList();
         }

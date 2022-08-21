@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Warehouse.Data.Models;
-using Warehouse.Web.Models;
+using Warehouse.Web.Dto;
 
 namespace Warehouse.Web.Api.Infrastructure.Mapping
 {

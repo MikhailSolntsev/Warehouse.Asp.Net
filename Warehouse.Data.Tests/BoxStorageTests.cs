@@ -48,7 +48,7 @@ namespace Warehouse.Data
             await FillStorageWithBoxesAsync();
 
             // Act
-            var boxes = await storage.GetAllBoxesAsync(take: 2, null, token);
+            var boxes = await storage.GetAllBoxesAsync(take: 2, 0, token);
 
             // Assert
             boxes.Should().HaveCount(2);

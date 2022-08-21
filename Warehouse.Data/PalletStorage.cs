@@ -29,16 +29,11 @@ public class PalletStorage : IPalletStorage
     /// <param name="skip">Skip N elements</param>
     /// <param name="take">Get N elements</param>
     /// <returns>List of pallets</returns>
-    public async Task<IReadOnlyList<PalletModel>> GetAllPalletsAsync(int take, int? skip, CancellationToken token)
+    public async Task<IReadOnlyList<PalletModel>> GetAllPalletsAsync(int take, int skip, CancellationToken token)
     {
         var query = (IQueryable<PalletEntity>)db.Pallets;
 
-        if (skip is not null)
-        {
-            query = query.Skip(skip ?? 0);
-        }
-
-        query = query.Take(take).Include(p => p.Boxes);
+        query = query.Skip(skip).Take(take).Include(p => p.Boxes);
 
         return await
             query

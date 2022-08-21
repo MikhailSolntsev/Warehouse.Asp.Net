@@ -23,7 +23,7 @@ builder.Services.AddScoped<IValidationService, ValidationService>();
 
 builder.Services.AddMvc(options =>
 {
-    options.Filters.Add<ValidateModelStateAttribute>();
+    options.Filters.Add<ValidateModelExceptionFilter>();
     options.Filters.Add<OperationCancelledExceptionFilter>();
 });
 

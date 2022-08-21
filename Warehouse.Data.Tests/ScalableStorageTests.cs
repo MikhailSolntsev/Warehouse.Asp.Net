@@ -60,7 +60,7 @@ namespace Warehouse.Data
             await palletStorage.AddBoxToPalletAsync(box, pallet, token);
 
             //Assert
-            var pallets = await palletStorage.GetAllPalletsAsync(1, null, token);
+            var pallets = await palletStorage.GetAllPalletsAsync(1, 0, token);
             pallets[0].Boxes?.Should().HaveCount(1);
         }
 

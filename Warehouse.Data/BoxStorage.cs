@@ -18,16 +18,11 @@ public class BoxStorage : IBoxStorage
         this.mapper = mapper;
     }
 
-    public async Task<IReadOnlyList<BoxModel>> GetAllBoxesAsync(int take, int? skip, CancellationToken token)
+    public async Task<IReadOnlyList<BoxModel>> GetAllBoxesAsync(int take, int skip, CancellationToken token)
     {
         var query = (IQueryable<BoxEntity>)db.Boxes;
 
-        if (skip is not null)
-        {
-            query = query.Skip(skip ?? 0);
-        }
-
-        query = query.Take(take);
+        query = query.Skip(skip).Take(take);
 
         return await
             query
