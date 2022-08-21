@@ -22,6 +22,10 @@ public class WarehouseSqliteContext : DbContext, IWarehouseContext
     {
         this.fileName = fileName;
     }
+    public WarehouseSqliteContext(DbContextOptions<WarehouseSqliteContext> options) : base(options)
+    {
+        fileName = "";
+    }
 
     public virtual DbSet<BoxEntity> Boxes => Set<BoxEntity>();
     public virtual DbSet<PalletEntity> Pallets => Set<PalletEntity>();
@@ -33,7 +37,7 @@ public class WarehouseSqliteContext : DbContext, IWarehouseContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
+        if (!optionsBuilder.IsConfigured && !string.IsNullOrEmpty(fileName))
         {
             optionsBuilder.UseSqlite($"Filename={fileName}");
         }

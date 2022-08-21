@@ -11,18 +11,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Warehouse.Web.Api
 {
-    public class PalletControllerTests
+    public class PalletControllerTests : IClassFixture<DataContextFixture>
     {
         private readonly PalletController controller;
         private readonly DateTime today;
         private readonly CancellationToken token = CancellationToken.None;
 
-        public PalletControllerTests()
+        public PalletControllerTests(DataContextFixture fixture)
         {
-            string fileName = Path.GetRandomFileName();
-            IWarehouseContext context = new WarehouseSqliteContext(fileName);
-            context.Database.EnsureCreated();
-
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(typeof(EntityMappingProfile));
@@ -31,7 +27,7 @@ namespace Warehouse.Web.Api
 
             IMapper mapper = config.CreateMapper();
 
-            IPalletStorage storage = new PalletStorage(context, mapper);
+            IPalletStorage storage = new PalletStorage(fixture.Context, mapper);
             controller = new(storage, mapper);
 
             today = DateTime.Today;
@@ -123,17 +119,23 @@ namespace Warehouse.Web.Api
 
             var dto = (PalletResponseDto?)value;
             dto.Should().NotBeNull();
-            dto?.Id.Should().Be(17);
-            dto?.Length.Should().Be(13);
-            dto?.Width.Should().Be(15);
-            dto?.Height.Should().Be(11);
-            dto?.Boxes.Should().NotBeNull().And.HaveCount(1);
-            dto?.Boxes?[0].Id.Should().Be(7);
-            dto?.Boxes?[0].Length.Should().Be(3);
-            dto?.Boxes?[0].Width.Should().Be(5);
-            dto?.Boxes?[0].Height.Should().Be(2);
-            dto?.Boxes?[0].Weight.Should().Be(1);
-            dto?.Boxes?[0].ExpirationDate.Should().Be(today);
+            dto.Should().BeEquivalentTo(
+                new {
+                    Id = 17,
+                    Length = 13,
+                    Width = 15,
+                    Height = 11,
+                    Boxes = new[] {
+                        new {
+                            Id = 7,
+                            Length = 3,
+                            Width = 5,
+                            Height = 2,
+                            Weight = 1,
+                            ExpirationDate = today
+                        }
+                    }
+                });
         }
 
         [Fact(DisplayName = "Can retrieve all Pallets")]

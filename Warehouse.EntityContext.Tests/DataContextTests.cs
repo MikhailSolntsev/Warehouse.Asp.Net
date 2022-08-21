@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Warehouse.EntityContext.Entities;
 using FluentAssertions;
-using Xunit.Abstractions;
 
 namespace Warehouse.EntityContext.Tests;
 

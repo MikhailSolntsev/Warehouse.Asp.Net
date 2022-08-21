@@ -1,8 +1,9 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Warehouse.EntityContext.Sqlite;
+using Warehouse.EntityContext;
 
-namespace Warehouse.EntityContext.Tests;
+namespace Warehouse.Web.Api;
 
 public class DataContextFixture: IDisposable
 {
