@@ -12,7 +12,7 @@ namespace Warehouse.EntityContext.Sqlite.Configurations
 
             base.Configure(builder);
 
-            builder.Property(box => box.Weight)
+            builder.Property<int?>("Weight")
                 .HasColumnType("INTEGER")
                 .IsRequired();
 

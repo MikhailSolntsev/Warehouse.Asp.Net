@@ -16,15 +16,15 @@ internal abstract class BaseConfiguration<TEntity> : IEntityTypeConfiguration<TE
 
         //builder.HasIndex("id");
 
-        builder.Property<int>("Length")
+        builder.Property<int?>("Length")
             .HasColumnType("INTEGER")
             .IsRequired();
 
-        builder.Property<int>("Width")
+        builder.Property<int?>("Width")
             .HasColumnType("INTEGER")
             .IsRequired();
 
-        builder.Property<int>("Height")
+        builder.Property<int?>("Height")
             .HasColumnType("INTEGER")
             .IsRequired();
     }
