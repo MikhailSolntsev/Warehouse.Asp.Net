@@ -1,13 +1,12 @@
 ﻿using Warehouse.Data;
 using Warehouse.EntityContext;
-using Warehouse.EntityContext.Entities;
+using Warehouse.Data.Infrastructure;
 using Warehouse.EntityContext.Sqlite;
 using Warehouse.Web.Models;
 using Warehouse.Web.Api.Controllers;
 using FluentAssertions;
 using AutoMapper;
 using Warehouse.Web.Api.Infrastructure.Mapping;
-using Warehouse.Web.Api.Infrastructure.Validators;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Warehouse.Web.Api
@@ -26,7 +25,7 @@ namespace Warehouse.Web.Api
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(typeof(ModelMappingProfile));
+                cfg.AddProfile(typeof(EntityMappingProfile));
                 cfg.AddProfile(typeof(DtoMappingProfile));
             });
 

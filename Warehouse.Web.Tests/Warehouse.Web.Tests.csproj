@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Warehouse.Data.Models\Warehouse.Data.Models.csproj" />
-    <ProjectReference Include="..\Warehouse.Web.Models\Warehouse.Web.Models.csproj" />
+    <ProjectReference Include="..\Warehouse.Web.Models\Warehouse.Web.Dto.csproj" />
     <ProjectReference Include="..\Warehouse.WebApi\Warehouse.Web.Api.csproj" />
   </ItemGroup>
 

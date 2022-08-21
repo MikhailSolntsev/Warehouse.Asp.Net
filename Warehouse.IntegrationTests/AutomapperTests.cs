@@ -1,5 +1,5 @@
 using AutoMapper;
-using Warehouse.EntityContext.Entities;
+using Warehouse.Data.Infrastructure;
 using Warehouse.Web.Api.Infrastructure.Mapping;
 
 namespace Warehouse.IntegrationTests
@@ -11,7 +11,7 @@ namespace Warehouse.IntegrationTests
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(typeof(ModelMappingProfile));
+                cfg.AddProfile(typeof(EntityMappingProfile));
                 cfg.AddProfile(typeof(DtoMappingProfile));
             });
 

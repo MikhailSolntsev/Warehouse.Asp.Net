@@ -1,4 +1,5 @@
-﻿using Warehouse.Data.Models;
+﻿using Warehouse.Data.Infrastructure;
+using Warehouse.Data.Models;
 using Warehouse.EntityContext.Entities;
 using FluentAssertions;
 using AutoMapper;
@@ -13,7 +14,7 @@ namespace Warehouse.EntityContext.Tests
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(typeof(ModelMappingProfile));
+                cfg.AddProfile(typeof(EntityMappingProfile));
             });
 
             mapper = config.CreateMapper();

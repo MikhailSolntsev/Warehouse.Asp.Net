@@ -1,6 +1,6 @@
 using Warehouse.Data;
+using Warehouse.Data.Infrastructure;
 using Warehouse.EntityContext;
-using Warehouse.EntityContext.Entities;
 using Warehouse.EntityContext.Sqlite;
 using Warehouse.EntityContext.Sqlite.Migrations;
 using FluentValidation;
@@ -37,7 +37,7 @@ builder.Services.AddScoped<IPalletStorage, PalletStorage>();
 
 builder.Services.AddScoped<IWarehouseContext, WarehouseSqliteContext>();
 
-builder.Services.AddAutoMapper(typeof(DtoMappingProfile), typeof(ModelMappingProfile));
+builder.Services.AddAutoMapper(typeof(DtoMappingProfile), typeof(EntityMappingProfile));
 
 builder.Services.AddControllers();
 

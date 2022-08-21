@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Warehouse.Data.Models;
+using Warehouse.EntityContext.Entities;
 
-namespace Warehouse.EntityContext.Entities
+namespace Warehouse.Data.Infrastructure
 {
-    public class ModelMappingProfile : Profile
+    public class EntityMappingProfile : Profile
     {
-        public ModelMappingProfile()
+        public EntityMappingProfile()
         {
             CreateMap<BoxModel, BoxEntity>()
                 .ForMember(b => b.PalletModelId, opt => opt.Ignore())

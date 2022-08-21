@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.EntityContext", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.EntityContext.Entities", "Warehouse.EntityContext.Models\Warehouse.EntityContext.Entities.csproj", "{49549406-5215-4D1F-B821-4171915D8B7D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Web.Models", "Warehouse.Web.Models\Warehouse.Web.Models.csproj", "{1B266CEF-04A2-45F3-85C3-C97308EBDDE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Web.Dto", "Warehouse.Web.Models\Warehouse.Web.Dto.csproj", "{1B266CEF-04A2-45F3-85C3-C97308EBDDE7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Web.Tests", "Warehouse.Web.Tests\Warehouse.Web.Tests.csproj", "{6BC263B7-AC37-4B4C-B14D-679FBC70FEDF}"
 EndProject
