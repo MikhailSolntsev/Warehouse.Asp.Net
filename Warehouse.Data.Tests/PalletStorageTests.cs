@@ -9,6 +9,7 @@ namespace Warehouse.Data.Tests
     {
         private readonly IPalletStorage storage;
         private readonly CancellationToken token = CancellationToken.None;
+        private readonly IDateTimeProvider dateProvider = new DateTimeProvider();
 
         public PalletStorageTests()
         {
@@ -26,7 +27,7 @@ namespace Warehouse.Data.Tests
             storage = new PalletStorage(context, mapper);
         }
 
-        [Fact(DisplayName = "Storage can add box")]
+        [Fact(DisplayName = "Storage can add pallet")]
         public async Task CanAddPallet()
         {
             // Arrange
@@ -37,7 +38,9 @@ namespace Warehouse.Data.Tests
 
             // Assert
             var pallets = await storage.GetAllPalletsAsync(100, 0, token);
+
             pallets.Should().HaveCount(1);
+            pallets.First().Should().BeEquivalentTo(new { Length = 3, Height = 5, Width = 7, Id = 11 });
         }
 
         [Fact(DisplayName = "Storage can retrieve pallets with SKIP pagination")]
@@ -71,7 +74,7 @@ namespace Warehouse.Data.Tests
         {
             // Arrange
             PalletModel pallet = new(3, 5, 7);
-            BoxModel box = new BoxModel(3, 3, 3, 3, DateTime.Now);
+            BoxModel box = new BoxModel(3, 3, 3, 3, dateProvider.Today());
             pallet.AddBox(box);
 
             // Act
@@ -79,13 +82,17 @@ namespace Warehouse.Data.Tests
 
             // Assert
             newPallet.Should().NotBeNull();
+
+            newPallet.Should().BeEquivalentTo(new { Length = 3, Height = 5, Width = 7});
+            newPallet!.Boxes.Should().HaveCount(1);
+            newPallet.Boxes[0].Should().BeEquivalentTo(new { Length = 3, Height = 3, Width = 3, Weight = 3, ExpirationDate = dateProvider.Today()});
         }
 
         [Fact(DisplayName = "Get pallet with wrong Id should return null")]
         public async Task GetPalletWithWrongIdShouldReturnNull()
         {
             // Arrange
-            PalletModel pallet = new(3, 5, 7);
+            PalletModel pallet = new(3, 5, 7, 11);
             
             // Act
             await storage.AddPalletAsync(pallet, token);
