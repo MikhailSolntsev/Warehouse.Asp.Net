@@ -1,13 +1,13 @@
-using FluentAssertions; 
-
-namespace Warehouse.Data.Models;
+namespace Warehouse.Data.Tests;
 
 public class BoxTests
 {
+    private readonly IDateTimeProvider dateTimeProvider = new DateTimeProvider();
+
     [Fact(DisplayName = "Box should calculate ExpirationDate from production date")]
     public void ExpirationDateCalculatesFromProductionDate()
     {
-        DateTime productionDate = DateTime.Today;
+        DateTime productionDate = dateTimeProvider.Today();
         DateTime expirationDate = productionDate.AddDays(100);
 
         BoxModel box = new BoxModel(3, 5, 7, 11, productionDate: productionDate);
@@ -18,8 +18,8 @@ public class BoxTests
     [Fact(DisplayName = "Box should accept expiration date instead of production date")]
     public void ExpirationDateHasMorePriorityThanProduction()
     {
-        DateTime productionDate = DateTime.Today;
-        DateTime expirationDate = DateTime.Today;
+        DateTime productionDate = dateTimeProvider.Today();
+        DateTime expirationDate = dateTimeProvider.Today();
 
         BoxModel box = new BoxModel(3, 5, 7, 11, expirationDate, productionDate);
 
@@ -36,7 +36,7 @@ public class BoxTests
     [Fact(DisplayName = "Box should calculate Volume from dimensions")]
     public void VolumeCalculatesFromDimensions()
     {
-        BoxModel box = new BoxModel(3, 5, 7, 11, DateTime.Today);
+        BoxModel box = new BoxModel(3, 5, 7, 11, dateTimeProvider.Today());
 
         box.Volume.Should().Be(3 * 5 * 7, "Box Volume should be calculated from dimensions");
     }

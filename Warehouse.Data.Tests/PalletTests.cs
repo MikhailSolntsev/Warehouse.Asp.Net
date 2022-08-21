@@ -1,15 +1,15 @@
-using Warehouse.Data.Models;
-using FluentAssertions; 
 
-namespace Warehouse.Data.Models;
+namespace Warehouse.Data.Tests;
 
 public class PalletTests
 {
+    private readonly IDateTimeProvider dateTimeProvider = new DateTimeProvider();
+
     [Fact(DisplayName = "Box Length should not be greater than pallet")]
     public void CantAddBoxWithLargeLength()
     {
         PalletModel pallet = new PalletModel(3, 5, 7);
-        BoxModel box = new(11, 3, 5, 0, DateTime.Now);
+        BoxModel box = new(11, 3, 5, 0, dateTimeProvider.Today());
 
         Action action = () => pallet.AddBox(box);
 
@@ -20,7 +20,7 @@ public class PalletTests
     public void CantAddBoxWithLargeHeight()
     {
         PalletModel pallet = new PalletModel(3, 5, 7);
-        BoxModel box = new(3, 11, 5, 0, DateTime.Now);
+        BoxModel box = new(3, 11, 5, 0, dateTimeProvider.Today());
 
         Action action = () => pallet.AddBox(box);
 
@@ -31,7 +31,7 @@ public class PalletTests
     public void CantAddBoxWithLargeWidth()
     {
         PalletModel pallet = new PalletModel(3, 5, 7);
-        BoxModel box = new(3, 5, 11, 0, DateTime.Now);
+        BoxModel box = new(3, 5, 11, 0, dateTimeProvider.Today());
 
         Action action = () => pallet.AddBox(box);
 
@@ -42,8 +42,8 @@ public class PalletTests
     public void WeightMustBeCalculated()
     {
         PalletModel pallet = new(3, 5, 7);
-        BoxModel box1 = new(3, 5, 7, 11, DateTime.Today);
-        BoxModel box2 = new(3, 5, 7, 13, DateTime.Today);
+        BoxModel box1 = new(3, 5, 7, 11, dateTimeProvider.Today());
+        BoxModel box2 = new(3, 5, 7, 13, dateTimeProvider.Today());
         pallet.AddBox(box1);
         pallet.AddBox(box2);
 
@@ -54,11 +54,13 @@ public class PalletTests
     public void VolumeMustBeCalculated()
     {
         PalletModel pallet = new(3, 5, 7);
-        BoxModel box1 = new(3, 5, 7, 11, DateTime.Today);
-        BoxModel box2 = new(3, 5, 7, 13, DateTime.Today);
+        BoxModel box1 = new(3, 5, 7, 11, dateTimeProvider.Today());
+        BoxModel box2 = new(3, 5, 7, 13, dateTimeProvider.Today());
         pallet.AddBox(box1);
         pallet.AddBox(box2);
 
         pallet.Volume.Should().Be(3 * 5 * 7 * 3, "Pallet Volume should be calculated from own l*w*h and boxes");
     }
+
+
 }

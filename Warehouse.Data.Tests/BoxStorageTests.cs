@@ -1,11 +1,9 @@
-﻿using Warehouse.Data.Models;
-using Warehouse.EntityContext;
+﻿using Warehouse.EntityContext;
 using Warehouse.Data.Infrastructure;
 using Warehouse.EntityContext.Sqlite;
-using FluentAssertions;
 using AutoMapper;
 
-namespace Warehouse.Data
+namespace Warehouse.Data.Tests
 {
     public class BoxStorageTests
     {

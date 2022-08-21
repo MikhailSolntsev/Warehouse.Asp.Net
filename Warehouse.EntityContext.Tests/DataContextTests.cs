@@ -8,9 +8,9 @@ namespace Warehouse.EntityContext.Tests
 {
     public class DataContextTests : IDisposable
     {
-        private string fileName;
-        private WarehouseSqliteContext db;
-        private ITestOutputHelper outputHelper;
+        private readonly string fileName;
+        private readonly WarehouseSqliteContext db;
+        private readonly ITestOutputHelper outputHelper;
 
         public DataContextTests(ITestOutputHelper helper)
         {
