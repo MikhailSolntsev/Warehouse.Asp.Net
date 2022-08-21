@@ -1,3 +1,5 @@
+using AutoFixture.Xunit2;
+
 namespace Warehouse.Data.Tests;
 
 public class BoxTests
@@ -33,11 +35,11 @@ public class BoxTests
         action.Should().Throw<ArgumentNullException>("Creating box without dates is prohibited");
     }
 
-    [Fact(DisplayName = "Box should calculate Volume from dimensions")]
-    public void VolumeCalculatesFromDimensions()
+    [Theory(DisplayName = "Box should calculate Volume from dimensions"), AutoData]
+    public void VolumeCalculatesFromDimensions(int length, int width, int height)
     {
-        BoxModel box = new BoxModel(3, 5, 7, 11, dateTimeProvider.Today());
+        BoxModel box = new BoxModel(length, height, width, 11, dateTimeProvider.Today());
 
-        box.Volume.Should().Be(3 * 5 * 7, "Box Volume should be calculated from dimensions");
+        box.Volume.Should().Be(length * height * width, "Box Volume should be calculated from dimensions");
     }
 }

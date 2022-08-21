@@ -5,63 +5,50 @@ using AutoMapper;
 
 namespace Warehouse.Data.Tests
 {
-    public class PalletStorageTests
+    public class PalletStorageTests : IClassFixture<PalletStorageFixture>
     {
-        private readonly IPalletStorage storage;
         private readonly CancellationToken token = CancellationToken.None;
         private readonly IDateTimeProvider dateProvider = new DateTimeProvider();
+        private readonly PalletStorageFixture fixture;
+        private readonly IPalletStorage storage;
 
-        public PalletStorageTests()
+        public PalletStorageTests(PalletStorageFixture fixture)
         {
-            string fileName = Path.GetRandomFileName();
-            IWarehouseContext context = new WarehouseSqliteContext(fileName);
-            context.Database.EnsureCreated();
-
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(typeof(EntityMappingProfile));
-            });
-
-            IMapper mapper = config.CreateMapper();
-
-            storage = new PalletStorage(context, mapper);
+            this.fixture = fixture;
+            storage = fixture.Storage;
         }
 
         [Fact(DisplayName = "Storage can add pallet")]
         public async Task CanAddPallet()
         {
             // Arrange
-            PalletModel pallet = new(3, 5, 7, 11);
+            PalletModel pallet = new(3, 5, 7, PalletStorageFixture.SpareId);
 
             // Act
             await storage.AddPalletAsync(pallet, token);
 
             // Assert
-            var pallets = await storage.GetAllPalletsAsync(100, 0, token);
-
-            pallets.Should().HaveCount(1);
-            pallets.First().Should().BeEquivalentTo(new { Length = 3, Height = 5, Width = 7, Id = 11 });
+            var pallets = await storage.GetPalletAsync(PalletStorageFixture.SpareId, token);
+            pallets.Should().BeEquivalentTo(new { Length = 3, Height = 5, Width = 7, Id = 11 });
         }
 
         [Fact(DisplayName = "Storage can retrieve pallets with SKIP pagination")]
         public async Task CanRetrievePalletWithSkipPagination()
         {
             // Arrange
-            await FillStorageWithPalletAndBoxesAsync();
-
+            
             // Act
             var pallets = await storage.GetAllPalletsAsync(take: 100, skip: 2, token);
 
             // Assert
-            pallets.Should().HaveCount(3);
+            pallets.Should().HaveCountLessThan(5);
         }
 
         [Fact(DisplayName = "Storage can retrieve pallets with TAKE pagination")]
         public async Task CanRetrievePalletWithTakePagination()
         {
             // Arrange
-            await FillStorageWithPalletAndBoxesAsync();
-
+            
             // Act
             var pallets = await storage.GetAllPalletsAsync(2, 0, token);
 
@@ -73,6 +60,7 @@ namespace Warehouse.Data.Tests
         public async Task AddingPalletShouldReturnNewPallet()
         {
             // Arrange
+
             PalletModel pallet = new(3, 5, 7);
             BoxModel box = new BoxModel(3, 3, 3, 3, dateProvider.Today());
             pallet.AddBox(box);
@@ -92,11 +80,9 @@ namespace Warehouse.Data.Tests
         public async Task GetPalletWithWrongIdShouldReturnNull()
         {
             // Arrange
-            PalletModel pallet = new(3, 5, 7, 11);
             
             // Act
-            await storage.AddPalletAsync(pallet, token);
-            var newPallet = await storage.GetPalletAsync(100, token);
+            var newPallet = await storage.GetPalletAsync(PalletStorageFixture.WrongId, token);
             // Assert
 
             newPallet.Should().BeNull();
@@ -106,31 +92,27 @@ namespace Warehouse.Data.Tests
         public async Task CanModifyPallet()
         {
             // Arrange
-            PalletModel pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet, token);
 
             // Act
-            pallet = new(13, 5, 7, 11);
+            var pallet = new PalletModel(13, 15, 17, PalletStorageFixture.ModifyId);
             await storage.UpdatePalletAsync(pallet, token);
 
             //Assert
-            var storedPallet = await storage.GetPalletAsync(pallet.Id??0, token);
+            var storedPallet = await storage.GetPalletAsync(PalletStorageFixture.ModifyId, token);
             storedPallet.Should().NotBeNull();
-            storedPallet?.Length.Should().Be(13);
+            storedPallet.Should().BeEquivalentTo(new {Length = 13, Width = 17, Height = 15});
         }
 
         [Fact(DisplayName = "Storage can delete pallet")]
         public async Task CanDeletePallet()
         {
             // Arrange
-            PalletModel pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet, token);
-
+            
             // Act
-            await storage.DeletePalletAsync(11, token);
+            await storage.DeletePalletAsync(PalletStorageFixture.GoodId, token);
 
             //Assert
-            var storedPallet = await storage.GetPalletAsync(pallet.Id ?? 0, token);
+            var storedPallet = await storage.GetPalletAsync(PalletStorageFixture.GoodId, token);
             storedPallet.Should().BeNull();
         }
 
@@ -145,22 +127,8 @@ namespace Warehouse.Data.Tests
 
             // Assert
             addedPallet.Should().NotBeNull();
-            addedPallet?.Id.Should().NotBe(0);
+            addedPallet.Should().NotBeEquivalentTo(new {Id = 0});
         }
-
-        private async Task FillStorageWithPalletAndBoxesAsync()
-        {
-            PalletModel pallet = new(3, 5, 7, 11);
-            await storage.AddPalletAsync(pallet, token);
-            pallet = new(3, 5, 7, 13);
-            await storage.AddPalletAsync(pallet, token);
-            pallet = new(3, 5, 7, 17);
-            await storage.AddPalletAsync(pallet, token);
-            pallet = new(3, 5, 7, 19);
-            await storage.AddPalletAsync(pallet, token);
-            pallet = new(3, 5, 7, 23);
-            await storage.AddPalletAsync(pallet, token);
-        }
-
+        
     }
 }
