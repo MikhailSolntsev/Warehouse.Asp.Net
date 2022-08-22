@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Warehouse.Data.Infrastructure;
 using Warehouse.EntityContext;
-using Warehouse.EntityContext.Sqlite;
 
 namespace Warehouse.Data.Tests;
 
@@ -21,10 +20,6 @@ public class BoxStorageFixture : IAsyncLifetime
 
     public BoxStorageFixture()
     {
-        var fileName = Path.GetRandomFileName();
-        IWarehouseContext context = new WarehouseSqliteContext(fileName);
-        context.Database.EnsureCreated();
-
         var config = new MapperConfiguration(cfg =>
         {
             cfg.AddProfile(typeof(EntityMappingProfile));
@@ -32,7 +27,7 @@ public class BoxStorageFixture : IAsyncLifetime
 
         IMapper mapper = config.CreateMapper();
 
-        Storage = new BoxStorage(context, mapper);
+        Storage = new BoxStorage(DataContextFactory.GetContext(), mapper);
     }
     public async Task InitializeAsync() => await FillStorageWithBoxesAsync();
     public Task DisposeAsync() => Task.CompletedTask;

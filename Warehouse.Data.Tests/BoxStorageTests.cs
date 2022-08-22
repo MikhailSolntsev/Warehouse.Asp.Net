@@ -4,12 +4,10 @@ namespace Warehouse.Data.Tests
     public class BoxStorageTests : IClassFixture<BoxStorageFixture>
     {
         private readonly IBoxStorage storage;
-        private readonly BoxStorageFixture fixture;
         private readonly CancellationToken token = CancellationToken.None;
 
         public BoxStorageTests(BoxStorageFixture fixture)
         {
-            this.fixture = fixture;
             storage = fixture.Storage;
         }
 

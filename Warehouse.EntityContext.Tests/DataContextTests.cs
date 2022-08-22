@@ -4,8 +4,7 @@ using FluentAssertions;
 
 namespace Warehouse.EntityContext.Tests;
 
-[Collection("Data context collection")]
-public class DataContextTests
+public class DataContextTests : IClassFixture<DataContextFixture>
 {
     private readonly IWarehouseContext db;
 
@@ -32,7 +31,7 @@ public class DataContextTests
 
         // Assert
         entity.Id.Should().BeGreaterThan(0);
-        BoxEntity found = await db.Boxes.FirstAsync(b => b.Id == entity.Id);
+        BoxEntity found = await db.Boxes.AsNoTracking().FirstAsync(b => b.Id == entity.Id);
         found.Should().NotBeNull().And.BeEquivalentTo(new { Length = 3, Width = 5, Height = 7, Weight = 11 });
     }
 
@@ -90,7 +89,8 @@ public class DataContextTests
         db.Boxes.Should().NotBeNullOrEmpty("Boxes set should not be empty");
 
         db.Pallets
-            .Include(pallet => pallet.Boxes)?
+            .AsNoTracking()
+            .Include(pallet => pallet.Boxes)
             .FirstOrDefault()
             .Boxes
             .Should()

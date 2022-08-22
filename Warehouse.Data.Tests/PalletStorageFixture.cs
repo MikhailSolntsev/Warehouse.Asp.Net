@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Warehouse.Data.Infrastructure;
-using Warehouse.EntityContext;
-using Warehouse.EntityContext.Sqlite;
 
 namespace Warehouse.Data.Tests;
 
@@ -15,10 +13,6 @@ public class PalletStorageFixture : IAsyncLifetime
 
     public PalletStorageFixture()
     {
-        var fileName = Path.GetRandomFileName();
-        IWarehouseContext context = new WarehouseSqliteContext(fileName);
-        context.Database.EnsureCreated();
-
         var config = new MapperConfiguration(cfg =>
         {
             cfg.AddProfile(typeof(EntityMappingProfile));
@@ -26,7 +20,7 @@ public class PalletStorageFixture : IAsyncLifetime
 
         IMapper mapper = config.CreateMapper();
 
-        Storage = new PalletStorage(context, mapper);
+        Storage = new PalletStorage(DataContextFactory.GetContext(), mapper);
     }
     public async Task InitializeAsync() => await FillStorageWithPalletAndBoxesAsync();
     public Task DisposeAsync() => Task.CompletedTask;

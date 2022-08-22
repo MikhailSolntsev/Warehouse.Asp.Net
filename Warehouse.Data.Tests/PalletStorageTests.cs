@@ -1,20 +1,14 @@
-﻿using Warehouse.Data.Infrastructure;
-using Warehouse.EntityContext;
-using Warehouse.EntityContext.Sqlite;
-using AutoMapper;
-
+﻿
 namespace Warehouse.Data.Tests
 {
     public class PalletStorageTests : IClassFixture<PalletStorageFixture>
     {
         private readonly CancellationToken token = CancellationToken.None;
         private readonly IDateTimeProvider dateProvider = new DateTimeProvider();
-        private readonly PalletStorageFixture fixture;
         private readonly IPalletStorage storage;
 
         public PalletStorageTests(PalletStorageFixture fixture)
         {
-            this.fixture = fixture;
             storage = fixture.Storage;
         }
 
